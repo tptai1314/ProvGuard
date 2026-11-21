@@ -1,0 +1,80 @@
+# =====================================================================
+# ProvGuard: Experiment Configuration (Userspace Prototype - C2)
+# Reference: BAT_DAU.md (Tier 0 / C2) & ProvGuard Formal Semantics
+# =====================================================================
+
+meta:
+  name: "provguard_userspace_prototype"
+  version: "1.0.0"
+  seed: 2026
+  repetitions: 5
+
+device:
+  serial: "emulator-5554"
+  avd_name: "Pixel_9"
+  screen_width: 1080
+  screen_height: 2424
+  timeout_sec: 15
+
+agent:
+  name: "MobileGUIAgent"
+  mode: "multimodal"           # tree (a11y XML) + screenshot (PNG)
+  prompt_format: "standard"
+  action_space:
+    - "tap"
+    - "text"
+    - "swipe"
+    - "back"
+    - "home"
+    - "wait"
+
+model:
+  provider: "gemini"           # Options: gemini, openai, ollama
+  model_name: "gemini-1.5-flash"
+  fallback_model: "gpt-4o-mini"
+  temperature: 0.0             # Greedy decoding for reproducible action decisions
+  max_tokens: 512
+  retry_count: 3
+  timeout_sec: 20
+
+causal_gate:
+  k_trials: 5                  # k re-execution trials (Theorem 2 bound)
+  theta_threshold: 0.5         # theta threshold for trusted support
+  equivalence: "action_match"  # Action matching predicate
+  mask_imperceptible: true     # Mask nodes with contrast < 3.0 or occluded
+  mask_untrusted: true         # Mask nodes with untrusted provenance labels
+  fail_closed: true            # Deny action if re-execution errors/timeouts
+
+binder:
+  enabled: true
+  verify_window_token: true    # Reject if window token changed between observe & act
+  verify_node_digest: true     # Reject if target node content/bounds mutated
+  fail_closed: true
+
+sinks:
+  protected_actions:
+    - "send"                   # Messages, emails, transfers
+    - "pay"                    # Payment dialogs, purchase confirmations
+    - "install"                # Package installer, APK sideload
+    - "grant_permission"       # Permission controller prompts
+    - "delete"                 # Destructive file or account actions
+    - "share"                  # System share sheet, data export
+
+paths:
+  dump_dir: "dump"
+  cases_dir: "cases"
+  results_dir: "results"
+  runs_dir: "runs"
+  tables_dir: "results/tables"
+  figures_dir: "results/figures"
+
+evaluation:
+  configurations:
+    - "B0"                     # Baseline 0: No defense
+    - "labels"                 # PG-L: Labels in perception prompt only
+    - "gate"                   # PG-G: Causal gate re-execution only
+    - "full"                   # PG: Full ProvGuard (labels + gate + binder)
+  channels:
+    - "hidden"                 # Low-contrast or invisible a11y nodes
+    - "overlay"                # TYPE_APPLICATION_OVERLAY floating windows
+    - "notif"                  # Spoofed system notifications
