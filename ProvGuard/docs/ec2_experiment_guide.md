@@ -1,5 +1,10 @@
 # EC2 experiment guide
 
+> **EC2 is not a hard requirement.** It is a stand-in for any Linux host with enough disk and
+> RAM to build AOSP (a lab server or a Linux workstation works). The userspace prototype
+> (Track A) runs entirely on a local machine with an Android emulator; only the AOSP track
+> needs Linux.
+
 This repository does not download data, clone agent repositories, build AOSP, start devices,
 or invoke model APIs automatically.
 
