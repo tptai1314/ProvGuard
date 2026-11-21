@@ -12,6 +12,7 @@ license = {text = "Research prototype; see README"}
 dependencies = [
   "matplotlib>=3.7",
   "numpy>=1.24",
+  "Pillow>=10.0",
   "PyYAML>=6.0",
 ]
 

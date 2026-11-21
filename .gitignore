@@ -67,6 +67,7 @@ ENV/
 outputs/*
 !outputs/.gitkeep
 tmp/
+ProvGuard/obs/
 
 # ==========================================
 # 6. Ghi chú nội bộ & Kẽ hở chưa hoàn thiện (TRÁNH HỘI ĐỒNG SOI)

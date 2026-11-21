@@ -106,6 +106,26 @@ The main fields are seed/repetitions/output path, synthetic versus real mode, lo
 `data.root`, gate trials/threshold/equivalence, and analytical `q0/q1/delta`. Configurations
 never contain executable shell commands.
 
+## Collecting a real observation (Tier 1)
+
+The collector turns a live device into a labelled observation without any model call.
+It only needs `adb` and the emulator (or a research device):
+
+```bash
+python scripts/collect.py --out obs --tag settings
+# obs/obs_<utc>_settings/raw/{ui.xml,windows.txt,screen.png,notifications.txt}
+
+python scripts/labels.py --obs obs/obs_<utc>_settings
+# -> labels.json  (provenance + P1-P4 + integrity label + binding per region)
+# -> regions.jsonl
+```
+
+`labels.json` uses the same data model as the paper (Definitions 1-14), so the regions
+can be fed directly to the gate. Contrast (P3) is estimated from the screenshot with the
+WCAG relative-luminance formula; occlusion (P2) uses the window stack from
+`dumpsys window windows`. Both are conservative and documented in
+`src/provguard/observation.py`.
+
 ## Real-data workflow
 
 Real AOSP/agent execution is external to this repository until the missing patches and
