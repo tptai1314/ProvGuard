@@ -1,0 +1,100 @@
+{
+  "source": "Idea_02_ProvGuard/idea.pdf (identical to idea.tex), compiled 2026-10-03",
+  "locked_title": "ProvGuard: Origin-Labeled Perception and Causal Action Attribution for Mobile GUI Agents",
+  "required_core_terms": [
+    "ProvGuard",
+    "origin label",
+    "perceivability",
+    "provenance record",
+    "causal attribution",
+    "masked re-execution",
+    "dispatch-time binding",
+    "window token",
+    "node id",
+    "mobile GUI agent",
+    "Android",
+    "accessibility tree",
+    "screenshot",
+    "indirect prompt injection",
+    "protected action",
+    "label lattice",
+    "sink list",
+    "WebView origin",
+    "notification sender",
+    "SDK Runtime",
+    "overlay",
+    "system_server",
+    "AccessibilityManagerService",
+    "WindowManager",
+    "SurfaceFlinger",
+    "no LLM judge in the trusted path"
+  ],
+  "required_equations": [
+    "provenance record r(v) = (uid, wtype, origin, sender, sens, perc) per node v and per tile",
+    "label lattice L = {user, system, app-first-party, web, ad/SDK, notification-untrusted} with join",
+    "perceivability bit perc(v) in {0,1} from occlusion, off-screen, contrast, rendered",
+    "causal dependency set D(a) subset of observed regions for protected action a",
+    "masked re-execution test: a' = Agent(s, M_U(o)); attribute to untrusted content iff a' != a",
+    "integrity property: a dispatched without endorsement implies D(a) contains no untrusted-origin or non-perceivable region",
+    "binding predicate: (token_obs, node_obs) == (token_now, node_now) at dispatch",
+    "repeated-trial confidence rule for stochastic agents",
+    "cost: model calls per protected action = 1 + k (k re-execution trials)"
+  ],
+  "required_algorithm_names": [
+    "ProvGuard",
+    "Label Service",
+    "Perception Adapter",
+    "Causal Gate",
+    "Dispatch Binder",
+    "masked re-execution (MELON-style, adapted to GUI steps)"
+  ],
+  "required_theorem_directions": [
+    "gate soundness: no un-endorsed protected action whose causal dependency set includes untrusted-origin or user-invisible content, relative to the masked re-execution oracle and stated assumptions",
+    "dispatch binding rejects observe-to-act rebinding (foreground change / node change)",
+    "masked re-execution validity and stochastic confidence rule with misattribution probability bound",
+    "label join monotonicity over the lattice; perceivability composition",
+    "property is weaker than IFC / non-interference; gap stated explicitly",
+    "cost: masked re-execution adds model calls only on protected actions"
+  ],
+  "required_experiment_variables": [
+    "attack success rate per channel",
+    "false block rate on benign tasks",
+    "task success rate (AndroidWorld, AndroidLab)",
+    "per-action gate latency",
+    "re-execution token cost",
+    "channels: in-app third-party content, SDK Runtime ads, WebView, notifications, hidden/low-contrast nodes, repackaged-app desync, foreground rebinding, adaptive paraphrased payloads",
+    "agents: Mobile-Agent-v3, DroidRun, AutoGLM/Open-AutoGLM, UI-TARS",
+    "attack suites: AgentHazard (AWAttackerApplier), MobileWorldSafety, GhostEI-Bench, Not-an-A11y nine vectors, UI Desynchronization, arXiv 2510.27140 channel attacks",
+    "ablations: labels only, gate only, binding only, perceivability bit on/off, cheap attribution vs masked re-execution",
+    "platform: AOSP on Pixel devices"
+  ],
+  "required_baselines": [
+    "no defense",
+    "Spotlighting-style prompt delimiting",
+    "MobileWorldSafety defensive system prompt",
+    "agent-side taint without OS labels (AOHP-like)",
+    "OS-Sentinel post-hoc detection"
+  ],
+  "forbidden_topic_drifts": [
+    "federated learning",
+    "differential privacy as the mechanism",
+    "over-the-air computation / wireless channel noise",
+    "Byzantine robustness",
+    "mechanism design, incentives, auctions, VCG",
+    "blockchain / ledger",
+    "cloud tool-calling agents as the primary setting",
+    "model fine-tuning as the proposed defense",
+    "OS-side LLM judge in the trusted path",
+    "TEE / hardware enclave as the mechanism",
+    "non-interference claimed as the achieved property",
+    "AppFunctions proposed as the solution",
+    "post-hoc trajectory auditing as the method",
+    "convergence-rate analysis",
+    "measurement-only paper (unless killer experiment forces it)"
+  ],
+  "seed_reference_ids": {
+    "arxiv": ["2608.08939", "2608.17659", "2609.16732", "2510.27140", "2601.12349", "2604.18860", "2603.14707", "2602.10915", "2606.23449", "2505.23643", "2604.23374", "2609.14003", "2607.24625", "2510.24411", "2609.22724"],
+    "venues": ["AgentHazard MobiSys 2026", "CaMeL SaTML 2026", "Permissive IFC for LLMs TMLR 2025", "MELON ICML 2025", "ACE NDSS 2026", "IsolateGPT NDSS 2025", "TaintDroid OSDI 2010", "CamFlow", "Cloak and Dagger S&P 2017", "overlay malware at scale MobiSys 2019"],
+    "benchmarks_agents": ["GhostEI-Bench", "AndroidWorld", "AndroidLab", "Mobile-Agent-v3", "DroidRun", "AutoGLM / Open-AutoGLM", "UI-TARS", "Spotlighting"]
+  }
+}

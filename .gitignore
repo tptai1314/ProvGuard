@@ -1,0 +1,81 @@
+# ==========================================
+# 1. Hệ điều hành & Editor
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# ==========================================
+# 2. Thư mục sao lưu & nén nội bộ
+# ==========================================
+_backup*/
+*.tgz
+*.tar.gz
+*.zip
+*.bak
+
+# ==========================================
+# 3. File tạm khi biên dịch LaTeX
+# ==========================================
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.blg
+*.fls
+*.fdb_latexmk
+*.bcf
+*.run.xml
+*.nav
+*.snm
+*.vrb
+
+# Giữ lại các tài liệu hoàn thiện:
+!main.pdf
+!idea.pdf
+
+# ==========================================
+# 4. Python, Virtual Environment & Caches
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+env/
+venv/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ==========================================
+# 5. Dữ liệu chạy thử nghiệm tạm thời (Outputs)
+# ==========================================
+outputs/*
+!outputs/.gitkeep
+tmp/
+
+# ==========================================
+# 6. Ghi chú nội bộ & Kẽ hở chưa hoàn thiện (TRÁNH HỘI ĐỒNG SOI)
+# ==========================================
+*TODO*
+*todo*
+citation_search_log.md
+references_rejected.md
+ProvGuard/audits/implementation_gaps.md
+ProvGuard/audits/result_integrity_audit.md
+audit/lit*_report.md
+audit/verified_but_unused.txt

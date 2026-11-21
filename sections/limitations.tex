@@ -1,0 +1,26 @@
+% =====================================================================
+% sections/limitations.tex
+% =====================================================================
+\section{Limitations}\label{sec:limitations}
+
+\paragraph{No implementation or measurement yet} \PG{} is specified, analyzed, and planned, but not built. Every claim about attack success, utility, latency, and token cost in this manuscript is a hypothesis to be tested. The analytical results of \cref{sec:theory} hold within the model; whether an AOSP implementation realizes \cref{asm:tcb,asm:mediation,asm:atomic,asm:framework} can only be established by building and testing it.
+
+\paragraph{Third-party content inside app views (G1)} Labels follow the producing process. Content that a third party writes but the app draws (reviews, posts, shared notes, calendar descriptions) is labeled as the app's own unless the app annotates it. This is the channel of AgentHazard~\cite{liu2026agenthazard} and of several Not-an-A11y vectors~\cite{deivasigamani2026nota11y}, so a significant share of measured attacks may remain outside the guarantee. Lowering the clearance of sensitive sinks below $\lAPP$ moves these attacks back inside the guarantee at the cost of more escalations.
+
+\paragraph{History steering and geometry (G2, G3)} Untrusted content can steer unprotected navigation, and the geometry of masked regions survives masking. \Cref{prop:separation} shows that the first is a real gap in the guarantee; we do not yet know how often it is exploitable in practice.
+
+\paragraph{WebView granularity} The first design labels WebView content by its top-level document origin. Ads and third-party iframes inside a page share the page's label until per-frame origins are exported by the renderer.
+
+\paragraph{Perceivability is an approximation} The perceivability bit is computed from occlusion, position, alpha, and an estimated contrast ratio. It does not model the individual user: magnification, font scaling, color vision, and screen brightness all change what a particular person can see. The bit is deliberately conservative, which trades false masking for safety.
+
+\paragraph{Sink coverage} OS-owned sinks (permissions, installation, share sheet) are recognized precisely; app sinks (send, pay, delete) depend on per-app rules that will be incomplete. An unrecognized sink bypasses the gate.
+
+\paragraph{Stochastic agents and fidelity} \Cref{thm:stochastic} bounds the gate's error given the trusted-support probability, but how cleanly real agents separate benign from attacked actions under sampling is unknown. Remote models require trusting that re-execution calls are answered by the same model (\cref{asm:fidelity}).
+
+\paragraph{Cost and availability} Re-execution adds model calls on every protected action, which matters most for remote models and for latency-sensitive tasks. An attacker can cause escalations of legitimate actions, so \PG{} offers integrity, not availability.
+
+\paragraph{Threat model scope} We do not defend against a malicious agent developer, a compromised OS, or side channels.
+
+\paragraph{Literature coverage} The related work was verified on 2026-10-03 against the sources listed in \texttt{citation\_search\_log.md}. The area moves quickly; several closely related preprints appeared within weeks of that date, and a fresh collision check is required before submission.
+
+\paragraph{Format} This manuscript is a long-form version of a design intended for a 12-page systems venue; the submission version will need to compress \cref{sec:formulation,sec:theory} and move most proofs and protocol details to an appendix or artifact.

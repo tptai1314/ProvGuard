@@ -1,0 +1,119 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\title{ProvGuard: Origin-Labeled Perception and Causal Action Attribution for Mobile GUI Agents\\
+\large Research concept document (not a paper draft)}
+\author{MobiSys 2027 idea repository, Idea 02}
+\date{Compiled 2026-10-03 from a web literature sweep; PROJECT\_FOLDER contained no PDFs}
+
+\begin{document}
+\maketitle
+
+\section{Title}
+ProvGuard: Origin-Labeled Perception and Causal Action Attribution for Mobile GUI Agents.
+
+\section{Primary Target Venue}
+ACM MobiSys 2027. The contribution is an Android framework mechanism (origin labels computed by the OS for every perceived UI region, propagated into agent reasoning, and checked at the action boundary) evaluated on live apps with published attack suites. MobiSys 2026 accepted the AgentHazard measurement paper from Tsinghua/Xiaomi; a defense paper that closes the gaps AgentHazard, MobileWorldSafety, and "Not an A11y" leave open is a natural follow-on at the same venue.
+
+\section{Alternative Venues}
+\begin{itemize}
+  \item NDSS (\url{https://www.ndss-symposium.org}): fits alongside ACE (NDSS 2026) and IsolateGPT (NDSS 2025).
+  \item USENIX Security (\url{https://www.usenix.org/conferences}): information-flow framing with AOSP implementation.
+  \item IEEE S\&P (\url{https://sp2027.ieee-security.org}): if the formal integrity property is the headline.
+  \item ACM MobiCom (\url{https://www.sigmobile.org/mobicom/}): secondary.
+\end{itemize}
+
+\section{Research Problem}
+Can the Android OS attach an origin and perceivability label to every UI region an agent observes (owning package, window type, WebView origin, notification sender, SDK Runtime process, overlay status, user-visible or hidden), carry that label through the agent's decision, and refuse any protected action whose causal dependency set includes untrusted-origin or user-invisible content, without an LLM judge in the trusted path?
+
+\section{Why Mobile?}
+The labels only exist on a phone: Android's window manager knows which package owns each window, whether a node is an overlay, whether a view is occluded or rendered off-screen, which process (the Privacy Sandbox SDK Runtime) draws an ad surface, and which sender posted a notification. The accessibility tree exposes \texttt{packageName} but no window-type, WebView-origin, notification-sender, or perceivability field, so an agent today cannot distinguish an instruction in a banner ad from one typed by the user. Cloud tool agents receive discrete labeled strings and can fix control flow from the user query (CaMeL); GUI agents cannot, because the next step depends on screen content. Remove the phone and the problem becomes ordinary IFC over tool outputs, which CaMeL, FIDES, and ACE already solve.
+
+\section{Motivation}
+Attack papers are saturated and consistent: "Not an A11y" (arXiv 2608.08939) reaches attack success up to 0.82 through nine accessibility-exposed vectors and explicitly lists "provenance awareness: track application and interface origin of content" as an unbuilt goal; MobileWorldSafety (arXiv 2608.17659) reports 40-67\% success and names source labeling as future work; UI Desynchronization (arXiv 2609.16732) shows 66.9\% misleading rate on deployed apps using content the agent sees but humans cannot; AgentHazard (MobiSys 2026) shows 42\% misleading rate from third-party in-app content. Prompt-level defenses stall tasks (MobileWorldSafety) and model fine-tuning is the only mobile defense offered. Existing OS boundaries that could serve as trust signals (SDK Runtime process isolation, Android 15 sensitive-notification classification, \texttt{isAccessibilityTool}) are consumed by no agent framework.
+
+\section{Closest Prior Work}
+\begin{itemize}
+  \item \textbf{Not an A11y} (arXiv 2608.08939): attack taxonomy on Samsung devices; proposes provenance as a goal, builds nothing.
+  \item \textbf{Aura} (arXiv 2602.10915): simulated taint tags (TAG\_VERIFIED/TAG\_TAINTED) with no-write-down into critical operations; mock APIs, no Android.
+  \item \textbf{AOHP, Android Open Harness Project} (arXiv 2606.23449, code on GitHub): real AOSP harness with typed placeholders and taint metadata for \emph{confidentiality} of sensitive data; does not label untrusted instructions entering, no injection evaluation.
+  \item \textbf{CaMeL} (SaTML 2026), \textbf{FIDES} (arXiv 2505.23643), \textbf{Permissive IFC for LLMs} (TMLR 2025), \textbf{NeuroTaint} (arXiv 2604.23374), \textbf{FlowSeal} (arXiv 2609.14003), \textbf{APPA} (arXiv 2607.24625): IFC and provenance for text/tool agents; APPA explicitly excludes GUI.
+  \item \textbf{MELON} (ICML 2025): masked re-execution as a causal test for whether a tool call was caused by content; never applied to GUI steps.
+  \item \textbf{ACE} (NDSS 2026), \textbf{IsolateGPT} (NDSS 2025): plan integrity and isolation for LLM-integrated apps, not Android.
+  \item \textbf{Zero-Permission Manipulation} (arXiv 2601.12349), \textbf{PUSV} (arXiv 2604.18860), \textbf{Visual Confused Deputy} (arXiv 2603.14707): perception-side labels are insufficient without dispatch-time checks.
+  \item \textbf{OS-Sentinel} (arXiv 2510.24411), \textbf{MATE} (arXiv 2609.22724): post-hoc trajectory auditing; no attribution of actions to origin.
+  \item \textbf{Classic}: TaintDroid (OSDI 2010), CamFlow, Cloak and Dagger (S\&P 2017), overlay malware at scale (MobiSys 2019).
+\end{itemize}
+
+\section{Research Gap}
+No Android system (a) computes origin and perceivability labels for accessibility nodes and screenshot regions at the OS, (b) propagates them through a VLM/LLM decision step with a cheap, deterministic causal test rather than an LLM judge, and (c) enforces an integrity policy at the action-injection point that also verifies the action target still belongs to the observed origin. Aura is simulated; AOHP tracks confidentiality, not integrity; CaMeL's fixed control flow does not apply to content-dependent GUI navigation; "Not an A11y" and MobileWorldSafety ask for exactly this and do not build it.
+
+\section{Threat Model or Privacy Model}
+\textbf{Trusted}: system\_server (WindowManager, AccessibilityManagerService, NotificationManager, SurfaceFlinger), the ProvGuard enforcement module. \textbf{Untrusted}: the agent and its model; all third-party apps; web content in WebViews; ad SDKs; notification senders; repackaged apps. \textbf{Attacker}: controls content in any of these channels, may render hidden or low-contrast nodes, may post notifications, may change the foreground window during the agent's observe-to-act gap. Cannot compromise system\_server or the agent's own process memory. \textbf{Assets}: integrity of protected actions (send, pay, install, grant permission, delete, share) and confidentiality of cross-app data. \textbf{Goal}: no protected action is executed whose causal dependency set includes content labeled untrusted-origin or user-invisible, unless the user endorses it; actions always target the window and node that were observed.
+
+\section{Core Idea}
+Three mechanisms. (1) \emph{OS origin labels}: extend accessibility node and screenshot region metadata with a provenance record: owning package UID, window type (app, overlay, notification shade, IME, SDK Runtime surface), WebView document origin where available, notification sender and sensitivity class, and a perceivability bit computed by the compositor (occluded, off-screen, below-contrast, non-rendered). (2) \emph{Causal attribution without a judge}: before a protected action, the OS replays the agent's last decision step with untrusted-labeled regions masked (MELON-style masked re-execution adapted to GUI steps, run on the agent's own model through a sandboxed callback); if the action persists, it is attributed to the user's task; if it disappears, it is attributed to the untrusted content and blocked or escalated. Cheaper approximations (region-level attention attribution) are evaluated as alternatives. (3) \emph{Dispatch-time binding}: the action carries the observed window token and node id; the input dispatcher rejects the action if the current target differs.
+
+\section{Preliminary System Architecture}
+\begin{itemize}
+  \item \textbf{Label Service} (Android OS modification in AccessibilityManagerService, WindowManager, SurfaceFlinger hooks): computes provenance records and perceivability bits per node and per screenshot tile.
+  \item \textbf{Perception Adapter} (middleware shipped with the agent SDK): exposes labeled trees and tiles to agents in a standard format; unlabeled fallback for legacy agents.
+  \item \textbf{Causal Gate} (system service): intercepts protected actions, orchestrates masked re-execution via a callback into the agent's model, applies policy.
+  \item \textbf{Dispatch Binder} (modification of input dispatch and the accessibility action path): verifies window token and node id.
+  \item \textbf{Policy}: a small lattice (user, system, installed-app-first-party, web, ad/SDK, notification-untrusted) and a sink list (protected actions).
+  \item \textbf{SLM integration}: the agent's own model is called for re-execution; no OS-side LLM in the trusted path. No hardware support needed.
+\end{itemize}
+
+\section{Novelty Boundary}
+\textbf{What is fundamentally new}: provenance labels produced by the OS for the pixel and accessibility channels of a phone, a deterministic causal attribution test for GUI steps, and dispatch-time binding, together giving a precise, weaker-than-IFC but checkable property for GUI agents. Prior IFC systems assume discrete labeled strings and user-derived control flow; Aura simulates taint; AOHP taints only outgoing sensitive data. The perceivability bit directly addresses the UI Desync and hidden-node attack classes that no defense covers. \textbf{What would not exist otherwise}: the first measurement of how much of the known mobile-agent attack surface is closed by OS-side provenance alone, independent of model quality. Novelty requires further literature verification for the masked re-execution adaptation (MELON authors may extend to GUI).
+
+\section{Expected Contributions}
+\begin{enumerate}
+  \item An origin and perceivability labeling scheme for Android UI exposed to agents, computed from existing OS state.
+  \item A causal attribution gate for GUI agent actions that needs no trusted LLM judge.
+  \item Dispatch-time target binding that closes the observe-to-act rebinding window.
+  \item An evaluation on AgentHazard, MobileWorldSafety, GhostEI-Bench, the nine Not-an-A11y vectors, UI Desync, and action rebinding, across four open-source agents.
+  \item A benign-utility study showing task success and latency with labels and gating enabled.
+\end{enumerate}
+
+\section{Evaluation Plan}
+\begin{itemize}
+  \item \textbf{Platform}: AOSP on Pixel devices; attacks reproduced from public repositories (AgentHazard AWAttackerApplier, MobileWorldSafety, GhostEI-Bench).
+  \item \textbf{Agents}: Mobile-Agent-v3, DroidRun, AutoGLM/Open-AutoGLM, UI-TARS, with and without ProvGuard's labeled perception.
+  \item \textbf{Attacks}: in-app third-party content, ads via SDK Runtime and WebView, notifications, hidden/low-contrast nodes, repackaged-app desync, foreground rebinding, adaptive paraphrased payloads.
+  \item \textbf{Baselines}: no defense; Spotlighting-style delimiting in the prompt; MobileWorldSafety's defensive system prompt; agent-side taint (AOHP-like) without OS labels; OS-Sentinel post-hoc detection.
+  \item \textbf{Metrics}: attack success rate per channel, false block rate on benign tasks, task success (AndroidWorld, AndroidLab), per-action gate latency, re-execution token cost.
+  \item \textbf{Ablations}: labels only; gate only; binding only; perceivability bit on/off; cheap attribution vs masked re-execution.
+\end{itemize}
+
+\section{Feasibility}
+Medium-high. Window ownership, overlay type, notification sender, and SDK Runtime process boundaries are all available in AOSP; the perceivability bit requires compositor-side occlusion and contrast computation, which is the hardest piece. Masked re-execution doubles model calls on protected actions only. WebView per-node origin is not exposed today and may need a Chromium change or an approximation (document-level origin). Effort: two engineers, five months.
+
+\section{Potential Risks}
+\begin{itemize}
+  \item Label explosion and over-blocking: most screens mix origins; a protected action may legitimately depend on third-party text (e.g., a product name). Endorsement UX must be measured.
+  \item Masked re-execution may be unstable on stochastic models; need repeated trials and a confidence rule.
+  \item Collision: Aura with a real implementation, or a Google AppFunctions-era design that bypasses GUI entirely.
+  \item WebView origin granularity may be too coarse to separate page content from ads inside the same document.
+  \item Reviewers may ask why not abandon GUI for AppFunctions; answer with coverage data.
+\end{itemize}
+
+\section{Killer Experiment}
+Add only origin labels (package, window type, notification sender, SDK Runtime) to the accessibility tree seen by two open-source agents, with no OS gate, and rerun AgentHazard and the 2510.27140 channel attacks. Then add the causal gate. If labels alone move attack success by less than ten points but the gate removes most of the remaining attacks at under 10\% false blocks, the paper's thesis (provenance must be enforced by the OS, not merely shown to the model) is confirmed. If labels alone already remove the attacks, the paper is smaller and shifts to a measurement contribution.
+
+\section{Publication Readiness}
+\begin{itemize}
+  \item ACM MobiSys: 8/10. Direct follow-on to AgentHazard at the same venue; OS mechanism plus measurement.
+  \item ACM MobiCom: 7/10.
+  \item ACM SenSys: 2/10.
+  \item IEEE S\&P: 6/10. Needs a crisp formal property and adaptive-attacker evaluation.
+  \item USENIX Security: 7/10. Systems security with real attacks; strong fit.
+  \item ACM CCS: 6/10.
+  \item NDSS: 7/10. Natural neighbor of ACE and IsolateGPT.
+  \item PETS/PoPETs: 2/10.
+\end{itemize}
+
+\end{document}

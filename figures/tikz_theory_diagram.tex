@@ -1,0 +1,71 @@
+% =====================================================================
+% figures/tikz_theory_diagram.tex -- theorem dependency diagram
+% Columns: assumptions | lemmas | theorems & propositions | corollaries | RQs
+% Rows aligned so that most arrows are horizontal; the only vertical
+% arrows run inside a column. No arrow passes through a node.
+% =====================================================================
+\begin{tikzpicture}[x=1cm,y=1cm,
+  asm/.style={infra, font=\scriptsize, minimum width=3.0cm, text width=2.85cm, minimum height=0.5cm, inner sep=2pt},
+  lem/.style={theory, font=\scriptsize, minimum width=2.3cm, text width=2.0cm, minimum height=0.85cm},
+  thm/.style={theory, font=\scriptsize, minimum width=2.7cm, text width=2.4cm, minimum height=0.95cm, fill=pgPurple!20, very thick},
+  cor/.style={defense, font=\scriptsize, minimum width=2.6cm, text width=2.4cm, minimum height=0.85cm},
+  rq/.style={honest, font=\scriptsize, minimum width=1.9cm, text width=1.7cm, minimum height=0.75cm},
+]
+\def\xa{-0.2}\def\xl{3.25}\def\xt{6.65}\def\xc{10.0}\def\xr{12.95}
+% ---------------- assumptions ----------------
+\node[asm] (A1) at (\xa,4.8)  {A1 trusted computing base};
+\node[asm] (A2) at (\xa,3.95) {A2 complete mediation};
+\node[asm] (A3) at (\xa,3.0)  {A3 one-sided label error};
+\node[asm] (A4) at (\xa,2.15) {A4 task authenticity};
+\node[asm] (A5) at (\xa,1.35)  {A5 callback fidelity};
+\node[asm] (A6) at (\xa,0.5) {A6 atomic check, delivery};
+\node[asm] (A7) at (\xa,-0.4) {A7 framework node check};
+\begin{scope}[on background layer]
+  \node[region=pgGray, fit=(A1)(A7), inner sep=5pt] (AG) {};
+\end{scope}
+\node[regionlabel=pgGray, anchor=south] at (AG.north) {Assumptions};
+% ---------------- lemmas ----------------
+\node[lem] (L1) at (\xl,4.5) {Lem.~\ref{lem:lattice}\\ lattice, monotone};
+\node[lem] (L2) at (\xl,3.0) {Lem.~\ref{lem:overapprox}\\ over-approx.};
+\node[lem] (L3) at (\xl,1.85) {Lem.~\ref{lem:projection}\\ projection};
+\node[regionlabel=pgPurple, anchor=south] at ([yshift=4pt]L1.north) {Lemmas};
+% ---------------- theorems ----------------
+\node[thm] (T1) at (\xt,3.0)   {Thm.~\ref{thm:sufficiency}\\ trusted sufficiency};
+\node[thm] (T2) at (\xt,0.75)   {Thm.~\ref{thm:stochastic}\\ stochastic gate};
+\node[thm] (T3) at (\xt,-0.85)  {Thm.~\ref{thm:binding}\\ dispatch binding};
+\node[thm] (T4) at (\xt,-2.7) {Thm.~\ref{thm:e2e}\\ end-to-end};
+\node[thm] (P3) at (\xt,-4.25)  {Props.~\ref{prop:cost}--\ref{prop:complexity}\\ overhead};
+\node[regionlabel=pgPurple, anchor=south] at ([yshift=26pt]T1.north) {Theorems};
+\begin{scope}[on background layer]
+  \node[region=pgPurple, fit=(T1)(T3), inner sep=5pt] (TG) {};
+\end{scope}
+% ---------------- corollaries / design consequences ----------------
+\node[cor] (C1) at (\xc,3.0)   {Cor.~\ref{cor:ni}\\ step-local NI};
+\node[cor] (C2) at (\xc,0.75)   {Cor.~\ref{cor:trials}\\ trials $k$};
+\node[cor] (C3) at (\xc,-0.85)  {Cor.~\ref{cor:rebinding}\\ rebinding rejected};
+\node[cor] (P1) at (\xc,-2.7) {Prop.~\ref{prop:separation}\\ separation from taint, NI};
+\node[regionlabel=pgGreen, anchor=south] at ([yshift=26pt]C1.north) {Consequences};
+% ---------------- research questions ----------------
+\node[rq] (R1) at (\xr,3.0)   {\icFlask~RQ1, RQ3};
+\node[rq] (R4) at (\xr,0.75)   {\icFlask~RQ4};
+\node[rq] (R2) at (\xr,-0.85)  {\icFlask~RQ2};
+\node[rq] (R5) at (\xr,-2.7) {\icFlask~RQ5};
+\node[rq] (R6) at (\xr,-4.25)  {\icFlask~RQ6};
+\node[regionlabel=pgBlue, anchor=south] at ([yshift=26pt]R1.north) {Tested by};
+% ---------------- edges ----------------
+\draw[flowthy] (A3) -- (L2);
+\draw[flowthy] (L1) -- (L2);
+\draw[flowthy] (L2) -- (T1);
+\draw[flowthy] (L3.east) -- (\xc,1.85) -- (C1.south);
+\draw[flowthy] (AG.east |- A7.east) -- node[arrlabel, above=1pt]{A1, A2, A4--A7} (TG.west |- A7.east);
+\draw[flowthy] (T1) -- (C1);
+\draw[flowthy] (T2) -- (C2);
+\draw[flowthy] (T3) -- (C3);
+\draw[flowthy] (TG.south) -- node[arrlabel, right=2pt]{compose} (T4.north);
+\draw[flowthy] (T4) -- (P1);
+\draw[flowthy] (C1) -- (R1);
+\draw[flowthy] (C2) -- (R4);
+\draw[flowthy] (C3) -- (R2);
+\draw[flowthy] (P1) -- (R5);
+\draw[flowthy] (P3) -- (R6);
+\end{tikzpicture}

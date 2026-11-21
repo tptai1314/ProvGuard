@@ -1,0 +1,57 @@
+% =====================================================================
+% figures/tikz_threat_privacy_robustness.tex -- threat model, three lanes
+%   top    : adversarial channels (red, dashed+hatched)
+%   middle : honest perception-decision-action pipeline (blue, solid)
+%   bottom : ProvGuard mechanisms (green, double border)
+% Vertical arrows only connect lanes; horizontal arrows stay inside a lane.
+% =====================================================================
+\begin{tikzpicture}[x=1cm,y=1cm]
+\def\wm{2.3}
+% ---------------- middle lane (honest pipeline) ----------------
+\node[infra, minimum width=\wm cm, text width=2.1cm] (comp) at (0,0) {\icLayers\\[1pt] Composition\\ \scriptsize window manager,\\ compositor};
+\node[honest, minimum width=\wm cm, text width=2.1cm] (obs)  at (3.1,0) {\icTree~\icEye\\[1pt] Observation $o_t$\\ \scriptsize a11y tree, screenshot};
+\node[honest, minimum width=\wm cm, text width=2.1cm] (agt)  at (6.2,0) {\icAgent\\[1pt] Agent model $f$\\ \scriptsize untrusted};
+\node[honest, minimum width=\wm cm, text width=2.1cm] (act)  at (9.3,0) {\icTap\\[1pt] Proposed $a_t$\\ \scriptsize tap, type, swipe};
+\node[honest, minimum width=\wm cm, text width=2.1cm] (tgt)  at (12.4,0) {\icWindow\\[1pt] Target window\\ \scriptsize delivered action};
+\draw[flowdata] (comp) -- (obs);
+\draw[flowdata] (obs) -- (agt);
+\draw[flowdata] (agt) -- (act);
+\draw[flowdata] (act) -- (tgt);
+
+% ---------------- top lane (adversarial) ----------------
+\node[iconnode, text=pgRed, font=\Large] (atk) at (-1.05,3.05) {\icAttacker};
+\node[smalltxt, text=pgRed, anchor=north] at (atk.south) {attacker};
+\foreach \i/\x/\t in {1/0.75/{\icAd~ad\\ via SDK},2/2.67/{\icWeb~Web-\\View},3/4.59/{\icBell~notifi-\\cation},4/6.51/{\icClone~over-\\lay},5/8.43/{\icEyeSlash~hidden\\ node},6/10.35/{\icBug~repack-\\aged app}}{
+  \node[adv, minimum width=1.75cm, text width=1.6cm, font=\scriptsize] (c\i) at (\x,3.05) {\t};
+}
+\node[adv, minimum width=1.75cm, text width=1.6cm, font=\scriptsize] (c7) at (12.4,3.05) {\icSwap~fore-\\ground switch};
+\begin{scope}[on background layer]
+  \node[region=pgRed, fit=(c1)(c6), inner xsep=5pt, inner ysep=9pt] (chg) {};
+\end{scope}
+\node[regionlabel=pgRed, anchor=south] at (chg.north) {content channels: injected regions enter the composed screen};
+\draw[flowadv] (chg.south) -- (chg.south |- 0,1.45) -- node[arrlabel, above=1pt]{injected regions} (0,1.45) -- (comp.north);
+\draw[flowadv] (c7.south) -- node[arrlabel, right=2pt, pos=0.45]{rebinding\\ in $W_{o2a}$} (tgt.north);
+
+% ---------------- bottom lane (ProvGuard) ----------------
+\node[defense, minimum width=2.9cm, text width=2.7cm] (ls) at (3.1,-2.9) {\icShield~\LS\\ \scriptsize $\rec(\rho)$, $\lab(\rho)$, $\perc(\rho)$};
+\node[defense, minimum width=2.9cm, text width=2.7cm] (cg) at (8.9,-2.9) {\icRedo~\CG\\ \scriptsize mask $\U$; re-run $f$};
+\node[defense, minimum width=2.6cm, text width=2.4cm] (bd) at (12.4,-2.9) {\icLink~\DB\\ \scriptsize check $(\tok,\nid,\dig)$};
+\node[honest, minimum width=2.0cm, text width=1.8cm] (usr) at (11.3,-4.75) {\icUser~User\\ \scriptsize endorse?};
+\draw[flowdef] (ls.north) -- node[arrlabel, left=2pt]{attach\\ labels} (obs.south);
+\draw[flowdef] (cg.north) -- node[arrlabel, right=2pt]{\PASS\ / \ESC} (cg.north |- act.south);
+\draw[flowdef] (bd.north) -- node[arrlabel, right=2pt]{deliver\\ or reject} (tgt.south);
+\draw[flowctrl] (cg.south) |- node[arrlabel, pos=0.72, above=1pt]{escalation} (usr.west);
+\draw[flowctrl] (cg.west) -- (cg.west -| agt.south) -- node[arrlabel, right=2pt, pos=0.45]{sandboxed\\ callback} (agt.south);
+\begin{scope}[on background layer]
+  \node[region=pgGreen, fit=(ls)(cg)(bd)(usr), inner sep=7pt] (pgz) {};
+\end{scope}
+\node[regionlabel=pgGreen, anchor=south west] at ([xshift=4pt,yshift=4pt]pgz.south west) {\PG{} (trusted, inside \texttt{system\_server})};
+
+% ---------------- legend ----------------
+\begin{scope}[shift={(0.2,-6.25)}]
+  \draw[flowdata] (0,0) -- (0.8,0); \node[smalltxt, anchor=west] at (0.9,0) {honest flow};
+  \draw[flowadv]  (3.4,0) -- (4.2,0); \node[smalltxt, anchor=west] at (4.3,0) {adversarial influence};
+  \draw[flowdef]  (7.5,0) -- (8.3,0); \node[smalltxt, anchor=west] at (8.4,0) {\PG{} enforcement};
+  \draw[flowctrl] (12.3,0) -- (13.1,0); \node[smalltxt, anchor=west] at (13.2,0) {control};
+\end{scope}
+\end{tikzpicture}

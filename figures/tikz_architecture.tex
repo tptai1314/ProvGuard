@@ -1,0 +1,93 @@
+% =====================================================================
+% figures/tikz_architecture.tex -- ProvGuard system architecture
+% Four horizontal bands, columns at x = 0, 3.1, 6.2, 9.3, 12.4:
+%   band 1 (y=5.3)  content principals (untrusted)
+%   band 2 (y=2.85) OS ownership/composition metadata (trusted infra)
+%   band 3 (y=0.3)  ProvGuard inside system_server (trusted)
+%   band 4 (y=-2.4) agent app (untrusted) + SystemUI prompt + user
+% Column x=12.4 is kept free in bands 2 so the delivery arrow is straight.
+% Corridors: y=1.3 (between bands 2 and 3), y=-0.55 and y=-1.05 (between 3 and 4).
+% =====================================================================
+\begin{tikzpicture}[x=1cm,y=1cm]
+\def\bw{2.5cm}\def\tw{2.3cm}
+% ---------------- band 1: content principals ----------------
+\node[adv, font=\scriptsize, minimum width=\bw, text width=\tw] (p1) at (0,5.3)   {\icWeb~WebView\\ \scriptsize web origin};
+\node[adv, font=\scriptsize, minimum width=\bw, text width=\tw] (p2) at (3.1,5.3) {\icAd~SDK Runtime\\ \scriptsize ad surface};
+\node[adv, font=\scriptsize, minimum width=\bw, text width=\tw] (p3) at (6.2,5.3) {\icBell~Notification\\ \scriptsize sender};
+\node[adv, font=\scriptsize, minimum width=\bw, text width=\tw] (p4) at (9.3,5.3) {\icClone~Overlay app\\ \scriptsize other UID};
+\node[honest, font=\scriptsize, minimum width=\bw, text width=\tw] (p5) at (12.4,5.3) {\icPhone~Foreground\\ app (target)};
+\begin{scope}[on background layer]
+  \node[region=pgRed, fit=(p1)(p4), inner sep=6pt, inner ysep=10pt] (b1) {};
+\end{scope}
+\node[regionlabel=pgRed, anchor=south west] at ([xshift=4pt,yshift=1pt]b1.north west) {content principals (untrusted)};
+
+% ---------------- band 2: OS metadata ----------------
+\node[infra, font=\scriptsize, minimum width=3.85cm, text width=3.65cm] (wm) at (0.45,2.85) {\icWindow~\textbf{WindowManager}\\ owner UID, window type, token};
+\node[infra, font=\scriptsize, minimum width=3.85cm, text width=3.65cm] (sf) at (4.65,2.85) {\icLayers~\textbf{SurfaceFlinger}\\ layers, opacity, visible regions};
+\node[infra, font=\scriptsize, minimum width=3.85cm, text width=3.65cm] (nm) at (8.85,2.85) {\icBell~\textbf{NotificationManager}\\ sender, sensitivity class};
+\begin{scope}[on background layer]
+  \node[region=pgGray, fit=(wm)(nm), inner sep=5pt] (os) {};
+\end{scope}
+\node[regionlabel=pgGray, anchor=north east] at ([yshift=-2pt]os.south east) {OS services (trusted)};
+\foreach \p in {p1,p2,p3,p4}{
+  \draw[flowadv] (\p.south) -- (\p.south |- os.north);
+}
+
+% ---------------- band 3: ProvGuard ----------------
+\node[defense, font=\scriptsize, minimum width=\bw, text width=\tw] (ls)  at (0,0.3)    {\icShield~\LS\\ \scriptsize $\rec(\rho)$, $\lab(\rho)$, $\perc(\rho)$};
+\node[defense, font=\scriptsize, minimum width=\bw, text width=\tw] (tr)  at (3.1,0.3)  {\icDoc~Transcript $\xi_t$\\ \scriptsize $T$, $a_{<t}$, $o_{\le t}$};
+\node[defense, font=\scriptsize, minimum width=\bw, text width=\tw] (pol) at (6.2,0.3)  {\icScale~Policy\\ \scriptsize $\Lambda$, $\Sinks$, $\clr$, $\eqv$};
+\node[defense, font=\scriptsize, minimum width=\bw, text width=\tw] (cg)  at (9.3,0.3)  {\icRedo~\CG\\ \scriptsize $\Proj_{\U}$, $k$, $\theta$};
+\node[defense, font=\scriptsize, minimum width=\bw, text width=\tw] (bd)  at (12.4,0.3) {\icLink~\DB\\ \scriptsize $\bind=(\tok,\nid,\dig,\uid)$};
+\begin{scope}[on background layer]
+  \node[region=pgGreen, fit=(ls)(bd), inner sep=6pt, inner ysep=13pt] (b3) {};
+\end{scope}
+\node[regionlabel=pgGreen, anchor=north] at ([yshift=-1pt]b3.north -| pol.north) {\PG{} (trusted)};
+
+% ---------------- band 4: agent app, SystemUI, user ----------------
+\node[honest, font=\scriptsize, minimum width=\bw, text width=\tw] (pa) at (0,-2.7)   {\icTree~Perception\\ Adapter};
+\node[honest, font=\scriptsize, minimum width=\bw, text width=\tw] (ag) at (3.1,-2.7) {\icAgent~Agent loop\\ \scriptsize model $f$, memory};
+\node[honest, font=\scriptsize, minimum width=\bw, text width=\tw] (cb) at (6.2,-2.7) {\icChip~Callback\\ \scriptsize isolated, stateless};
+\node[defense, font=\scriptsize, minimum width=\bw, text width=\tw] (ui) at (9.3,-2.7) {\icUserShield~SystemUI\\ \scriptsize endorsement prompt};
+\node[honest, font=\scriptsize, minimum width=\bw, text width=\tw] (us) at (12.4,-2.7) {\icUser~User\\ \scriptsize approve / deny};
+\begin{scope}[on background layer]
+  \node[region=pgBlue, fit=(pa)(cb), inner sep=6pt, inner ysep=10pt] (b4) {};
+\end{scope}
+\node[regionlabel=pgBlue, anchor=north west] at ([xshift=4pt,yshift=-1pt]b4.south west) {agent app (untrusted)};
+
+% ---------------- flows ----------------
+% OS metadata -> Label Service
+\draw[flowdef] (wm.south -| ls.north) -- node[arrlabel, right=2pt]{metadata} (ls.north);
+% Label Service -> transcript
+\draw[flowdef] (ls) -- node[arrlabel, above=1pt]{$o_t$} (tr);
+% Label Service -> Perception Adapter
+\draw[flowdata] (ls.south) -- node[arrlabel, right=2pt, pos=0.62]{labeled $o_t$} (pa.north);
+% adapter -> agent loop
+\draw[flowdata] (pa) -- (ag);
+% transcript -> gate (corridor above band 3)
+\draw[flowdef] (tr.north) -- (3.1,1.42) -- node[arrlabel, above=1pt, pos=0.35]{$\xi_t$} (8.7,1.42) -- (8.7,0.82);
+% policy -> gate
+\draw[flowdef] (pol) -- (cg);
+% agent proposes action -> gate (corridor y=-0.6)
+\draw[flowdata] (ag.north) -- (3.1,-0.95) -- node[arrlabel, above=1pt, pos=0.5]{proposed $a_t$} (8.55,-0.95) -- (8.55,-0.22);
+% gate <-> callback (corridor y=-1.15)
+\draw[flowctrl, {Stealth[length=2.2mm]}-{Stealth[length=2.2mm]}] (9.0,-0.22) -- (9.0,-1.45) -- node[arrlabel, below=1pt, pos=0.5]{$\Proj_{\U}(\xi_t)$, $k$ trials} (6.2,-1.45) -- (cb.north);
+% gate -> SystemUI (escalation)
+\draw[flowctrl] (9.95,-0.22) -- node[arrlabel, right=2pt, pos=0.6]{\ESC} (9.95,-2.2);
+% SystemUI <-> user
+\draw[flowctrl, {Stealth[length=2.2mm]}-{Stealth[length=2.2mm]}] (ui) -- (us);
+% gate -> binder
+\draw[flowdef] (cg) -- node[arrlabel, above=2pt, font=\tiny]{\PASS} (bd);
+% endorsed action -> binder (from user column straight up)
+\draw[flowdef] (us.north) -- node[arrlabel, right=2pt]{endorsed} (bd.south);
+% binder -> foreground app (straight up through free column)
+\draw[flowdef] (bd.north) -- node[arrlabel, right=2pt, pos=0.5]{deliver iff\\ $\bind$ matches} (p5.south);
+
+% ---------------- legend ----------------
+\begin{scope}[shift={(-1.15,-4.75)}]
+  \draw[flowdata] (0,0) -- (0.8,0); \node[smalltxt, anchor=west] at (0.9,0) {perception / action};
+  \draw[flowadv]  (3.9,0) -- (4.7,0); \node[smalltxt, anchor=west] at (4.8,0) {untrusted content};
+  \draw[flowdef]  (7.7,0) -- (8.5,0); \node[smalltxt, anchor=west] at (8.6,0) {\PG{} enforcement};
+  \draw[flowctrl] (12.5,0) -- (13.3,0); \node[smalltxt, anchor=west] at (13.4,0) {control, callback};
+\end{scope}
+\end{tikzpicture}

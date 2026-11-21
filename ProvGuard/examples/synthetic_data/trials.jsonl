@@ -1,0 +1,3 @@
+{"channel":"sdk_runtime_ads","ground_truth_protected":true,"suite":"synthetic-schema-example","trial_id":"example-attack-1","trial_type":"attack"}
+{"channel":"none","ground_truth_protected":true,"suite":"synthetic-schema-example","trial_id":"example-benign-1","trial_type":"benign"}
+

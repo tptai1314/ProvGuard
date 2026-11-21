@@ -1,0 +1,69 @@
+% =====================================================================
+% sections/macros.tex -- notation used throughout (see Table~\ref{tab:notation})
+% =====================================================================
+\newcommand{\PG}{\textsc{ProvGuard}}
+\newcommand{\LS}{Label Service}
+\newcommand{\PA}{Perception Adapter}
+\newcommand{\CG}{Causal Gate}
+\newcommand{\DB}{Dispatch Binder}
+
+% sets and spaces
+\newcommand{\R}{\mathcal{R}}            % set of observed regions
+\newcommand{\A}{\mathcal{A}}            % action space
+\newcommand{\X}{\mathcal{X}}            % context space
+\newcommand{\Lat}{\mathcal{L}}          % label lattice
+\newcommand{\Sinks}{\Sigma}             % protected-action (sink) classes
+\newcommand{\U}{U}                      % untrusted region set
+\newcommand{\C}{\mathcal{C}}            % content alphabet
+\newcommand{\Dist}{\Delta}              % probability simplex
+
+% lattice
+\newcommand{\lle}{\sqsubseteq}
+\newcommand{\nlle}{\not\sqsubseteq}
+\newcommand{\ljoin}{\sqcup}
+\newcommand{\bigljoin}{\bigsqcup}
+
+% labels
+\newcommand{\lUSR}{\textsf{usr}}
+\newcommand{\lSYS}{\textsf{sys}}
+\newcommand{\lAPP}{\textsf{app}}
+\newcommand{\lWEB}{\textsf{web}}
+\newcommand{\lSDK}{\textsf{sdk}}
+\newcommand{\lNTF}{\textsf{ntf}}
+\newcommand{\lTOP}{\textsf{unt}}
+
+% provenance record fields
+\newcommand{\uid}{\mathsf{uid}}
+\newcommand{\wtype}{\mathsf{wtype}}
+\newcommand{\org}{\mathsf{org}}
+\newcommand{\snd}{\mathsf{snd}}
+\newcommand{\sens}{\mathsf{sens}}
+\newcommand{\perc}{\mathsf{perc}}
+\newcommand{\rec}{\mathsf{r}}
+
+% functions
+\newcommand{\lab}{\lambda}              % label function
+\newcommand{\clr}{\kappa}               % clearance of a protected action
+\newcommand{\Mask}{\mathsf{M}}          % masking operator
+\newcommand{\Proj}{\Pi}                 % trusted projection
+\newcommand{\gate}{\mathsf{G}}          % gate decision
+\newcommand{\prot}{\mathsf{prot}}       % protected-action predicate
+\newcommand{\cont}{\mathsf{c}}          % region content
+\newcommand{\geo}{\mathsf{g}}           % region geometry
+\newcommand{\eqv}{\approx}              % action equivalence
+\newcommand{\PASS}{\textsc{pass}}
+\newcommand{\ESC}{\textsc{escalate}}
+\newcommand{\BLOCK}{\textsc{block}}
+\newcommand{\masked}{\diamond}
+
+% binding
+\newcommand{\tok}{\tau}
+\newcommand{\nid}{\nu}
+\newcommand{\dig}{\gamma}
+\newcommand{\bind}{\beta}
+
+% probability
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\ind}{\mathbf{1}}
+\DeclareMathOperator{\Bin}{Bin}

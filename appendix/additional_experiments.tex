@@ -1,0 +1,60 @@
+% =====================================================================
+% appendix/additional_experiments.tex -- protocol details (PLANNED)
+% =====================================================================
+\section{Protocol Details and Additional Planned Experiments}\label{app:additional}
+
+This appendix collects details that the evaluation will need but that would interrupt \cref{sec:eval}. Nothing in it reports a measurement.
+
+\subsection{Mapping of the Not-an-A11y vectors}\label{app:a11y-map}
+
+\Cref{tab:a11ymap} maps the nine vectors of Deivasigamani et al.~\cite{deivasigamani2026nota11y} to the provenance record fields that \PG{} uses and to the mechanism expected to handle them. The table states expectations to be tested, not results.
+
+\begin{table}[h]
+\centering
+\caption{Not-an-A11y vectors A1--A9~\cite{deivasigamani2026nota11y} and the \PG{} fields and mechanisms expected to apply. G: \CG{}; L: labels shown to the model. ``G1'' marks content drawn by the app's own process (\cref{sec:theory-gaps}).}
+\label{tab:a11ymap}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.3cm} l@{}}
+\toprule
+Vector & Description (from the source) & Record field / label & Expected \\
+\midrule
+A1 & notification injection & $\snd$; $\lNTF$ & G, L \\
+A2 & same-application runtime overlay & $\wtype=\textsf{overlay}$; $\lTOP$ by the catch-all rule & G, L \\
+A3 & cross-application runtime overlay & $\wtype=\textsf{overlay}$, other UID; $\lTOP$ & G, L \\
+A4 & in-app hidden accessibility metadata & $\perc=0$ & G \\
+A5 & HTML injection & $\org$; $\lWEB$ & G, L \\
+A6 & calendar description injection & app-drawn; $\lAPP$ & G1 \\
+A7 & notes injection & app-drawn; $\lAPP$ & G1 \\
+A8 & contacts injection & app-drawn; $\lAPP$ & G1 \\
+A9 & AppCard poisoning (cached app guide / memory) & agent memory, not perceived content & out of scope \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+A9 is worth a remark: it poisons the agent's own memory rather than the screen. \PG{} never includes agent memory in the trusted projection, so a protected action that relies on poisoned memory is reproduced by the masked run only if the task, the action history, and trusted screen content suffice. The gate is therefore expected to help with A9 even though no label is involved; this is an expectation to test.
+
+\subsection{Rendering of labels and masks for the agent}\label{app:rendering}
+
+For accessibility-tree agents, the \PA{} adds two attributes to each serialized node, for example \texttt{prov="sdk"} and \texttt{perc="0"}. Masked nodes keep their class, bounds, and interaction flags, and their text, content description, and hint are replaced by the constant token \texttt{[masked]}. For screenshot agents, masked tiles are filled with the mean color of the tile's border pixels, so that layout edges remain visible but no glyph survives; tiles are then re-composited into a full screenshot of the original size, so that the agent's coordinate system is unchanged. The masked context is serialized by the agent's own prompt builder inside the callback, so the agent sees the same format as in normal operation.
+
+\subsection{Sink rules}\label{app:sinks}
+
+Sink rules are data, versioned with the policy. OS-owned sinks are matched by component and view identity of system packages (for example, the grant buttons of the permission controller, the confirmation of the package installer, and the target list of the system share sheet). App sinks are matched by package name together with a view-id resource name, a role (button, image button), and an optional text pattern. \placeholder{the initial rule set for the apps used in AndroidWorld, AndroidLab, and the attack suites, and the procedure for measuring sink coverage against manually labeled ground truth.}
+
+\subsection{Endorsement prompt}\label{app:prompt}
+
+The SystemUI prompt names the agent, the action (for example, ``Send message in Messages''), the target, and the reason (``this action may depend on content from: an ad, a notification from +1\,555\,0199''). It highlights the masked regions on a thumbnail of the observed screen and offers \emph{Allow once}, \emph{Allow for this task}, and \emph{Deny}. The wording will be refined in a pilot study. \placeholder{pilot study protocol and participant count.}
+
+\subsection{Additional planned experiments}\label{app:more}
+
+\paragraph{Microbenchmarks} Per-frame cost of the \LS{} as a function of node count, layer count, and tile size; contrast-sampling cost; binder check latency; and the memory footprint of the transcript per task.
+
+\paragraph{Perceivability human study} Screens rendered with controlled occlusion, contrast, cutout placement, and alpha, presented to participants who mark what they can read; the bit's precision and recall are computed per condition and per threshold of \cref{tab:hyper}.
+
+\paragraph{Trusted-support distributions} For each agent and decoding setting, the empirical distribution of $q_t(a)$ over benign protected actions and over attacked protected actions, estimated with a large number of trials per action, to choose $(k,\theta)$ by \cref{cor:trials} and \cref{tab:mintrials}.
+
+\paragraph{History steering} Multi-step attacks that use only unprotected actions to reach a screen where a harmful action is trusted-supported (G2), measured with and without a clearance of $\lSYS$ for \textsf{grant} and \textsf{install}.
+
+\paragraph{AppFunctions coverage} For each benign task, whether every protected step could be served by an AppFunction exposed by the apps involved, to answer the question of \cref{sec:discussion} with data.
+
+\paragraph{Energy} Energy per task with and without \PG{} for an on-device model, measured with the device's power rails. \placeholder{measurement method and device.}

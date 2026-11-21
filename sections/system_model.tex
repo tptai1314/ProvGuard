@@ -1,0 +1,66 @@
+% =====================================================================
+% sections/system_model.tex
+% =====================================================================
+\section{System and Threat Model}\label{sec:model}
+
+\subsection{System model}\label{sec:sysmodel}
+
+We consider an Android device running a mobile GUI agent on behalf of a single user. The entities are as follows.
+
+\paragraph{User} The user issues a natural-language task $T$, for example ``reply to Alice that I am running late,'' and may later be asked to endorse an action. We assume the task is entered through an OS-rendered entry point (the system assistant surface, or a system dialog that the agent invokes to start a task), so that the OS holds an authentic copy of $T$ (\cref{asm:task}).
+
+\paragraph{Agent} The agent is an app that holds an accessibility service binding, or an equivalent privileged automation channel, and runs a decision model $f$, which may be an on-device small language model or a remote LLM/VLM. In each step $t$ it obtains an observation $o_t$ (an accessibility tree, a screenshot, or both), chooses an action $a_t$, and executes it through the accessibility action path (\texttt{performAction} on a node, or a dispatched gesture) or through injected input events~\cite{android_accessibilitynodeinfo}. The four agents in our evaluation span the perception spectrum: UI-TARS~\cite{qin2025uitars} and Open-AutoGLM~\cite{openautoglm2025software} are screenshot-only, DroidRun~\cite{droidrun2025software} is accessibility-tree first with a screenshot fallback, and Mobile-Agent-v3~\cite{ye2025mobileagentv3} is screenshot-centric.
+
+\paragraph{Principals} Every app runs under its own Linux UID. Several principals can contribute to one composed screen: the foreground app; overlay windows (\texttt{TYPE\_APPLICATION\_OVERLAY}) of other apps; the notification shade, which renders content posted by arbitrary senders; the input method; ad media rendered by an SDK in the Privacy Sandbox SDK Runtime, a separate process whose output is embedded into the app's view through \texttt{SurfaceControlViewHost}~\cite{android_sdkruntime}; and web content in a WebView, whose document has a web origin distinct from the hosting app.
+
+\paragraph{Operating system} The trusted part of the OS comprises \texttt{system\_server} and SurfaceFlinger. Within \texttt{system\_server}, the WindowManager oversees window lifecycles, input and focus events, z-order, and ``many other aspects of a window,'' and sends window metadata to SurfaceFlinger, which ``accepts, composes, and sends buffers to the display''~\cite{android_surfaceflinger}. The AccessibilityManagerService mediates the accessibility tree and accessibility actions; the NotificationManager records the sender of every notification; and the input dispatcher routes events to windows. \PG{} adds four components to this trusted base (\cref{sec:design}).
+
+\subsection{Threat model}\label{sec:threat}
+
+\paragraph{Trusted} \texttt{system\_server} (WindowManager, AccessibilityManagerService, NotificationManager, input dispatch), SurfaceFlinger, the kernel, and the \PG{} components that we add to them.
+
+\paragraph{Untrusted} The agent and its model; all third-party apps; web content in WebViews; ad SDKs; notification senders; and repackaged apps. ``Untrusted'' for the agent means that its outputs can be steered by content; we do not assume that the agent's developer is malicious. The model can be arbitrarily wrong or manipulated, and \PG{} never relies on the model to classify its inputs.
+
+\paragraph{Attacker capabilities} The attacker controls content in any of the untrusted channels. It may publish text in regions that third parties legitimately write (product descriptions, posts, messages)~\cite{liu2026agenthazard}; serve ads through an SDK or a WebView~\cite{du2025measuringmobileagents}; post notifications~\cite{deivasigamani2026nota11y}; render nodes that are hidden, off-screen, occluded, or below contrast~\cite{li2026uidesync}; distribute a repackaged app whose human-visible appearance is unchanged~\cite{li2026uidesync}; draw an overlay; change the foreground window during the agent's observe-to-act gap using ordinary Intents~\cite{qian2026zeropermission}; and adapt its payload, for example by paraphrasing, to evade any filter.
+
+\paragraph{Attacker limitations} The attacker cannot compromise \texttt{system\_server}, SurfaceFlinger, or the kernel; cannot read or write the agent's process memory; and cannot forge OS identities such as window tokens or UIDs. It cannot tamper with the user's task as recorded by the OS. Physical attacks, kernel exploits, and side channels are out of scope.
+
+\paragraph{Assets} The primary asset is the integrity of \emph{protected actions}: send, pay, install, grant permission, delete, and share (\cref{sec:design-policy} gives the full sink list, which also covers typing into a field of untrusted origin). A secondary asset is the confidentiality of cross-app data, to the extent that its exfiltration passes through a protected sink.
+
+\paragraph{Security goal} No protected action is executed whose causal dependency set includes content labeled untrusted-origin or user-invisible, unless the user endorses it; and actions always target the window and node that were observed. \Cref{sec:formulation} makes ``causal dependency'' precise, and \cref{sec:theory} states the exact form in which \PG{} achieves this goal and where it falls short.
+
+\paragraph{Non-goals} \PG{} does not prevent untrusted content from influencing unprotected actions such as scrolling or navigation; it does not guarantee availability (an attacker can cause a legitimate protected action to be escalated); and it does not defend against a malicious agent developer who controls the re-execution callback. \Cref{sec:limitations} discusses these choices.
+
+\Cref{fig:threat} summarizes the threat model and the point at which each \PG{} mechanism intervenes, and \cref{tab:channels} maps every attack channel in our evaluation to the label it receives and the mechanism expected to handle it.
+
+\begin{figure}[t]
+  \centering
+  \input{figures/tikz_threat_privacy_robustness}
+  \caption{Threat model. Attacker-controlled channels (top lane, dashed and hatched) enter the composed screen that the agent observes, or, in the case of action rebinding, change the foreground window between observation and dispatch. The honest pipeline (middle lane) runs from composition through the agent's model to dispatch. \PG{}'s mechanisms (bottom lane, double borders) act at three points: labels are attached when the observation is formed, the \CG{} tests protected actions before they leave the agent, and the \DB{} checks the target at dispatch. Endorsement by the user is the only way past an escalation.}
+  \label{fig:threat}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Attack channels considered in this work, the provenance label that the \LS{} assigns to the injected region, and the mechanism expected to handle each channel. L: labels shown to the model; G: \CG{}; B: \DB{}. ``Conditional'' marks cases in which coverage depends on information the OS may not have; these are measured, not assumed.}
+\label{tab:channels}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{2.6cm}@{}}
+\toprule
+Channel & Representative source & Label of injected region & Expected handling \\
+\midrule
+Ads via SDK Runtime & Du et al.\ banner and interstitial ads~\cite{du2025measuringmobileagents} & $\lSDK$ (SDK Runtime UID of the embedded surface) & G; L \\
+Ads and content in WebView & Du et al.~\cite{du2025measuringmobileagents}; Not an A11y A5~\cite{deivasigamani2026nota11y} & $\lWEB$ (document origin; document granularity only) & G; L \\
+Notifications & Not an A11y A1~\cite{deivasigamani2026nota11y}; GhostEI-Bench~\cite{chen2025ghosteibench} & $\lNTF$ (sender package, sensitivity class) & G; L \\
+Cross-app overlays & Not an A11y A3~\cite{deivasigamani2026nota11y}; GhostEI-Bench~\cite{chen2025ghosteibench} & owner UID of the overlay window $\Rightarrow$ untrusted for the task & G; L \\
+Hidden or low-contrast nodes & Not an A11y A4~\cite{deivasigamani2026nota11y}; UI desync~\cite{li2026uidesync} & $\perc=0$ & G \\
+Repackaged-app desync & UI desync dynamic setting~\cite{li2026uidesync} & $\perc=0$ for imperceptible regions; app label otherwise & G (conditional on perceivability) \\
+In-app third-party content & AgentHazard~\cite{liu2026agenthazard}; MobileWorldSafety~\cite{chen2026mobileworldsafety}; Not an A11y A6--A8~\cite{deivasigamani2026nota11y} & $\lAPP$ unless the app annotates it (\cref{sec:design-labels}) & G (conditional on annotation or sink clearance) \\
+Foreground rebinding & Action rebinding~\cite{qian2026zeropermission} & not a perception attack & B \\
+Adaptive paraphrased payloads & applied on top of all channels above & unchanged (labels do not depend on content) & G; B \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Two entries in \cref{tab:channels} deserve emphasis. First, labels never depend on \emph{what} a region says, only on \emph{who} produced it and \emph{whether} the user could see it, so paraphrasing a payload does not change its label. Second, content that a third party writes inside an app's own views (a product review, a calendar description, a contact's note) is drawn by the app's own process. The OS sees it as the app's content. \PG{} handles it only if the app annotates such views, or if the sink's clearance excludes app content altogether; otherwise it is outside the guarantee. This is the case in which the measurement will be most informative, and we treat it as an open question rather than a solved one.

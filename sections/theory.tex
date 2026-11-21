@@ -1,0 +1,183 @@
+% =====================================================================
+% sections/theory.tex -- security analysis
+% All proofs are complete within the abstract model of Section 4 unless
+% explicitly labelled "proof sketch". The correspondence between the model
+% and an AOSP implementation is itself an assumption (A1, A2, A8).
+% =====================================================================
+\section{Security Analysis}\label{sec:theory}
+
+This section states what \PG{} guarantees, under which assumptions, and what it does not guarantee. \Cref{fig:theory} shows the dependency structure. All results are proven within the model of \cref{sec:formulation}; full proofs are in \cref{app:proofs}. Whether an implementation realizes the model is a separate question, captured by \cref{asm:tcb,asm:mediation,asm:atomic}, that only an implementation and its testing can answer.
+
+\begin{figure}[t]
+  \centering
+  \input{figures/tikz_theory_diagram}
+  \caption{Dependency structure of the analysis. Assumptions (dotted) feed lemmas (light chamfered), which feed theorems (dark chamfered); corollaries and design consequences (double border) follow from theorems; the rightmost column names the research questions of \cref{sec:eval} that test each result empirically. Arrows run horizontally between columns; the only bend routes \cref{lem:projection} to \cref{cor:ni} through the gap between the first two theorem rows.}
+  \label{fig:theory}
+\end{figure}
+
+\subsection{Assumptions}
+
+\begin{assumption}[Trusted computing base]\label{asm:tcb}
+\texttt{system\_server}, SurfaceFlinger, the kernel, and the \PG{} components execute as specified. UIDs and window tokens cannot be forged by apps, and a window token identifies at most one live window and is not reassigned to another window while an observation that refers to it can still be acted on.
+\end{assumption}
+
+\begin{assumption}[Complete mediation]\label{asm:mediation}
+Every action that the agent causes on the device passes through \cref{alg:binder}, and every action with $\prot(a,o_t)=1$ passes through \cref{alg:gate} before it. The agent has no other input channel (for example, no root access and no external debugging bridge during operation).
+\end{assumption}
+
+\begin{assumption}[One-sided label error]\label{asm:labels}
+Let $\lab^*(\rho)$ and $\perc^*(\rho)$ be the label and perceivability that the policy would assign with perfect knowledge of the process that produced $\rho$ and of what is displayed. The computed values satisfy $\lab^*(\rho)\lle\lab(\rho)$ and $\perc(\rho)\le\perc^*(\rho)$ for every region.
+\end{assumption}
+
+\Cref{asm:labels} allows the \LS{} to over-mask (for example, by declaring a region non-perceivable when a test cannot be evaluated) but not to under-mask. It is stated relative to the \emph{producing process}: content written by a third party but drawn by the app's process has $\lab^*=\lAPP$, and \cref{asm:labels} says nothing about it.
+
+\begin{assumption}[Task authenticity]\label{asm:task}
+The task $T$ in the transcript is the task the user entered.
+\end{assumption}
+
+\begin{assumption}[Callback fidelity]\label{asm:fidelity}
+On input $x$, each call of the re-execution callback returns a sample from $f(x)$, where $f$ is the decision function the agent uses; distinct calls are independent; and no call has access to state other than $x$. If $f$ is deterministic, the callback returns $f(x)$.
+\end{assumption}
+
+\begin{assumption}[Atomic check and delivery]\label{asm:atomic}
+The \DB{}'s checks and the enqueueing of the event run under the lock that the input dispatcher holds when it resolves target windows; once enqueued, an event is delivered to the input channel of the window it was enqueued for, or dropped, and never redirected.
+\end{assumption}
+
+The sink classifier is not an assumption but a scope: the gate's guarantees apply to actions with $\prot(a,o_t)=1$, and coverage of the sink rules is measured empirically.
+
+\subsection{Labels and masking}
+
+\begin{lemma}[Lattice and label monotonicity]\label{lem:lattice}
+(i) $(\Lat,\lle)$ is a lattice and $\Lambda_0$ is a total function on records. (ii) For a tile, adding a contributing layer cannot lower its label: $\lab(\text{tile})\lle\lab(\text{tile})\ljoin\lab(\ell)$. (iii) The untrusted set is monotone in labels and anti-monotone in perceivability: if $\lab\lle\lab'$ and $\perc\ge\perc'$ pointwise, then $\U_t(a;\lab,\perc)\subseteq\U_t(a;\lab',\perc')$.
+\end{lemma}
+
+\begin{lemma}[Over-approximation]\label{lem:overapprox}
+Under \cref{asm:labels}, the computed untrusted set contains the true one: $\U^*_t(a)\subseteq\U_t(a)$, where $\U^*_t(a)$ is \cref{eq:untrusted} evaluated with $\lab^*$ and $\perc^*$.
+\end{lemma}
+
+\begin{lemma}[What the projection reveals]\label{lem:projection}
+Let $\xi_t$ and $\xi'_t$ be transcripts with the same task, the same action history, the same region sets with the same geometry, and identical content on every region outside a set $S$. Then $\Proj_S(\xi_t)=\Proj_S(\xi'_t)$. In particular, $\Proj_S(\xi_t)$ depends on the regions in $S$ only through their geometry.
+\end{lemma}
+
+\Cref{lem:projection} is immediate from \cref{def:mask}, but it is worth stating because it makes one residual channel explicit: the geometry of untrusted regions (where they are, how large they are) survives masking.
+
+\subsection{Trusted sufficiency}
+
+\begin{theorem}[Trusted sufficiency, deterministic agents]\label{thm:sufficiency}
+Assume \cref{asm:tcb,asm:mediation,asm:fidelity} with deterministic $f$. If a protected action $a$ chosen at step $t$ is dispatched without endorsement, then
+\begin{equation}\label{eq:sufficiency}
+  f\bigl(\Proj_{\U_t(a)}(\xi_t)\bigr)\ \eqv\ a .
+\end{equation}
+If in addition \cref{asm:labels} holds, the context $\Proj_{\U_t(a)}(\xi_t)$ contains the content of no region $\rho$ with $\lab^*(\rho)\nlle\clr(a)$ or $\perc^*(\rho)=0$.
+\end{theorem}
+
+\Cref{thm:sufficiency} is the formal version of the security goal of \cref{sec:threat}. In words: every protected action that leaves the device without the user's approval is one that the agent's own model produces when it sees only the task, the history of dispatched actions, and the trusted, perceivable content of the screens it has observed. Note that the theorem does not require the agent's actual decision to have been made from $\xi_t$; the agent may use memory, a scratchpad, or any other state. Whatever produced $a$, $a$ is reproducible from trusted content.
+
+\begin{corollary}[Step-local non-interference for gated actions]\label{cor:ni}
+Under the assumptions of \cref{thm:sufficiency}, let $\xi_t,\xi'_t$ satisfy the hypotheses of \cref{lem:projection} for a set $S$, and let $a,a'$ be protected actions with $\clr(a)=\clr(a')$ and $\U_t(a)=\U_t(a')=S$, dispatched without endorsement from $\xi_t$ and $\xi'_t$ respectively. Then $a\eqv a'$.
+\end{corollary}
+
+An attacker who controls only the content of regions that are untrusted for a given clearance therefore cannot choose \emph{which} protected action (up to $\eqv$) passes the gate at a step, once the history of dispatched actions is fixed. It can still change the history, which is the subject of \cref{prop:separation}.
+
+\subsection{Stochastic agents}
+
+Most deployed agents sample. For them the gate draws $k$ trials and passes if the empirical support $\hat p$ reaches $\theta$.
+
+\begin{theorem}[Gate error for stochastic agents]\label{thm:stochastic}
+Assume \cref{asm:tcb,asm:mediation,asm:fidelity}. Fix a step $t$, a protected action $a$, and its trusted support $q=q_t(a)$ (\cref{def:support}). Conditional on $\xi_t$ and $a$, the probability that \cref{alg:gate} returns \PASS{} (with attribution disabled) is
+\begin{equation}\label{eq:binom}
+  P_{\mathrm{pass}}(k,q,\theta)\ =\ \Prob\bigl[\Bin(k,q)\ \ge\ \lceil\theta k\rceil\bigr],
+\end{equation}
+which is non-decreasing in $q$. Consequently:
+\begin{enumerate}[label=(\roman*)]
+  \item if $q\le q_0<\theta$, then $P_{\mathrm{pass}}\le\exp\bigl(-k\,D(\theta\,\|\,q_0)\bigr)\le\exp\bigl(-2k(\theta-q_0)^2\bigr)$, where $D(x\|y)=x\ln\frac{x}{y}+(1-x)\ln\frac{1-x}{1-y}$;
+  \item if $q\ge q_1>\theta$, then $1-P_{\mathrm{pass}}\le\exp\bigl(-2k(q_1-\theta)^2\bigr)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{corollary}[Number of trials]\label{cor:trials}
+For $0\le q_0<\theta<q_1\le1$ and $\delta\in(0,1)$, $k\ \ge\ \max\Bigl\{\frac{\ln(1/\delta)}{2(\theta-q_0)^2},\ \frac{\ln(1/\delta)}{2(q_1-\theta)^2}\Bigr\}$ trials suffice for both error probabilities in \cref{thm:stochastic} to be at most $\delta$. With $\theta=(q_0+q_1)/2$, $k\ge 2\ln(1/\delta)/(q_1-q_0)^2$ suffices.
+\end{corollary}
+
+The Hoeffding bound is loose for small $k$. \Cref{tab:mintrials} reports the smallest $k$ that achieves both error targets, computed exactly from \cref{eq:binom}, next to the Hoeffding requirement; \cref{fig:bounds} plots both against $k$. These numbers are analytical and do not depend on any experiment. They show, for example, that separating actions with trusted support at most $0.2$ from actions with support at least $0.8$ at error $0.01$ needs $13$ trials exactly, against $26$ by Hoeffding. Whether real agents separate this cleanly is an empirical question (RQ4 in \cref{sec:eval}); MELON reports results at temperature zero~\cite{zhu2025melon}, so we know of no published measurement of $q$ for sampled GUI agents.
+
+\begin{table}[t]
+\centering
+\caption{Smallest number of re-execution trials $k$ for which both $\Prob[\text{\PASS}\mid q\le q_0]\le\delta$ and $\Prob[\text{\ESC}\mid q\ge q_1]\le\delta$, with $\theta=(q_0+q_1)/2$: exact binomial computation (Ex.) versus the Hoeffding requirement of \cref{cor:trials} (Hf.). Computed by \texttt{scripts/gate\_bounds.py}; analytical, not experimental.}
+\label{tab:mintrials}
+\footnotesize
+\begin{tabular}{@{}ccc cc cc cc@{}}
+\toprule
+& & & \multicolumn{2}{c}{$\delta=0.05$} & \multicolumn{2}{c}{$\delta=0.01$} & \multicolumn{2}{c}{$\delta=0.001$} \\
+\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(l){8-9}
+$q_0$ & $q_1$ & $\theta$ & Ex. & Hf. & Ex. & Hf. & Ex. & Hf. \\
+\midrule
+% Generated by scripts/gate_bounds.py (analytical, not experimental)
+0.1 & 0.9 & 0.50 & 3 & 10 & 5 & 15 & 9 & 22 \\
+0.2 & 0.8 & 0.50 & 7 & 17 & 13 & 26 & 21 & 39 \\
+0.3 & 0.7 & 0.50 & 17 & 38 & 31 & 58 & 55 & 87 \\
+0.1 & 0.6 & 0.35 & 8 & 24 & 20 & 37 & 37 & 56 \\
+0.4 & 0.9 & 0.65 & 8 & 24 & 22 & 37 & 37 & 56 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/pgfplots_gate_bounds}
+  \caption{Analytical error of the \CG{} for a stochastic agent with $\theta=0.5$ (\cref{thm:stochastic}); values are exact binomial tails and the corresponding bounds, computed by \texttt{scripts/gate\_bounds.py}. Left: probability that an untrusted-caused action with trusted support $q_0$ passes. Right: probability that a trusted-supported action with support $q_1=0.8$ is escalated. The saw-tooth shape of the exact curves comes from the integer threshold $\lceil\theta k\rceil$. Not an experimental result.}
+  \label{fig:bounds}
+\end{figure}
+
+\subsection{Dispatch binding}
+
+\begin{assumption}[Framework node check]\label{asm:framework}
+For node actions, the target window's process executes the framework's node check (\cref{sec:design-binder}) unmodified.
+\end{assumption}
+
+\begin{theorem}[Dispatch binding]\label{thm:binding}
+Assume \cref{asm:tcb,asm:mediation,asm:atomic}. Let $a$ be chosen on observation $o_t$, let $(\tok,\nid,\dig,u)$ be the binding of its resolved target, and suppose $a$ is delivered to window $w$. Then (i) at the moment of enqueueing, $\mathrm{token}(w)=\tok$ and $\mathrm{owner}(w)=u$, and if $a$ addresses coordinates, $w$ is the topmost touchable window at those coordinates; and (ii) if in addition \cref{asm:framework} holds and $a$ addresses a node, $a$ is executed only on a node of $w$ with identity $\nid$ and current digest $\dig$.
+\end{theorem}
+
+\begin{corollary}[Action rebinding is rejected]\label{cor:rebinding}
+In the action rebinding attack~\cite{qian2026zeropermission}, an app brings a different app's window to the foreground between observation and action. Under the assumptions of \cref{thm:binding}, any action whose target was observed in the original window is either delivered to that original window (if it is still the topmost touchable window at the target) or rejected; it is never delivered to the newly foregrounded window.
+\end{corollary}
+
+\Cref{thm:binding} binds the action to an OS identity, which is stronger than binding it to pixels: two windows of different apps that render identical pixels still have different tokens and owners. Node-level binding (part (ii)) is weaker, because it depends on code in the window's own process (\cref{asm:framework}), and because a malicious app can change what its own node does without changing the node's digest. Both attacks stay within the app's own window and origin, which the gate sees through the app's label.
+
+\subsection{Composition and the shape of the guarantee}
+
+\begin{theorem}[End-to-end guarantee]\label{thm:e2e}
+Assume \cref{asm:tcb,asm:mediation,asm:labels,asm:task,asm:fidelity,asm:atomic,asm:framework}. For every action delivered by \PG{}: (i) it reaches the window, and for node actions the node, that was observed when it was chosen (\cref{thm:binding}); and (ii) if it is protected and was not endorsed, it is trusted-supported with respect to the true untrusted set (deterministic $f$, \cref{thm:sufficiency}), or, for stochastic $f$, it passed with probability at most $\exp(-2k(\theta-q_0)^2)$ whenever its trusted support is at most $q_0<\theta$ (\cref{thm:stochastic}).
+\end{theorem}
+
+\begin{proposition}[Separation from taint tracking and from non-interference]\label{prop:separation}
+(a) There exist an agent $f$ and a transcript containing untrusted content in which \PG{} passes a protected action that any policy blocking protected actions after untrusted content has entered the context would block. (b) There exist an agent $f$ and two transcripts that differ only in the content of one untrusted region at step $1$, such that \PG{} dispatches protected actions without endorsement at step $3$ in both, and the two actions are not equivalent. Hence trajectory-level non-interference with respect to untrusted content does not hold.
+\end{proposition}
+
+Part (a) is the utility argument for a causal test over taint: an ad on the screen should not, by its mere presence, block the user's message. Part (b) is the honest limit. Untrusted content can steer \emph{unprotected} actions (navigation), and the resulting action history is part of the trusted projection. An injected ``open Settings'' can lead the agent to a permission screen where granting is the trusted-supported action. \PG{} raises the bar for this attack in two ways that the theory does not capture: \textsf{grant} has clearance $\lSYS$, so the app content that motivated the navigation is masked, and the gate sees only the task and the action history, not the injected text. Whether the agent still grants is measured in RQ1 and RQ5.
+
+\begin{proposition}[Overhead]\label{prop:cost}
+Suppose the agent issues $\mu$ model calls per step and its decision function issues $\mu'$ calls per evaluation, let a fraction $\pi$ of steps propose protected actions, and let an evaluation on context $x$ consume at most $|x|$ input tokens per call. Then the expected number of model calls per step is $\mu+\pi k \mu'$ (which is $1+\pi k$ for single-call agents), and a protected action at step $t$ costs at most $k\,\mu'\,|\Proj_{\U_t(a)}(\xi_t)|$ additional input tokens. If the $k$ trials share the masked prefix, the input tokens that must be processed without a prefix cache are bounded by $|\Proj_{\U_t(a)}(\xi_t)|$.
+\end{proposition}
+
+\begin{proposition}[Cost of labeling and binding]\label{prop:complexity}
+Suppose each layer's visible region is a union of at most $b$ axis-aligned rectangles, window records are found by hashing, and node digests are computed over a constant number of attributes of bounded length. Then \cref{alg:label} runs in $O\bigl((n_t+N_t)\,m_t\,b+P_t\bigr)$ time, where $P_t$ is the number of pixels sampled by the contrast test. The window-level checks of \cref{alg:binder} run in $O(|\mathcal{W}|\,b)$ time in \texttt{system\_server}, and the node check runs in expected $O(1)$ time in the target process if nodes are indexed by identity.
+\end{proposition}
+
+\begin{remark}[Attention-based attribution]\label{rem:attention}
+Early escalation on a high attention-rollout score (\cref{alg:gate}) can only turn a \PASS{} into an \ESC{}, so \cref{thm:sufficiency,thm:stochastic} continue to hold. The attribution-only variant, which passes actions with a low score without re-execution, has no comparable guarantee: attention mass on a region is not evidence that the decision would be unchanged without it~\cite{jain2019attention}. We evaluate it as an ablation only.
+\end{remark}
+
+\subsection{What the guarantee does not cover}\label{sec:theory-gaps}
+
+Collecting the assumptions and \cref{prop:separation}, an attack on \PG{} must use one of the following channels. Naming them precisely is part of the contribution, because each is a concrete target for the evaluation or for future work.
+\begin{enumerate}[label=(G\arabic*)]
+  \item \emph{Trusted-labeled content}: third-party content drawn by the app's own process (\cref{asm:labels} is relative to the producing process). Mitigated by developer annotation or by a clearance below $\lAPP$.
+  \item \emph{Action history}: steering unprotected navigation toward a screen where the harmful action is trusted-supported (\cref{prop:separation}(b)).
+  \item \emph{Geometry}: position and size of untrusted regions survive masking (\cref{lem:projection}).
+  \item \emph{Sink coverage}: actions that no sink rule classifies as protected bypass the gate.
+  \item \emph{Callback fidelity}: a remote model endpoint that behaves differently for re-execution calls violates \cref{asm:fidelity}.
+  \item \emph{Availability}: an attacker can cause legitimate protected actions to be escalated; \PG{} does not guarantee progress.
+  \item \emph{Sampling tail}: for stochastic agents, the bound of \cref{thm:stochastic} is small but not zero, and it depends on how well real agents separate $q_0$ from $q_1$.
+\end{enumerate}

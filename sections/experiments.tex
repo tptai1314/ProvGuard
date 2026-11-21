@@ -1,0 +1,189 @@
+% =====================================================================
+% sections/experiments.tex -- evaluation methodology (PLANNED)
+% No experiment has been run. Every table cell and plot in this section
+% is a placeholder or a conceptual trend and is labelled as such.
+% =====================================================================
+\section{Evaluation Methodology}\label{sec:eval}
+
+\begin{center}
+\fbox{\parbox{0.94\textwidth}{\small\textbf{Status.} The experiments in this section have not been run. The section specifies the protocol, the configurations, and the analyses. Tables contain no numbers, and the two plots in \cref{fig:conceptual} show conceptual expected trends without numeric axes. Placeholder / expected trend only; replace with actual experimental results before submission.}}
+\end{center}
+
+\subsection{Research questions}\label{sec:rqs}
+
+\begin{description}[leftmargin=1.2cm, style=nextline]
+  \item[RQ1] \emph{Security.} By how much does \PG{} reduce attack success, per channel, relative to the baselines, and how much of the reduction comes from labels shown to the model versus OS enforcement (the decisive experiment of \cref{sec:intro})? Tests \cref{thm:sufficiency,cor:ni}.
+  \item[RQ2] \emph{Binding.} Does the \DB{} reject action rebinding and in-window target swaps, and how often does it reject benign actions on dynamic screens? Tests \cref{thm:binding,cor:rebinding}.
+  \item[RQ3] \emph{Label quality.} How accurate are origin labels and the perceivability bit against ground truth, and how often does \cref{asm:labels} fail?
+  \item[RQ4] \emph{Gate fidelity under sampling.} How are trusted-support probabilities $q_t(a)$ distributed for benign and attacked protected actions, how well do they separate, and which $(k,\theta)$ achieve target error rates? Tests \cref{thm:stochastic,cor:trials}.
+  \item[RQ5] \emph{Adaptive attacks and residual channels.} How do paraphrased payloads, history steering (G2), geometry signalling (G3), and trusted-labeled content (G1) fare against \PG{}?
+  \item[RQ6] \emph{Utility and overhead.} What are the task success, false block rate, endorsement rate, per-action gate latency, and re-execution token cost on benign tasks? Tests \cref{prop:cost,prop:complexity}.
+  \item[RQ7] \emph{Ablations.} What is the contribution of each mechanism, of the perceivability bit, and of masked re-execution versus cheap attention-based attribution?
+\end{description}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/tikz_experimental_setup}
+  \caption{Evaluation setup. Attack suites and benign task suites (left) run on AOSP Pixel devices under each configuration (centre), with four open-source agents and the system variables listed. Each run produces the metrics on the right, which feed the tables and plots of this section. Baselines and \PG{} variants share the same devices, apps, and seeds.}
+  \label{fig:setup}
+\end{figure}
+
+\subsection{Testbed and agents}\label{sec:testbed}
+
+\paragraph{Devices and OS} AOSP built with the \PG{} patches on Pixel devices; the same build with \PG{} disabled serves the undefended and prompt-level baselines, so that every configuration runs on identical apps and system images. \placeholder{exact Pixel models, AOSP release tag, and kernel version.} Emulators are used only for the benchmarks that require them (AndroidWorld runs on a live emulator with programmatic state checks~\cite{rawles2025androidworld}), and the emulator image carries the same patches.
+
+\paragraph{Agents} We evaluate the four open-source agents named in the idea and threat model: Mobile-Agent-v3 with the GUI-Owl model~\cite{ye2025mobileagentv3}; DroidRun, which was renamed Mobilerun during 2026~\cite{droidrun2025software}; AutoGLM through its open release Open-AutoGLM~\cite{liu2024autoglm,openautoglm2025software}; and UI-TARS~\cite{qin2025uitars}. Together they cover screenshot-only agents (UI-TARS, Open-AutoGLM), an accessibility-first agent (DroidRun/Mobilerun), and a screenshot-centric multi-agent framework (Mobile-Agent-v3). \placeholder{pinned versions or commit hashes of each agent; model checkpoints and, for model-agnostic DroidRun/Mobilerun, the two backends (one on-device-capable open-weight model and one API model).} Each agent is linked against the \PA{}; its re-execution callback wraps the agent's own prompt construction, model call, and action parser.
+
+\subsection{Attack suites and benign workloads}\label{sec:workloads}
+
+\Cref{tab:suites} lists the workloads. For each attack suite we reuse the published tasks and success checks where the artifacts are available, and re-implement from the paper's description where they are not; the table records which. Artifact availability must be re-verified before the experiments, because several artifacts are anonymized submission links.
+
+\begin{table}[t]
+\centering
+\caption{Workloads. ``Reuse'' means the published tasks and checks are used as released; ``re-impl.'' means the attack is reconstructed from the paper's description. Sizes are those reported by the source papers.}
+\label{tab:suites}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.1cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{1.7cm}@{}}
+\toprule
+Suite & Channels and size (as reported) & Native metric & Plan \\
+\midrule
+AgentHazard~\cite{liu2026agenthazard} & third-party-writable in-app regions; 122 dynamic tasks, $>$3{,}000 static scenarios; AWAttackerApplier injects into tree and screenshot & misleading rate & reuse \\
+MobileWorld\-Safety~\cite{chen2026mobileworldsafety} & 5 workflow-embedded vectors; 142 risk tasks, 13 apps & programmatic risk indicator, TCR & reuse if released \\
+GhostEI-Bench~\cite{chen2025ghosteibench} & overlays, pop-up SMS, deceptive instructions; 110 cases, 14 apps & vulnerability rate & reuse if released \\
+Not an A11y~\cite{deivasigamani2026nota11y} & vectors A1--A9 (notifications, overlays, hidden metadata, HTML, calendar, notes, contacts, AppCard) & ASR, context drift & reuse \\
+UI desync~\cite{li2026uidesync} & occlusion, low contrast, a11y-only content, impractical widgets; 546 tasks, 13 apps, repackaged APKs & MR-S, MR-D & reuse if released \\
+Channel attacks~\cite{du2025measuringmobileagents} & banner, interstitial, app-open ads; WebView; e-mail and messaging notifications & N/A/E counts & reuse if released \\
+Action rebinding~\cite{qian2026zeropermission} & foreground switch in the observe-to-act gap; 15 tasks in 5 domains & rebinding success & re-impl. \\
+Adaptive payloads & paraphrases of every payload above; history-steering, geometry, and trusted-labeled variants (G1--G3) & ASR & new \\
+\midrule
+AndroidWorld~\cite{rawles2025androidworld} & 116 benign tasks, 20 apps & task success & reuse \\
+AndroidLab~\cite{xu2025androidlab} & 138 benign tasks, 9 apps & task success & reuse \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Adaptive attacker} The adaptive attacker knows \PG{}'s design. It (i) paraphrases every payload with several rewrites to test that labels are content-independent; (ii) splits an attack across steps so that untrusted content steers only unprotected navigation toward a screen where the harmful action is trusted-supported (G2); (iii) encodes signals in the position and size of its regions (G3); and (iv) places its payload in content drawn by the app's own process, for example a review or a shared note (G1). \placeholder{paraphrase generator, number of rewrites per payload, and human check of semantic equivalence.}
+
+\subsection{Baselines and configurations}\label{sec:baselines}
+
+\begin{description}[leftmargin=0.9cm, style=nextline]
+  \item[B0] \emph{No defense}: the agent as released.
+  \item[B1] \emph{Spotlighting-style delimiting}: untrusted text, as determined by the same OS labels, is wrapped in delimiters and the system prompt explains them~\cite{hines2024spotlighting}. This isolates the effect of telling the model about provenance.
+  \item[B2] \emph{MobileWorldSafety defensive system prompt}: the defense ``explicitly instructs the model to treat environmental content as untrusted''~\cite{chen2026mobileworldsafety}. The exact text is not published, so we re-implement it from this description and release our text.
+  \item[B3] \emph{Agent-side taint without OS labels (AOHP-like)}: the agent derives labels from what an accessibility client can see (node package name, window type, \texttt{isVisibleToUser}) and applies a no-write-down rule, escalating any protected action once untrusted content has entered its context. This approximates in-agent taint as in AOHP~\cite{zhao2026aohp} and Aura~\cite{zou2026aura} without OS support.
+  \item[B4] \emph{OS-Sentinel post-hoc detection}: the hybrid formal-verifier plus VLM-judge detector run in step-level mode, blocking actions it classifies as unsafe~\cite{sun2026ossentinel}.
+  \item[PG] \emph{\PG{}} with all mechanisms, plus the ablations of \cref{sec:ablations}.
+\end{description}
+
+\subsection{Metrics}\label{sec:metrics}
+
+For a set of attack trials $\mathcal{T}_{\mathrm{att}}$ and benign trials $\mathcal{T}_{\mathrm{ben}}$:
+\begin{align}
+  \mathrm{ASR}_c &= \frac{|\{\tau\in\mathcal{T}_{\mathrm{att}}:\ \text{channel}(\tau)=c,\ \text{adversarial objective achieved}\}|}{|\{\tau\in\mathcal{T}_{\mathrm{att}}:\ \text{channel}(\tau)=c\}|}, \label{eq:asr}\\
+  \mathrm{FBR} &= \frac{\#\{\text{escalated or rejected protected actions in }\mathcal{T}_{\mathrm{ben}}\}}{\#\{\text{protected actions in }\mathcal{T}_{\mathrm{ben}}\}}, \label{eq:fbr}\\
+  \mathrm{TSR} &= \frac{|\{\tau\in\mathcal{T}_{\mathrm{ben}}:\ \text{task completed}\}|}{|\mathcal{T}_{\mathrm{ben}}|}. \label{eq:tsr}
+\end{align}
+Escalations in benign runs are resolved by an oracle that approves (to measure TSR with endorsement) and, separately, by one that denies (to measure TSR without endorsement). We also report each suite's native metric (\cref{tab:suites}), the endorsement rate per task, per-action gate latency (median and 95th percentile, from interception to decision), re-execution tokens per task, label precision and recall for each provenance field, perceivability precision and recall, binder false-reject rate, and sink coverage (the fraction of ground-truth protected actions that the sink rules classify as protected).
+
+\paragraph{Ground truth for labels} Origin ground truth comes from instrumented test apps whose every region is produced by a known principal. Perceivability ground truth comes from a human study in which participants mark which text they can read on rendered screens, following the questionnaire design of Li et al.~\cite{li2026uidesync}. \placeholder{number of screens, participants, and ethics approval.}
+
+\paragraph{Statistics} Each attack case is repeated (at least five trials, as in~\cite{deivasigamani2026nota11y}); we report proportions with 95\% Wilson intervals and use McNemar's test for paired comparisons between configurations on the same cases. \placeholder{final number of repetitions and seeds.}
+
+\subsection{System variables and hyperparameters}\label{sec:hyper}
+
+\Cref{tab:hyper} lists the system variables. Default values are chosen before the experiments and are not tuned on the attack suites; sensitivity studies vary one variable at a time.
+
+\begin{table}[t]
+\centering
+\caption{System variables, default values, and sensitivity ranges. Defaults are design choices, not tuned results.}
+\label{tab:hyper}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l X l l@{}}
+\toprule
+Variable & Meaning & Default & Sensitivity range \\
+\midrule
+$k$ & re-execution trials per protected action & 1 (greedy), 5 (sampled) & $\{1,3,5,9,13\}$ \\
+$\theta$ & pass threshold on $\hat p$ & 0.5 & $\{0.3,0.5,0.7\}$ \\
+$\eqv$ & action equivalence & $\eqv_c$ & $\{\eqv_c,\eqv_s\}$ \\
+temperature & agent decoding & agent default & $\{0,\ \text{default}\}$ \\
+$s$ & tile side (pixels) & 32 & $\{16,32,64\}$ \\
+$c_{\min}$ & contrast-ratio threshold & 3.0 & $\{1.5,3.0,4.5\}$ \\
+$\alpha^{\mathrm{occ}}_{\max}$ & occluding combined opacity & 0.8 & $\{0.5,0.8\}$ \\
+$\phi_{\mathrm{on}},\phi_{\mathrm{vis}}$ & on-screen and visible fractions & 0.5, 0.5 & $\{0.25,0.5,0.75\}$ \\
+$\alpha_{\min}$ & minimum effective alpha & 0.05 & $\{0.01,0.05,0.1\}$ \\
+$\clr$ & clearances per sink class & \cref{tab:sinks} & $\lAPP$ vs $\lSYS$ for \textsf{send} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Ablations and sensitivity}\label{sec:ablations}
+
+The ablations follow the idea's plan exactly: \emph{labels only} (PG-L: labels shown to the model, no gate, no binder); \emph{gate only} (PG-G: gate and labels used internally, nothing shown to the model, no binder); \emph{binding only} (PG-B); \emph{perceivability bit on/off} (PG $-$perc); and \emph{cheap attribution versus masked re-execution} (PG-attn, which passes actions with low attention-rollout score without re-execution, against PG-full). PG-L against B0 and PG-full is the decisive experiment of \cref{sec:intro}: the thesis is supported if PG-L reduces ASR by fewer than ten points while PG-full removes most of the remaining attacks at an FBR below 10\%. Sensitivity studies vary the variables of \cref{tab:hyper}; the most important are $k$ and $\theta$ (RQ4), the clearance of \textsf{send} (RQ5, channel G1), and $c_{\min}$ (RQ3).
+
+\subsection{Placeholder results}\label{sec:results}
+
+\begin{table}[t]
+\centering
+\caption{RQ1 and RQ7: attack success rate (\%) per channel and configuration, pooled over agents. \textbf{Placeholder / expected trend only; replace with actual experimental results before submission.} All cells are intentionally empty.}
+\label{tab:res-asr}
+\footnotesize
+\setlength{\tabcolsep}{3.2pt}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}l cccccc cccc@{}}
+\toprule
+Channel & B0 & B1 & B2 & B3 & B4 & PG-L & PG-G & PG-B & PG $-$perc & PG \\
+\midrule
+SDK Runtime ads            & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+WebView content            & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Notifications              & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Cross-app overlays         & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Hidden / low-contrast      & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Repackaged-app desync      & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+In-app third-party         & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Foreground rebinding       & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+Adaptive paraphrase        & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{RQ6: benign utility and overhead per agent. \textbf{Placeholder / expected trend only; replace with actual experimental results before submission.} All cells are intentionally empty.}
+\label{tab:res-utility}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}l cc cc cc cc@{}}
+\toprule
+& \multicolumn{2}{c}{TSR AndroidWorld (\%)} & \multicolumn{2}{c}{TSR AndroidLab (\%)} & \multicolumn{2}{c}{FBR (\%)} & \multicolumn{2}{c}{Gate latency p50 / p95 (ms)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(l){8-9}
+Agent & B0 & PG & B0 & PG & greedy & sampled & greedy & sampled \\
+\midrule
+Mobile-Agent-v3        & -- & -- & -- & -- & -- & -- & -- & -- \\
+DroidRun / Mobilerun   & -- & -- & -- & -- & -- & -- & -- & -- \\
+Open-AutoGLM           & -- & -- & -- & -- & -- & -- & -- & -- \\
+UI-TARS                & -- & -- & -- & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/pgfplots_placeholder_results}
+  \caption{\textbf{Conceptual expected trends, not experimental results.} (a) The thesis of the paper predicts that labels shown to the model (PG-L) reduce attack success only modestly, while OS enforcement (PG) removes most attacks except those through trusted-labeled content (G1). (b) Raising the pass threshold $\theta$ is expected to lower the false-pass rate and raise the false block rate; the operating point is to be chosen from measured curves (RQ4). Axes carry no numeric scale because no data exist yet. Replace with actual experimental results before submission.}
+  \label{fig:conceptual}
+\end{figure}
+
+\Cref{tab:res-asr,tab:res-utility} define the result layout, and \cref{fig:conceptual} states the expected shape of two key results as hypotheses. We record the hypotheses here so that the experiments can falsify them: H1, labels alone change ASR by fewer than ten points on AgentHazard and the channel attacks; H2, the full system brings ASR close to zero for SDK Runtime, WebView, notification, overlay, hidden-node, and rebinding channels; H3, the in-app third-party channel retains substantial ASR unless the sink clearance excludes $\lAPP$ or the app annotates its views; H4, FBR stays below 10\% on AndroidWorld and AndroidLab with $\eqv_c$.
+
+\subsection{Reproducibility checklist}\label{sec:repro}
+
+\begin{itemize}
+  \item AOSP patches, build scripts, and the exact release tag. \placeholder{repository URL}
+  \item \PA{} bindings and re-execution callbacks for each agent, with pinned agent versions and model checkpoints.
+  \item Attack reproduction scripts per suite, including re-implementations (B2 prompt text, action rebinding app) and the adaptive-payload generator with its prompts.
+  \item Sink rules (\cref{tab:sinks}) as data files, and the labeling policy $\Lambda_0$.
+  \item Seeds, number of repetitions, device models, and decoding parameters for every run.
+  \item Raw per-trial logs (transcripts with labels, gate decisions with all $k$ samples, binder decisions) and the analysis scripts that produce every table and figure.
+  \item The analytical script \texttt{scripts/gate\_bounds.py} for \cref{tab:mintrials} and \cref{fig:bounds}.
+  \item Human-study materials for perceivability ground truth and the ethics approval. \placeholder{approval reference}
+\end{itemize}

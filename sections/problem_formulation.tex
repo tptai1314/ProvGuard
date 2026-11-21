@@ -1,0 +1,162 @@
+% =====================================================================
+% sections/problem_formulation.tex
+% =====================================================================
+\section{Problem Formulation}\label{sec:formulation}
+
+This section fixes the objects that \PG{} computes and the property it is meant to enforce. \Cref{tab:notation} collects the notation.
+
+\subsection{Screens, regions, and provenance records}
+
+\begin{definition}[Region]\label{def:region}
+At step $t$ the composed screen is partitioned, for the purpose of perception, into a finite set of \emph{regions} $\R_t$. A region $\rho\in\R_t$ is either an accessibility node or a screenshot tile (a cell of a fixed grid over the display, of side $s$ pixels). Each region has a \emph{content} $\cont(\rho)\in\C$ (the node's text, content description, and hint, or the tile's pixels) and a \emph{geometry} $\geo(\rho)$ (bounding box, z-order, and, for nodes, class name and interaction flags such as clickable or editable).
+\end{definition}
+
+The separation of content and geometry matters later: masking removes content but keeps geometry, so that coordinates remain meaningful to the agent.
+
+\begin{definition}[Provenance record]\label{def:record}
+The provenance record of a region is the tuple
+\begin{equation}\label{eq:record}
+  \rec(\rho) = \bigl(\uid(\rho),\ \wtype(\rho),\ \org(\rho),\ \snd(\rho),\ \sens(\rho),\ \perc(\rho)\bigr),
+\end{equation}
+where $\uid(\rho)$ is the UID of the process that produced the region's pixels or node; $\wtype(\rho)\in\{\textsf{application},\textsf{overlay},\textsf{shade},\textsf{ime},\textsf{system},\textsf{sdk-surface}\}$ is the type of the window or embedded surface that contains it; $\org(\rho)$ is the WebView document origin if the region lies inside a WebView and $\bot$ otherwise; $\snd(\rho)$ is the posting package if the region belongs to a notification and $\bot$ otherwise; $\sens(\rho)\in\{0,1\}$ is the notification sensitivity class (for example, a detected one-time password); and $\perc(\rho)\in\{0,1\}$ is the perceivability bit.
+\end{definition}
+
+\begin{definition}[Perceivability]\label{def:perc}
+Let $\phi_{\mathrm{on}},\phi_{\mathrm{vis}}\in(0,1]$, $c_{\min}\ge 1$, and $\alpha_{\min}\in[0,1)$ be policy thresholds. A region $\rho$ is \emph{perceivable}, $\perc(\rho)=1$, if and only if all four conditions hold:
+\begin{enumerate}[label=(P\arabic*)]
+  \item \emph{on-screen}: the fraction of $\geo(\rho)$ inside the display bounds and outside display cutouts is at least $\phi_{\mathrm{on}}$;
+  \item \emph{unoccluded}: the fraction of the on-screen area that is not covered by layers above it with combined opacity greater than $\alpha_{\max}^{\mathrm{occ}}$ is at least $\phi_{\mathrm{vis}}$, where the combined opacity of a stack with opacities $\alpha_1,\dots,\alpha_m$ is $1-\prod_{i=1}^{m}(1-\alpha_i)$;
+  \item \emph{contrast}: for text-bearing regions, the luminance contrast ratio between the text color and the effective background, $(L_1+0.05)/(L_2+0.05)$ with $L_1\ge L_2$ the relative luminances, is at least $c_{\min}$;
+  \item \emph{rendered}: the region has non-zero drawn area and an effective alpha greater than $\alpha_{\min}$.
+\end{enumerate}
+\end{definition}
+
+Condition (P2) mirrors the combined-opacity rule that Android 12 already uses to decide whether a touch passes through an untrusted overlay, where the default maximum obscuring opacity is 0.8~\cite{android12_untrusted_touch}. Condition (P3) uses the contrast-ratio definition of WCAG~2.1, whose minimum for normal text is 4.5:1~\cite{wcag21}. The thresholds are policy parameters; \cref{sec:eval} studies their sensitivity.
+
+\subsection{Label lattice and labeling policy}
+
+\begin{definition}[Integrity label lattice]\label{def:lattice}
+Let $\Lat=\{\lUSR,\lSYS,\lAPP,\lWEB,\lSDK,\lNTF,\lTOP\}$ be ordered by $\lUSR\lle\lSYS\lle\lAPP\lle\ell\lle\lTOP$ for every $\ell\in\{\lWEB,\lSDK,\lNTF\}$, with $\lWEB,\lSDK,\lNTF$ pairwise incomparable. We read $\ell\lle\ell'$ as ``$\ell'$ is no more trustworthy than $\ell$.'' $(\Lat,\lle)$ is a finite lattice with bottom $\lUSR$, top $\lTOP$, join $\ljoin$, and meet $\sqcap$; in particular $\lWEB\ljoin\lSDK=\lTOP$ and $\lWEB\sqcap\lSDK=\lAPP$ (\cref{fig:lattice}).
+\end{definition}
+
+The lattice orientation follows the integrity reading of Biba~\cite{biba1977integrity} in Denning's lattice framework~\cite{denning1976lattice}: combining content can only move a label up, toward less trust.
+
+\begin{figure}[t]
+  \centering
+  \input{figures/tikz_lattice}
+  \caption{The integrity label lattice $\Lat$ of \cref{def:lattice}, drawn with the most trusted label at the bottom. Arrows point from a label to the labels that are no more trustworthy. The three channel labels $\lWEB$, $\lSDK$, and $\lNTF$ are incomparable; any two of them join to $\lTOP$. The dashed line marks a clearance $\clr(a)=\lAPP$: regions whose label lies above the line, or whose perceivability bit is zero, are masked by the \CG{} for actions with that clearance.}
+  \label{fig:lattice}
+\end{figure}
+
+\begin{definition}[Labeling policy]\label{def:labeling}
+A labeling policy is a function $\Lambda$ from provenance records to $\Lat$. The default policy $\Lambda_0$ assigns, in order of precedence: $\lUSR$ to the content of the editable field the user is typing into through the input method and to the task text; $\lSYS$ to regions in windows owned by system UIDs other than the notification shade; $\lNTF$ to notification regions ($\snd(\rho)\neq\bot$), unless the sender is a system package; $\lSDK$ to regions in SDK Runtime surfaces; $\lWEB$ to regions with $\org(\rho)\neq\bot$; $\lTOP$ to regions in overlay windows whose UID differs from the UID of the application window directly below; $\lAPP$ to every other region of an application window; and $\lTOP$ to every region not covered by a preceding rule (for example, a third-party input-method window). The label of a region is $\lab(\rho)=\Lambda(\rec(\rho))$.
+\end{definition}
+
+Screenshot tiles may straddle several layers. A tile receives the join of the labels of all layers that contribute visible pixels to it:
+\begin{equation}\label{eq:tilejoin}
+  \lab(\text{tile}) = \bigljoin_{\ell\in\mathrm{Layers}(\text{tile})} \lab(\ell),
+\end{equation}
+where $\mathrm{Layers}(\text{tile})$ is the set of layers, as composited by SurfaceFlinger, that are not fully transparent over the tile. A tile is perceivable only if every text-bearing region it intersects is perceivable or the tile contains no text-bearing region. Both rules err on the side of more masking.
+
+\subsection{Agent, actions, and the OS-held transcript}
+
+\begin{definition}[Action]\label{def:action}
+An action is a triple $a=(\mathit{op},\mathit{tgt},\mathit{arg})$ with an operation
+\[\mathit{op}\in\{\textsf{tap},\textsf{long\_press},\textsf{type},\textsf{swipe},\textsf{back},\textsf{home},\textsf{launch},\textsf{finish}\},\]
+a target $\mathit{tgt}$ (a node reference or screen coordinates, or none), and an argument $\mathit{arg}$ (typed text, swipe vector, package name, or none). The \emph{resolved target} $\hat{\mathit{tgt}}(a,o_t)$ is the pair (window token, node identity) of the node that $a$ addresses in observation $o_t$; for coordinate actions it is obtained by hit-testing $o_t$ for the topmost interactive node at the coordinates.
+\end{definition}
+
+\begin{definition}[Action equivalence]\label{def:equiv}
+Two equivalence relations on actions are used. \emph{Control equivalence} $a\eqv_c a'$ holds iff $\mathit{op}=\mathit{op}'$ and $\hat{\mathit{tgt}}(a,o_t)=\hat{\mathit{tgt}}(a',o_t)$. \emph{Strict equivalence} $a\eqv_s a'$ additionally requires $\mathrm{norm}(\mathit{arg})=\mathrm{norm}(\mathit{arg}')$ for a fixed normalization function $\mathrm{norm}$ (whitespace and case folding). We write $\eqv$ when a statement holds for either.
+\end{definition}
+
+Both relations are kernels of functions on actions (with the observation fixed), hence reflexive, symmetric, and transitive.
+
+\begin{definition}[OS-held transcript]\label{def:transcript}
+The transcript at step $t$ is $\xi_t=(T,\ a_{1:t-1},\ o_{1:t})$: the task recorded by the OS, the actions dispatched so far, and the labeled observations delivered so far. Every component is recorded by \PG{} itself, because observations are produced by the \LS{} and actions pass through the \DB{}. The transcript excludes the agent's internal state (scratchpad, memory, chain of thought), which the OS cannot see and does not trust.
+\end{definition}
+
+\begin{definition}[Agent decision function]\label{def:agent}
+The agent's model is a function $f:\X\to\Dist(\A)$ from contexts to distributions over actions. For a deterministic model (for example, greedy decoding at temperature zero) $f(x)$ is a point mass and we also write $f(x)\in\A$. The agent's actual action $a_t$ may depend on internal state that is not part of $\xi_t$; \PG{} makes no assumption about how $a_t$ was produced.
+\end{definition}
+
+\subsection{Protected actions, untrusted sets, and masking}
+
+\begin{definition}[Protected action and clearance]\label{def:sink}
+A protected-action predicate $\prot(a,o_t)\in\{0,1\}$ identifies actions that belong to a sink class in
+\[\Sinks=\{\textsf{send},\textsf{pay},\textsf{install},\textsf{grant},\textsf{delete},\textsf{share},\textsf{type-untrusted}\},\]
+where \textsf{type-untrusted} denotes typing into a field whose label is not below $\lAPP$. Each protected action has a clearance $\clr(a)\in\Lat$: the least trustworthy label that the action may depend on without endorsement.
+\end{definition}
+
+\begin{definition}[Untrusted set]\label{def:untrusted}
+For a protected action $a$ at step $t$, the untrusted set is
+\begin{equation}\label{eq:untrusted}
+  \U_t(a) = \bigl\{\rho\in\textstyle\bigcup_{i\le t}\R_i \ :\ \lab(\rho)\nlle\clr(a)\ \text{ or }\ \perc(\rho)=0\bigr\}.
+\end{equation}
+\end{definition}
+
+\begin{definition}[Masking and trusted projection]\label{def:mask}
+For a set of regions $S$, the masking operator $\Mask_S$ replaces $\cont(\rho)$ by a fixed placeholder $\masked$ for every $\rho\in S$ and leaves geometry and all other regions unchanged. For tiles, the placeholder is a uniform fill; for nodes, it is a constant token. The \emph{trusted projection} of a transcript is
+\begin{equation}\label{eq:proj}
+  \Proj_S(\xi_t) = \bigl(T,\ a_{1:t-1},\ \Mask_S(o_1),\dots,\Mask_S(o_t)\bigr).
+\end{equation}
+\end{definition}
+
+\subsection{Causal dependence and the target property}
+
+The idea of a ``causal dependency set'' of an action is intuitive but not unique: an action can be over-determined by several regions, and individual-region tests would need one model call per region. \PG{} therefore tests dependence on the untrusted set as a group, by intervention.
+
+\begin{definition}[Group causal dependence]\label{def:causal}
+Let $f$ be deterministic. A protected action $a$ \emph{causally depends on} $\U_t(a)$ at $\xi_t$ if $f(\Proj_{\U_t(a)}(\xi_t))\not\eqv a$, that is, if setting the content of every untrusted region to the placeholder changes the action. Otherwise $a$ is \emph{trusted-supported} at $\xi_t$.
+\end{definition}
+
+This is a but-for test under the intervention $\mathrm{do}(\cont(\rho):=\masked,\ \rho\in\U_t(a))$ in the sense of structural causal models~\cite{pearl2009causality}. For a stochastic model we use a graded version.
+
+\begin{definition}[Support probability]\label{def:support}
+For a stochastic $f$, the \emph{trusted support} of $a$ at $\xi_t$ is $q_t(a)=\Prob_{a'\sim f(\Proj_{\U_t(a)}(\xi_t))}\bigl[a'\eqv a\bigr]$.
+\end{definition}
+
+\paragraph{Problem statement}
+Given the system and threat model of \cref{sec:model}, design a labeling policy $\Lambda$, a gate $\gate$ that maps a proposed protected action and the transcript to $\{\PASS,\ESC\}$, and a dispatch check, such that:
+\begin{enumerate}[label=(R\arabic*)]
+  \item \emph{trusted sufficiency}: every protected action dispatched without endorsement is trusted-supported (deterministic $f$), or passes only with bounded probability when its trusted support is low (stochastic $f$);
+  \item \emph{target binding}: every dispatched action reaches the window and node that were observed when it was chosen;
+  \item \emph{judge-free enforcement}: $\gate$ is a deterministic function of labels, the action equivalence relation, and the outputs of the agent's own model; no separate LLM or VLM classifier is consulted;
+  \item \emph{utility}: the false block rate on benign tasks is small and task success is close to the undefended agent's;
+  \item \emph{bounded overhead}: the additional model calls are confined to protected actions.
+\end{enumerate}
+(R1)--(R3) are security requirements that we prove under stated assumptions in \cref{sec:theory}. (R4) and (R5) are empirical and are the subject of \cref{sec:eval}.
+
+\begin{table}[t]
+\centering
+\caption{Notation.}
+\label{tab:notation}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l X@{}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$t$, $T$ & step index; user task recorded by the OS \\
+$\R_t$, $\rho$ & regions (accessibility nodes, screenshot tiles) at step $t$; a region \\
+$\cont(\rho)$, $\geo(\rho)$ & content and geometry of a region \\
+$\rec(\rho)$ & provenance record $(\uid,\wtype,\org,\snd,\sens,\perc)$, \cref{eq:record} \\
+$\perc(\rho)$ & perceivability bit, \cref{def:perc}; thresholds $\phi_{\mathrm{on}},\phi_{\mathrm{vis}},c_{\min},\alpha_{\min},\alpha^{\mathrm{occ}}_{\max}$ \\
+$(\Lat,\lle,\ljoin)$ & integrity label lattice, \cref{def:lattice} \\
+$\Lambda$, $\lab(\rho)$ & labeling policy and the label of a region \\
+$o_t$, $a_t$ & observation delivered and action proposed at step $t$ \\
+$\xi_t$ & OS-held transcript $(T,a_{1:t-1},o_{1:t})$ \\
+$f$ & agent decision function $\X\to\Dist(\A)$ \\
+$\eqv_c$, $\eqv_s$ & control and strict action equivalence, \cref{def:equiv} \\
+$\prot$, $\Sinks$, $\clr(a)$ & protected-action predicate, sink classes, clearance \\
+$\U_t(a)$ & untrusted set for action $a$, \cref{eq:untrusted} \\
+$\Mask_S$, $\Proj_S$ & masking operator and trusted projection, \cref{eq:proj} \\
+$q_t(a)$ & trusted support probability, \cref{def:support} \\
+$k$, $\theta$ & number of re-execution trials and pass threshold \\
+$\tok$, $\nid$, $\dig$ & window token, node identity, node digest \\
+$\bind(a)$ & observation binding $(\tok,\nid,\dig,\uid)$ of an action \\
+$W_{o2a}$ & observe-to-act window (from~\cite{qian2026zeropermission}) \\
+$\pi$, $\mu$, $\mu'$ & fraction of protected steps; model calls per agent step; calls per decision evaluation \\
+$n_t$, $m_t$, $N_t$, $b$ & nodes, layers, tiles at step $t$; rectangles per visible region \\
+\bottomrule
+\end{tabularx}
+\end{table}

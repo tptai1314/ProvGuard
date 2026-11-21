@@ -1,0 +1,36 @@
+# EC2 template. This repository will not download these dependencies.
+seed: 2026
+mode: real
+output_dir: outputs/real_run
+repetitions: 5
+data:
+  root: /mnt/provguard-data/normalized
+aosp:
+  source_root: /opt/aosp
+  release_tag: TODO_PIN_AOSP_TAG
+  device_model: TODO_PIXEL_MODEL
+agents:
+  Mobile-Agent-v3:
+    root: /opt/agents/mobile-agent-v3
+    commit: TODO_PIN_COMMIT
+    checkpoint: TODO_PIN_CHECKPOINT
+  DroidRun-Mobilerun:
+    root: /opt/agents/mobilerun
+    commit: TODO_PIN_COMMIT
+  Open-AutoGLM:
+    root: /opt/agents/open-autoglm
+    commit: TODO_PIN_COMMIT
+    checkpoint: TODO_PIN_CHECKPOINT
+  UI-TARS:
+    root: /opt/agents/ui-tars
+    commit: TODO_PIN_COMMIT
+    checkpoint: TODO_PIN_CHECKPOINT
+gate:
+  trials: 5
+  threshold: 0.5
+  equivalence: control
+calibration:
+  q0: 0.2
+  q1: 0.8
+  delta: 0.01
+

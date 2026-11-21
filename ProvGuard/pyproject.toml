@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "provguard"
+version = "0.1.0"
+description = "Reference implementation and evaluation harness for ProvGuard"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Research prototype; see README"}
+dependencies = [
+  "matplotlib>=3.7",
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "ruff>=0.4", "mypy>=1.8"]
+
+[project.scripts]
+provguard = "provguard.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true

@@ -1,0 +1,13 @@
+seed: 7
+mode: synthetic
+output_dir: outputs/example
+repetitions: 1
+gate:
+  trials: 1
+  threshold: 0.5
+  equivalence: control
+calibration:
+  q0: 0.2
+  q1: 0.8
+  delta: 0.05
+

@@ -1,0 +1,20 @@
+# Figure Quality Audit
+
+Method: each figure was first compiled standalone with `scripts/figtest.sh` (preview in `/tmp/figtest/`), inspected, and revised; then the full manuscript was compiled and every page containing a figure was rendered at 110 dpi to `figure_previews/page_XX_fig_YY.png` and inspected again. Shared visual grammar is in `figures/tikz_styles.tex`: blue solid rounded boxes for honest components, red dashed hatched boxes for adversarial content, green double-border boxes for ProvGuard, purple chamfered boxes for theory, gray dotted boxes for infrastructure; arrow styles differ by both color and dash pattern, so every figure reads in grayscale. Icons come from `fontawesome5` with a pure-TikZ fallback if the package is missing.
+
+| Figure | File | Label | Page | Icons | Arrows routed | Arrow over text | Text over text | Arrow labels readable | Colors consistent | Grayscale OK | Caption informative | PNG inspected | Fixes made during audit | Final |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 Labeled screen | tikz_labeled_screen.tex | fig:labeled-screen | 5 | yes | yes (horizontal leaders) | no | no | yes | yes | yes (hatching, crosshatch for masked) | yes | page_05_fig_01.png | style order (font override), bubble width, tag widths, legend spacing, caption corrected ("centre column") | PASS |
+| 2 Threat model | tikz_threat_privacy_robustness.tex | fig:threat | 12 | yes | yes (three lanes, corridors) | no | no | yes | yes | yes | yes | page_12_fig_02.png | region label overlapping arrows moved to bottom; callback label side; legend overlap fixed twice | PASS |
+| 3 Label lattice | tikz_lattice.tex | fig:lattice | 15 | yes | yes (orthogonal) | no | no | n/a | yes | yes | yes | page_15_fig_03.png | branch arrows overlapped clearance line; re-spaced; braces replace misleading arrow | PASS |
+| 4 Architecture | tikz_architecture.tex | fig:architecture | 18 | yes | yes (corridors at fixed heights, free delivery column) | no | no | yes ("PASS" label is small but legible) | yes | yes | yes | page_18_fig_04.png | `align=center` balancing caused wrapping (switched to `flush center` globally); OS band split into three nodes; region labels relocated; float changed from page to top | PASS |
+| 5 Pipeline | tikz_method_pipeline.tex | fig:pipeline | 19 | yes, numbered stages | yes (snake, bypass in corridor, escalation below) | no | no | yes | yes | yes | yes | page_19_fig_05.png | indicator symbol fixed; crowded labels removed; rotated re-observe label | PASS |
+| 6 Theory dependencies | tikz_theory_diagram.tex | fig:theory | 25 | RQ flask icons | yes (horizontal, one bend) | no | no | yes | yes (purple theory) | yes | yes | page_25_fig_06.png | assumption boxes touched; re-spaced twice; caption corrected | PASS |
+| 7 Gate bounds (PGFPlots, analytical data) | pgfplots_gate_bounds.tex + data_gate_bounds.dat | fig:bounds | 27 | n/a | n/a | no | no | legends below axes | yes | yes (markers and dash patterns) | yes, states "Not an experimental result" | page_27_fig_07.png | legend covering curves moved below; y-range tightened | PASS |
+| 8 Experimental setup | tikz_experimental_setup.tex | fig:setup | 30 | yes | yes (only across gutters) | no | no | yes | yes | yes | yes | page_30_fig_08.png | overlapping boxes; widened columns; shortened labels | PASS |
+| 9 Conceptual trends (PGFPlots, placeholder) | pgfplots_placeholder_results.tex | fig:conceptual | 34 | n/a | n/a | no | no | yes | yes | yes (hatching) | yes, states "Conceptual expected trends, not experimental results"; axes have no numeric scale; in-plot PLACEHOLDER tag | page_34_fig_09.png | tag overlapped bars; headroom added | PASS |
+
+Notes:
+- The flow arrows are drawn with `shorten >=2pt, shorten <=2pt`, so arrowheads stop before node borders.
+- No figure contains a numeric experimental result. Figure 7 is computed analytically by `scripts/gate_bounds.py`; Figure 9 encodes hypotheses only.
+- Remaining cosmetic item: in Figure 4 the "PASS" arrow label uses `\tiny` because the gap between the gate and the binder is short. It is legible in the PDF at 100% zoom.

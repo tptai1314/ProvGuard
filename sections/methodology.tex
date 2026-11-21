@@ -1,0 +1,90 @@
+% =====================================================================
+% sections/methodology.tex -- ProvGuard design
+% =====================================================================
+\section{\PG{} Design}\label{sec:design}
+
+\Cref{fig:architecture} shows the architecture and \cref{fig:pipeline} the per-step pipeline. \PG{} adds four components to Android, of which three live in the trusted computing base: the \LS{}, the \CG{}, and the \DB{} run inside \texttt{system\_server}, with a perceivability hook in SurfaceFlinger; the \PA{} ships with the agent SDK and is untrusted. No OS-side language model is introduced, and no hardware support is required.
+
+\begin{figure}[t]
+  \centering
+  \input{figures/tikz_architecture}
+  \caption{\PG{} architecture. Content principals (top, untrusted) contribute windows, layers, and notifications to the OS. The \LS{} turns OS-owned metadata into provenance records and labels, which reach the agent through the \PA{} and are logged in the OS-held transcript $\xi_t$. Every action the agent proposes enters the \CG{}; protected actions are re-executed by the agent's own model through a stateless callback in an isolated process, with the untrusted set masked. Actions that pass, or that the user endorses through a SystemUI prompt, reach the \DB{}, which delivers them only if the observed window token, node identity, and node digest still match. Arrow styles follow the legend; the agent's own state never enters the trusted path.}
+  \label{fig:architecture}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/tikz_method_pipeline}
+  \caption{Per-step pipeline. Stages \textcircled{\scriptsize 1}--\textcircled{\scriptsize 4} run for every step; stages \textcircled{\scriptsize 5}--\textcircled{\scriptsize 7} run only for protected actions; stage \textcircled{\scriptsize 8} runs for every action. Unprotected actions bypass the gate but not the binder. An escalated action proceeds only with user endorsement.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{\LS{}: origin labels and perceivability}\label{sec:design-labels}
+
+The \LS{} computes the provenance record of \cref{eq:record} for every accessibility node and every screenshot tile that is served to an agent. Each field comes from state that a specific OS component already owns.
+
+\paragraph{Owner and window type} The WindowManager oversees the lifecycle, input, focus, and z-order of every window~\cite{android_surfaceflinger}; inside \texttt{system\_server} each window is tracked together with its owning UID, its type, and a binder token \citeneeded{AOSP documentation of WindowManager window tokens and per-window owner UID}. The accessibility window object exposed to services carries a type (application, input method, system, accessibility overlay, split-screen divider, magnification overlay, window control) and a layer, but no owner~\cite{android_accessibilitywindowinfo}. The \LS{} attaches the owner UID and the window token, obtained inside \texttt{system\_server}, to the window and propagates them to every node of the window's tree. Overlay windows of type \texttt{TYPE\_APPLICATION\_OVERLAY} are distinguished from the application window below them, which is what makes cross-application overlays (vector A3 of~\cite{deivasigamani2026nota11y}) visible as a different principal.
+
+\paragraph{SDK Runtime surfaces} With the Privacy Sandbox SDK Runtime, an ad SDK runs in its own process and renders media through \texttt{SurfaceControlViewHost}; the app embeds the resulting surface package into a \texttt{SurfaceView}~\cite{android_sdkruntime}. The embedded surface therefore has a different producer from the hosting app even though it appears inside the app's window. The \LS{} labels the embedded surface's layer and any accessibility nodes it exposes with the SDK Runtime process UID and window type \textsf{sdk-surface}. Ads served by SDKs that do not use the SDK Runtime, and run in the app's process, are indistinguishable from app content at this level; they fall under the in-app case discussed below.
+
+\paragraph{WebView origin} A WebView renders a document whose web origin is known to the renderer but is not part of the accessibility node's fields. The \LS{} obtains the top-level document origin of each WebView through a hook in the WebView provider and labels all nodes and tiles of the WebView with it. Per-node origins (for example, an ad iframe inside a news page) would require a renderer change; the default design uses document-level origin and treats the coarser granularity as a known limitation (\cref{sec:limitations}).
+
+\paragraph{Notifications} The NotificationManager records the posting package of every notification and, since Android 15, classifies notifications that contain a detected one-time password as sensitive, redacting them for untrusted listeners~\cite{android15_otp_redaction}. The \LS{} maps every node and tile of a notification row in the shade, and of a heads-up notification, to the sender package and the sensitivity class.
+
+\paragraph{Perceivability} The perceivability bit implements \cref{def:perc} in two places. The geometric tests (P1, P2, P4) run on SurfaceFlinger's layer state: for each layer the compositor knows the visible region after occlusion, the alpha, and the display bounds, so the visible fraction of a node's bounds under layers of combined opacity above the threshold, and its on-screen fraction outside display cutouts, are region-algebra computations. The contrast test (P3) samples the composed frame inside a text-bearing node's bounds, estimates the text and background colors as the two dominant luminance clusters, and evaluates the contrast ratio. The bit is conservative by construction: any test that cannot be evaluated (for example, because the node has no rendered bounds) yields $\perc=0$. A node that is present in the accessibility tree but never drawn, such as the hidden metadata of vector A4~\cite{deivasigamani2026nota11y} or accessibility-only content in UI desynchronization~\cite{li2026uidesync}, therefore receives $\perc=0$. This differs from the node's \texttt{isVisibleToUser} flag, which reflects the view hierarchy rather than the composed pixels; overlay malware studies have shown that a ``programmatically visible overlay can be visually invisible to users''~\cite{yan2019overlay}.
+
+\paragraph{Tiles} Screenshots are divided into tiles of $s\times s$ pixels ($s=32$ by default). Each tile receives the join of the labels of the layers that contribute non-transparent pixels to it (\cref{eq:tilejoin}). The perceivability bit of a tile is the conjunction of the bits of the text-bearing nodes it intersects.
+
+\paragraph{Optional developer annotation} Content that a third party writes inside an app's own views (a product description, a review, a shared note) is drawn by the app's process and receives $\lAPP$. The AgentHazard authors argue that operating systems should let developers annotate GUI elements with source metadata~\cite{liu2026agenthazard}, and Android already accepts a per-view attribute of a similar kind, \texttt{accessibilityDataSensitive}~\cite{android_blog_a11y_sensitive}. \PG{} optionally accepts a per-view origin attribute (for example, ``user-generated, third party''). An annotated view is labeled $\lTOP$, which only ever adds masking. Because the attribute can only raise a label, a malicious app gains nothing by setting it; an app that omits it simply gets the default.
+
+\paragraph{Integrity of labels} Every field except the optional annotation is computed from \texttt{system\_server} or SurfaceFlinger state and is not writable by apps. App-supplied node attributes (text, class name, package name in the node) are treated as content, not as provenance.
+
+\subsection{\PA{}}\label{sec:design-adapter}
+
+The \PA{} is a library shipped with the agent SDK. It requests an observation from the OS through an extended accessibility call and receives the tree and the tiles together with their records, labels, and an observation identifier. It serializes the labels into the agent's prompt format: for tree-based agents, each node carries a short provenance attribute; for screenshot agents, an optional overlay draws thin colored borders around untrusted regions. Legacy agents that are unaware of \PG{} receive the same tree and screenshot as today. This choice matters for the security argument: the labels shown to the model are \emph{advisory}, and the guarantees of \cref{sec:theory} do not depend on whether the model reads them. The adapter also exports the agent's re-execution callback (\cref{sec:design-gate}).
+
+\subsection{\CG{}: masked re-execution of GUI steps}\label{sec:design-gate}
+
+\paragraph{Interception} Agents act through the accessibility action path or through gesture and input injection, all of which pass through \texttt{system\_server}. The \CG{} sits at this boundary. For every proposed action it evaluates the protected-action predicate $\prot(a,o_t)$ against the sink policy (\cref{sec:design-policy}). Unprotected actions go directly to the \DB{}. Protected actions are held.
+
+\paragraph{Masked context} For a held action, the gate computes the untrusted set $\U_t(a)$ of \cref{eq:untrusted} from the labels of all observations in the transcript and builds the trusted projection $\Proj_{\U_t(a)}(\xi_t)$ of \cref{eq:proj}: the OS-recorded task, the dispatched actions, and the observations with untrusted content replaced by the placeholder. The agent's own memory and reasoning traces are not included, because the OS cannot see them and they may carry injected instructions from earlier steps.
+
+\paragraph{Callback} The gate invokes the agent's re-execution callback, a stateless entry point exported by the agent SDK that runs in an Android isolated process, receives a context in the agent's own input format, and returns a single proposed action. The callback evaluates the same decision function as the agent's main loop (the same prompt template, model, and action parser) but has no access to the agent's memory. For on-device models the OS can check the model file's digest; for remote models the fidelity of the callback is an assumption (\cref{asm:fidelity}).
+
+\paragraph{Decision} The gate resolves the returned action's target against the masked observation and compares it with the held action under the configured equivalence (\cref{def:equiv}). For deterministic decoding one trial suffices: the action passes if and only if the two are equivalent. For stochastic decoding the gate draws $k$ independent trials and passes the action if the fraction of equivalent trials is at least $\theta$; \cref{thm:stochastic} quantifies the error. Trials share the masked prefix, so they can run in parallel and reuse a prefix cache. The comparison is a deterministic function; no model is asked whether the action is safe.
+
+\paragraph{Escalation and endorsement} An action that does not pass is escalated. SystemUI, which is trusted, renders a prompt that names the action and its target and highlights the untrusted regions that were masked; the user approves or denies. An approved action proceeds to the \DB{}. To limit prompts, an endorsement can be scoped to the remainder of the current task for the same sink class and target; the endorsement rate is a primary utility metric in \cref{sec:eval}.
+
+\paragraph{Cheaper attribution} When the agent runs an on-device model with white-box access, the gate can compute an attention-rollout score~\cite{abnar2020attentionflow}, the share of attribution mass on tokens that encode untrusted regions, before re-executing. We use the score only to \emph{escalate early} when it is high; a low score never lets an action pass without re-execution. This preserves the guarantee while saving re-executions on clearly injected steps. Because attention is not a faithful explanation in general~\cite{jain2019attention}, we also evaluate an attribution-only variant, which passes actions with low scores, as an ablation without any guarantee.
+
+\subsection{\DB{}: dispatch-time target binding}\label{sec:design-binder}
+
+When the \LS{} serves observation $o_t$, it records for every interactive node a binding $\bind=(\tok,\nid,\dig,\uid)$: the token of the node's window, the node's identity within that window, a digest $\dig$ of the node's class, text, content description, view-id resource name, and bounds, and the owner UID. An action carries the identifier of the observation it was chosen on. At dispatch, the \DB{} resolves the action's target in $o_t$ to its binding and performs two checks. (i) While holding the WindowManager lock that the input dispatcher uses for window lookup, it checks that the window with token $\tok$ still exists, is owned by $\uid$, and, for coordinate actions, is the topmost touchable window at the coordinates. If a check fails, the action is rejected and the agent must observe again. Because the check and the enqueueing happen under one lock, no window change can interleave between them. (ii) For node actions, the expected node identity and digest travel with the action, and the framework's accessibility interaction code in the target window's process executes the action only if node $\nid$ still exists and its current digest equals $\dig$. This second check runs in the target's process, so it is exactly as trustworthy as the principal that owns the window; an app that disables it can only misdirect actions within its own window, which carries its own label.
+
+Qian et al.\ name the missing property ``visual atomicity'' and show that it does not hold on Android~\cite{qian2026zeropermission}. The \DB{} does not make the screen atomic; it makes the \emph{action} conditional on the screen not having changed in the ways that matter. Unlike pixel-based pre-dispatch verification on the desktop~\cite{xu2026pusv}, it compares OS identities, which an app cannot forge, and node digests, which change whenever the addressed content changes.
+
+\subsection{Policy: sinks, clearances, and defaults}\label{sec:design-policy}
+
+\Cref{tab:sinks} lists the sink classes. Sinks are recognized by deterministic rules over OS-owned surfaces where possible (the permission controller's grant dialog, the package installer's confirmation, the system share sheet) and by per-app rules over view-id resource names and roles otherwise (send buttons of messaging and e-mail apps, payment confirmation buttons, destructive confirmation dialogs). Per-app rules are necessarily incomplete; an action that no rule classifies as protected bypasses the gate (but not the binder). The guarantee of \cref{sec:theory} is stated relative to the sink classifier for this reason, and sink coverage is measured in \cref{sec:eval}.
+
+\begin{table}[t]
+\centering
+\caption{Default sink policy. Recognition rules marked OS are based on system-owned surfaces; rules marked app are per-app rules and are incomplete by nature. The clearance is the least trustworthy label an action may depend on without endorsement.}
+\label{tab:sinks}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}l X c c@{}}
+\toprule
+Sink class & Recognition rule & Source & Default $\clr$ \\
+\midrule
+\textsf{grant}   & Allow button of the permission grant dialog; enabling an accessibility service or device admin & OS & $\lSYS$ \\
+\textsf{install} & Install confirmation of the package installer; enabling unknown sources & OS & $\lSYS$ \\
+\textsf{share}   & Target selection in the system share sheet & OS & $\lAPP$ \\
+\textsf{send}    & Send control of messaging, e-mail, and social apps (view-id and role rules) & app & $\lAPP$ \\
+\textsf{pay}     & Payment confirmation controls (view-id and role rules) & app & $\lAPP$ \\
+\textsf{delete}  & Destructive confirmation in dialogs (role and text rules) & app & $\lAPP$ \\
+\textsf{type-untrusted} & \textsf{type} into a field whose label is $\lWEB$, $\lSDK$, $\lNTF$, or $\lTOP$ & OS & $\lAPP$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The \textsf{type-untrusted} class covers exfiltration: typing a one-time password, an address, or a message history into a field that belongs to a web page or an ad is a protected action even though typing in general is not. Clearances for \textsf{grant} and \textsf{install} are set to $\lSYS$, so that for these actions even the foreground app's own content is masked during re-execution; whether the agent still grants a permission when it sees only the task, the system dialog, and the history of actions is exactly the question the user would want answered.

@@ -1,0 +1,6 @@
+% =====================================================================
+% sections/conclusion.tex
+% =====================================================================
+\section{Conclusion}\label{sec:conclusion}
+
+Mobile GUI agents act on content they cannot attribute. Measurement studies agree that this is exploitable through ads, WebViews, notifications, overlays, hidden nodes, repackaged apps, and the observe-to-act gap, and several of them call for provenance. \PG{} answers that call where the facts live: the Android OS labels every perceived region by origin and perceivability, tests each protected action by re-executing the agent's decision with untrusted and invisible content masked, and binds every action to the window and node it was chosen on. The resulting property, trusted sufficiency, is precise, checkable without an LLM judge, and deliberately weaker than non-interference; we have stated where it stops and how to measure the gaps. The next step is the implementation on AOSP and the evaluation specified in \cref{sec:eval}, beginning with the decisive experiment that separates what labels shown to the model achieve from what OS enforcement achieves.

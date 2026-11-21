@@ -1,0 +1,121 @@
+%% =====================================================================
+%% ProvGuard: Origin-Labeled Perception and Causal Action Attribution
+%%            for Mobile GUI Agents
+%% Elsevier elsarticle (preprint, 12pt) manuscript.
+%% Source of truth for scope: idea.pdf (see idea_fidelity_report.md).
+%% =====================================================================
+\documentclass[preprint,12pt]{elsarticle}
+
+% ---------------------------------------------------------------- page
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+
+% ---------------------------------------------------------------- math
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+
+% ---------------------------------------------------------------- tables / algorithms
+\usepackage{booktabs,multirow,array,tabularx,makecell}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% ---------------------------------------------------------------- graphics
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,backgrounds,
+  shapes.geometric,shapes.symbols,shapes.misc,decorations.pathreplacing,
+  patterns,matrix,shadows.blur}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots,fillbetween}
+\input{figures/tikz_styles}
+
+% ---------------------------------------------------------------- refs
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=pgBlue,citecolor=pgGreen,urlcolor=pgBlue]{hyperref}
+\usepackage[capitalise,nameinlink]{cleveref}
+\usepackage{enumitem}
+\setlist{itemsep=2pt,topsep=4pt}
+
+% ---------------------------------------------------------------- theorem environments
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{example}{Example}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\crefname{assumption}{Assumption}{Assumptions}
+\crefname{definition}{Definition}{Definitions}
+\crefname{lemma}{Lemma}{Lemmas}
+\crefname{proposition}{Proposition}{Propositions}
+\crefname{corollary}{Corollary}{Corollaries}
+\crefname{remark}{Remark}{Remarks}
+\crefname{algorithm}{Algorithm}{Algorithms}
+\crefname{example}{Example}{Examples}
+
+% ---------------------------------------------------------------- macros
+\input{sections/macros}
+
+% ---------------------------------------------------------------- placeholder marker
+\newcommand{\placeholder}[1]{\textcolor{pgRed}{\textsf{[Placeholder: #1]}}}
+\newcommand{\citeneeded}[1]{\textcolor{red}{[Citation needed: #1]}}
+
+\journal{(target journal to be confirmed; see TODO\_before\_submission.md)}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{ProvGuard: Origin-Labeled Perception and Causal Action Attribution for Mobile GUI Agents}
+
+%% Author metadata must be confirmed by the authors before submission.
+\author[inst1]{Author One\corref{cor1}}
+\ead{author.one@example.org}
+\author[inst1]{Author Two}
+\author[inst2]{Author Three}
+\cortext[cor1]{Corresponding author. (Placeholder author block: replace before submission.)}
+\affiliation[inst1]{organization={Affiliation to be confirmed},
+            city={City}, country={Country}}
+\affiliation[inst2]{organization={Affiliation to be confirmed},
+            city={City}, country={Country}}
+
+\input{sections/abstract}
+
+\end{frontmatter}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/system_model}
+\input{sections/problem_formulation}
+\input{sections/methodology}
+\input{sections/algorithm}
+\input{sections/theory}
+\input{sections/experiments}
+\input{sections/discussion}
+\input{sections/limitations}
+\input{sections/conclusion}
+
+\section*{Declaration of competing interest}
+\placeholder{The authors must state any competing interests before submission.}
+
+\section*{Data and code availability}
+\placeholder{Repository link for the ProvGuard AOSP patches, Perception Adapter, attack reproduction scripts, and evaluation harness to be added once the artefacts exist.}
+
+\section*{Declaration of generative AI use}
+\placeholder{Authors must complete the journal's generative-AI disclosure statement.}
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references_verified}
+
+\appendix
+\input{appendix/proofs}
+\input{appendix/additional_experiments}
+
+\end{document}

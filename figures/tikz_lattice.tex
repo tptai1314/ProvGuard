@@ -1,0 +1,31 @@
+% =====================================================================
+% figures/tikz_lattice.tex -- Hasse diagram of the integrity label lattice
+% Most trusted at the bottom. Arrows point toward less trust.
+% =====================================================================
+\begin{tikzpicture}[x=1cm,y=1cm,
+  lnode/.style={rounded corners=3pt, minimum width=2.3cm, minimum height=0.75cm,
+                font=\footnotesize, align=center, inner sep=2pt},
+  up/.style={-{Stealth[length=2.2mm]}, thick, draw=pgGray, shorten >=2pt, shorten <=2pt}]
+\node[lnode, honest] (usr) at (0,0)   {\icUser~$\lUSR$\\[-1pt]\scriptsize user input, task};
+\node[lnode, honest] (sys) at (0,1.35) {\icGears~$\lSYS$\\[-1pt]\scriptsize system windows};
+\node[lnode, honest] (app) at (0,2.7)  {\icPhone~$\lAPP$\\[-1pt]\scriptsize app's own window};
+\node[lnode, adv]    (web) at (-3.2,4.9) {\icWeb~$\lWEB$\\[-1pt]\scriptsize WebView origin};
+\node[lnode, adv]    (sdk) at (0,4.9)    {\icAd~$\lSDK$\\[-1pt]\scriptsize SDK Runtime};
+\node[lnode, adv]    (ntf) at (3.2,4.9)  {\icBell~$\lNTF$\\[-1pt]\scriptsize notification};
+\node[lnode, adv]    (top) at (0,6.5)    {\icAttacker~$\lTOP$\\[-1pt]\scriptsize foreign overlay, joins};
+\draw[up] (usr) -- (sys);
+\draw[up] (sys) -- (app);
+\draw[up] (app.north) -- ++(0,0.35) -| (web.south);
+\draw[up] (app) -- (sdk);
+\draw[up] (app.north) -- ++(0,0.35) -| (ntf.south);
+\draw[up] (web.north) |- ([xshift=-4pt]top.west);
+\draw[up] (sdk) -- (top);
+\draw[up] (ntf.north) |- ([xshift=4pt]top.east);
+% clearance line between app and the channel labels
+\draw[pgPurple, very thick, dashed] (-4.2,4.12) -- (4.5,4.12);
+\node[font=\scriptsize, text=pgPurple, fill=white, inner sep=1pt, anchor=west, align=left] at (4.55,4.12) {clearance\\[-1pt] $\clr(a)=\lAPP$};
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, pgGreen] (-4.4,3.95) -- (-4.4,-0.4)
+   node[midway, left=7pt, font=\scriptsize, text=pgGreen, align=right] {kept in\\ $\Proj_{\U}$};
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, pgRed] (-4.4,6.95) -- (-4.4,4.3)
+   node[midway, left=7pt, font=\scriptsize, text=pgRed, align=right] {masked};
+\end{tikzpicture}

@@ -1,0 +1,93 @@
+% =====================================================================
+% sections/algorithm.tex -- algorithms and implementation plan
+% =====================================================================
+\section{Algorithms and Implementation Plan}\label{sec:algorithms}
+
+\Cref{alg:label,alg:gate,alg:binder} give the three trusted procedures; \cref{alg:step} composes them into one agent step. All three are deterministic given their inputs and the outputs of the agent's callback.
+
+\begin{algorithm}[t]
+\caption{\LS{}: \textsc{Observe}$(t)$}\label{alg:label}
+\small
+\begin{algorithmic}[1]
+\Require window list $\mathcal{W}$ from WindowManager; layer state from SurfaceFlinger; notification records; WebView origins; labeling policy $\Lambda$; tile size $s$; thresholds of \cref{def:perc}
+\Ensure labeled observation $o_t$ with records, labels, and bindings; observation id $\mathit{oid}_t$
+\For{each window $w\in\mathcal{W}$ visible to the agent}
+  \State $(u_w,\mathit{wt}_w,\tok_w)\gets$ owner UID, window or surface type, token of $w$
+  \For{each accessibility node $v$ in the tree of $w$}
+    \State $\org(v)\gets$ document origin if $v$ lies in a WebView, else $\bot$
+    \State $(\snd(v),\sens(v))\gets$ sender and sensitivity if $v$ lies in a notification row, else $(\bot,0)$
+    \State $\perc(v)\gets \textsc{Perceivable}(v)$ \Comment{(P1)--(P4); $0$ if any test cannot be evaluated}
+    \State $\rec(v)\gets(u_w,\mathit{wt}_w,\org(v),\snd(v),\sens(v),\perc(v))$; \ $\lab(v)\gets\Lambda(\rec(v))$
+    \State $\bind(v)\gets(\tok_w,\ \mathrm{id}(v),\ \mathrm{digest}(v),\ u_w)$
+  \EndFor
+\EndFor
+\For{each tile $\varrho$ of the composed frame on an $s\times s$ grid}
+  \State $\lab(\varrho)\gets\bigsqcup\{\lab(\ell):\ \ell \text{ layer with non-transparent pixels in } \varrho\}$ \Comment{\cref{eq:tilejoin}}
+  \State $\perc(\varrho)\gets\bigwedge\{\perc(v): v \text{ text-bearing node intersecting } \varrho\}$
+\EndFor
+\State append $o_t$ to the transcript $\xi$; \Return $(o_t,\mathit{oid}_t)$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{\CG{}: \textsc{Gate}$(a,\mathit{oid}_t)$}\label{alg:gate}
+\small
+\begin{algorithmic}[1]
+\Require proposed action $a$ chosen on observation $\mathit{oid}_t$; transcript $\xi_t$; policy $(\Sinks,\clr,\eqv)$; trials $k\ge1$; threshold $\theta\in(0,1]$; optional attribution score $\eta(a)$ and cut-off $\eta^\star$
+\Ensure \PASS{} or \ESC{}
+\If{$\neg\prot(a,o_t)$} \Return \PASS \Comment{unprotected: gate not involved}
+\EndIf
+\State $\U\gets\{\rho\in\bigcup_{i\le t}\R_i:\ \lab(\rho)\nlle\clr(a)\ \lor\ \perc(\rho)=0\}$ \Comment{\cref{eq:untrusted}}
+\If{attribution enabled \textbf{and} $\eta(a)\ge\eta^\star$} \Return \ESC \Comment{early escalation only}
+\EndIf
+\State $x\gets\Proj_{\U}(\xi_t)$ \Comment{task, past actions, masked observations; no agent memory}
+\For{$i=1,\dots,k$ \textbf{in parallel}}
+  \State $a'_i\gets\textsc{Callback}(x)$ \Comment{agent's own model, isolated and stateless}
+\EndFor
+\State $\hat p\gets\frac1k\sum_{i=1}^{k}\ind[a'_i\eqv a]$ \Comment{targets resolved against $\Mask_{\U}(o_t)$}
+\If{$\hat p\ge\theta$} \Return \PASS \Else\ \Return \ESC
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{\DB{}: \textsc{Dispatch}$(a,\mathit{oid}_t)$}\label{alg:binder}
+\small
+\begin{algorithmic}[1]
+\Require action $a$ that passed the gate or was endorsed; bindings of observation $\mathit{oid}_t$
+\Ensure delivered, or rejected with \textsc{Reobserve}
+\State $(\tok,\nid,\dig,u)\gets\bind(\hat{\mathit{tgt}}(a,o_t))$ \Comment{binding of the target observed at $t$}
+\State \textbf{acquire} the WindowManager lock used by input dispatch
+\State $w\gets$ live window with token $\tok$
+\If{$w=\bot$ \textbf{or} $\mathrm{owner}(w)\neq u$} \textbf{release}; \Return \textsc{Reobserve}
+\EndIf
+\If{$a$ addresses coordinates \textbf{and} $\mathrm{TopTouchable}(\mathit{x},\mathit{y})\neq w$} \textbf{release}; \Return \textsc{Reobserve}
+\EndIf
+\State enqueue the event or accessibility action for $w$, carrying $(\nid,\dig)$ for node actions; \textbf{release}; append $a$ to $\xi$
+\State \Comment{in $w$'s process, the framework executes a node action only if node $\nid$ exists and its digest equals $\dig$}
+\State \Return delivered
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{One \PG{} step}\label{alg:step}
+\small
+\begin{algorithmic}[1]
+\State $(o_t,\mathit{oid}_t)\gets\textsc{Observe}(t)$ \Comment{\cref{alg:label}}
+\State agent proposes $a_t$ using $o_t$ (and any internal state) \Comment{untrusted}
+\State $d\gets\textsc{Gate}(a_t,\mathit{oid}_t)$ \Comment{\cref{alg:gate}}
+\If{$d=\ESC$}
+  \State show SystemUI prompt with $a_t$, its target, and highlighted $\U$; \textbf{if} denied \textbf{then} drop $a_t$; notify agent; \Return
+\EndIf
+\State $r\gets\textsc{Dispatch}(a_t,\mathit{oid}_t)$ \Comment{\cref{alg:binder}}
+\If{$r=\textsc{Reobserve}$} notify agent to observe again \EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Complexity}\label{sec:complexity}
+
+Let $n_t$ be the number of accessibility nodes, $m_t$ the number of composed layers, and $N_t=\lceil W/s\rceil\lceil H/s\rceil$ the number of tiles for a $W\times H$ display. \Cref{prop:complexity} in \cref{sec:theory} shows that \cref{alg:label} runs in $O((n_t+N_t)\,m_t\,b + P_t)$ time, where $P_t$ is the number of pixels sampled by the contrast test, and that the window-level checks of \cref{alg:binder} add $O(|\mathcal{W}|\,b)$ per action, where $b$ bounds the rectangles per visible region. The dominant cost of \PG{} is not computation in the OS but the $k$ additional model calls of \cref{alg:gate}, which occur only on protected actions. With a fraction $\pi$ of protected steps, the expected number of model calls per step is $1+\pi k$ (\cref{prop:cost}). For a 1080$\times$2400 display and $s=32$, $N_t=34\times75=2{,}550$ tiles.
+
+\subsection{Implementation plan}\label{sec:impl-plan}
+
+\PG{} has not yet been implemented; this subsection states the plan against which the evaluation in \cref{sec:eval} will be run. The target is AOSP on Pixel devices. The \LS{} requires changes in AccessibilityManagerService (to attach records to nodes served to agents), in WindowManager (to export owner UID, type, and token per window to the \LS{}), and in SurfaceFlinger (to compute visible regions under the occlusion rule and to sample frames for the contrast test). WebView document origins require a hook in the WebView provider; per-node origins inside a document would require a Chromium change and are out of scope for the first prototype. The \CG{} and the \DB{} are new services in \texttt{system\_server} that hook the accessibility action path and input injection. The \PA{} is a library with bindings for the four agents in \cref{sec:eval}. Window ownership, overlay type, notification sender, and SDK Runtime process boundaries are already available in AOSP; the compositor-side perceivability test is the hardest piece. We estimate the effort at two engineers for five months.

@@ -1,0 +1,117 @@
+% =====================================================================
+% appendix/proofs.tex -- complete proofs of Section 7
+% Every proof below is complete within the model of Section 4.
+% No external theorem is invoked without proof: the Chernoff bound and the
+% Bernoulli Pinsker-type inequality are derived in Lemma A.1 and A.2.
+% =====================================================================
+\section{Proofs}\label{app:proofs}
+
+Throughout, the model, notation, and assumptions are those of \cref{sec:formulation,sec:theory}. ``Dispatched'' means that \cref{alg:binder} enqueued the action for delivery.
+
+\subsection{Auxiliary inequalities}
+
+The binomial tail bounds used in \cref{thm:stochastic} are classical; to keep the appendix self-contained we derive the two facts we need.
+
+\begin{lemma}[Chernoff bound for binomial tails]\label{lem:chernoff}
+Let $Z\sim\Bin(k,q)$ with $q\in(0,1)$ and let $x\in(q,1]$. Then $\Prob[Z\ge xk]\le\exp\bigl(-k\,D(x\|q)\bigr)$, with $D(1\|q)=\ln(1/q)$.
+\end{lemma}
+
+\begin{proof}
+For any $\zeta>0$, Markov's inequality applied to $e^{\zeta Z}$ and independence of the $k$ Bernoulli summands give $\Prob[Z\ge xk]\le e^{-\zeta xk}\,\E[e^{\zeta Z}]=\exp\bigl(-k[\zeta x-\ln(1-q+qe^{\zeta})]\bigr)$. For $x<1$, the exponent $h(\zeta)=\zeta x-\ln(1-q+qe^\zeta)$ is concave with $h'(\zeta)=x-\frac{qe^\zeta}{1-q+qe^\zeta}$, which vanishes at $e^{\zeta^\star}=\frac{x(1-q)}{q(1-x)}$; since $x>q$, $\zeta^\star>0$. Substituting, $1-q+qe^{\zeta^\star}=\frac{1-q}{1-x}$ and
+\[
+h(\zeta^\star)=x\ln\frac{x(1-q)}{q(1-x)}-\ln\frac{1-q}{1-x}=x\ln\frac{x}{q}+(1-x)\ln\frac{1-x}{1-q}=D(x\|q).
+\]
+For $x=1$, $\Prob[Z\ge k]=q^k=\exp(-k\ln(1/q))$ directly.
+\end{proof}
+
+\begin{lemma}[Quadratic lower bound on Bernoulli divergence]\label{lem:pinsker}
+For $x\in[0,1]$ and $y\in(0,1)$, $D(x\|y)\ge 2(x-y)^2$.
+\end{lemma}
+
+\begin{proof}
+Fix $x$ and let $g(y)=D(x\|y)-2(x-y)^2$ on $(0,1)$, with the convention $0\ln 0=0$. Then $g(x)=0$ and $g'(y)=-\frac{x}{y}+\frac{1-x}{1-y}+4(x-y)=(y-x)\Bigl[\frac{1}{y(1-y)}-4\Bigr]$. Since $y(1-y)\le\frac14$, the bracket is non-negative, so $g'$ has the sign of $y-x$: $g$ is non-increasing on $(0,x]$ and non-decreasing on $[x,1)$. Hence $g(y)\ge g(x)=0$.
+\end{proof}
+
+\subsection{Proofs for labels and masking}
+
+\begin{proof}[Proof of \cref{lem:lattice}]
+(i) $\Lat$ is finite and $\lle$ is reflexive, antisymmetric, and transitive by construction (it is the reflexive--transitive closure of the covering relations $\lUSR\lle\lSYS\lle\lAPP\lle\{\lWEB,\lSDK,\lNTF\}\lle\lTOP$). Every pair has a join and a meet: pairs in the chain $\lUSR\lle\lSYS\lle\lAPP$ and pairs comparable with each other have their larger (smaller) element as join (meet); for distinct $\ell,\ell'\in\{\lWEB,\lSDK,\lNTF\}$ the only upper bound is $\lTOP$ and the lower bounds are $\lUSR,\lSYS,\lAPP$, so $\ell\ljoin\ell'=\lTOP$ and $\ell\sqcap\ell'=\lAPP$. A finite poset in which every pair has a join and a meet is a lattice. $\Lambda_0$ is total because its precedence list ends with a catch-all rule.
+
+(ii) By the definition of join, $\ell\lle\ell\ljoin\ell'$ for all $\ell,\ell'$, so adding a layer $\ell$ to the join in \cref{eq:tilejoin} cannot lower the result.
+
+(iii) Let $\rho\in\U_t(a;\lab,\perc)$. If $\lab(\rho)\nlle\clr(a)$, then $\lab'(\rho)\nlle\clr(a)$, for otherwise $\lab(\rho)\lle\lab'(\rho)\lle\clr(a)$ by transitivity. If $\perc(\rho)=0$, then $\perc'(\rho)\le\perc(\rho)=0$. In both cases $\rho\in\U_t(a;\lab',\perc')$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{lem:overapprox}]
+\Cref{asm:labels} states $\lab^*\lle\lab$ and $\perc\le\perc^*$ pointwise, that is, $\perc^*\ge\perc$. Apply \cref{lem:lattice}(iii) with $(\lab^*,\perc^*)$ in the role of $(\lab,\perc)$ and $(\lab,\perc)$ in the role of $(\lab',\perc')$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{lem:projection}]
+By \cref{eq:proj}, $\Proj_S(\xi_t)=(T,a_{1:t-1},\Mask_S(o_1),\dots,\Mask_S(o_t))$. The first two components coincide by hypothesis. For each $i\le t$, $\Mask_S(o_i)$ and $\Mask_S(o'_i)$ have the same region set and the same geometry by hypothesis; every region in $S$ carries the placeholder $\masked$ in both; and every region outside $S$ carries the same content by hypothesis. Hence $\Mask_S(o_i)=\Mask_S(o'_i)$ for all $i$.
+\end{proof}
+
+\subsection{Proofs for trusted sufficiency}
+
+\begin{proof}[Proof of \cref{thm:sufficiency}]
+Let $a$ be protected, chosen at step $t$ on observation $o_t$, and dispatched without endorsement. By \cref{asm:mediation}, $a$ passed through \cref{alg:gate} before \cref{alg:binder}. By \cref{alg:step}, an action for which the gate returns \ESC{} reaches \cref{alg:binder} only after endorsement; since $a$ was not endorsed, the gate returned \PASS. Inspect \cref{alg:gate}: the first \PASS{} branch requires $\prot(a,o_t)=0$, which is false; the attribution branch returns only \ESC{}. Hence \PASS{} was returned by the final comparison, with $x=\Proj_{\U_t(a)}(\xi_t)$ computed from the transcript recorded by \PG{} (\cref{asm:tcb}). By \cref{asm:fidelity} with deterministic $f$, every trial returns $a'_i=f(x)$, so $\hat p\in\{0,1\}$; since $\theta>0$ and the gate passed, $\hat p=1$, that is, $f(x)\eqv a$. Target resolution in this comparison is performed against $\Mask_{\U_t(a)}(o_t)$; because hit-testing uses only geometry and interaction flags, which masking preserves (\cref{def:mask}), the resolved targets are those of \cref{def:action} on $o_t$, and the equivalence is the one of \cref{def:equiv}. This proves \cref{eq:sufficiency}.
+
+For the second statement, \cref{lem:overapprox} gives $\U^*_t(a)\subseteq\U_t(a)$. The projection $x$ replaces the content of every region in $\U_t(a)$, hence of every region in $\U^*_t(a)$, by the placeholder. Every region whose content remains in $x$ is therefore outside $\U^*_t(a)$, that is, it has $\lab^*(\rho)\lle\clr(a)$ and $\perc^*(\rho)=1$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cor:ni}]
+By \cref{thm:sufficiency}, $f(\Proj_S(\xi_t))\eqv a$ and $f(\Proj_S(\xi'_t))\eqv a'$. By \cref{lem:projection}, $\Proj_S(\xi_t)=\Proj_S(\xi'_t)$, and since $f$ is deterministic both evaluate to the same action $b$. The observations $o_t$ and $o'_t$ have the same geometry, so target resolution, and hence $\eqv$, is the same relation in both transcripts. Then $a\eqv b$ and $a'\eqv b$, and by symmetry and transitivity of $\eqv$ (\cref{def:equiv}), $a\eqv a'$.
+\end{proof}
+
+\subsection{Proofs for stochastic agents}
+
+\begin{proof}[Proof of \cref{thm:stochastic}]
+Condition on $\xi_t$ and $a$. By the argument in the proof of \cref{thm:sufficiency}, $a$ passes if and only if the final comparison of \cref{alg:gate} returns \PASS. By \cref{asm:fidelity}, the trials $a'_1,\dots,a'_k$ are independent samples from $f(\Proj_{\U_t(a)}(\xi_t))$, so the indicators $\ind[a'_i\eqv a]$ are independent Bernoulli variables with mean $q$ (\cref{def:support}), and $Z=\sum_i\ind[a'_i\eqv a]\sim\Bin(k,q)$. The gate passes iff $Z/k\ge\theta$, and since $Z$ is an integer this is equivalent to $Z\ge\lceil\theta k\rceil$, which proves \cref{eq:binom}.
+
+\emph{Monotonicity.} Let $V_1,\dots,V_k$ be independent uniform variables on $[0,1]$ and set $Z_q=\sum_i\ind[V_i\le q]$. Then $Z_q\sim\Bin(k,q)$, and $q\le q'$ implies $Z_q\le Z_{q'}$ pointwise, so $\Prob[Z_q\ge m]\le\Prob[Z_{q'}\ge m]$ for every $m$.
+
+(i) Let $q\le q_0<\theta$. By monotonicity, $P_{\mathrm{pass}}(k,q,\theta)\le P_{\mathrm{pass}}(k,q_0,\theta)=\Prob[Z_{q_0}\ge\theta k]$. If $q_0=0$ the probability is $0$. Otherwise \cref{lem:chernoff} with $x=\theta>q_0$ gives the bound $\exp(-kD(\theta\|q_0))$, and \cref{lem:pinsker} gives $D(\theta\|q_0)\ge 2(\theta-q_0)^2$.
+
+(ii) Let $q\ge q_1>\theta$. Then $1-P_{\mathrm{pass}}=\Prob[Z_q<\theta k]\le\Prob[Z_{q_1}<\theta k]$ by monotonicity. If $q_1=1$ this probability is $0$. Otherwise, $k-Z_{q_1}\sim\Bin(k,1-q_1)$ and $\Prob[Z_{q_1}<\theta k]\le\Prob[k-Z_{q_1}\ge(1-\theta)k]$. Since $1-\theta>1-q_1$, \cref{lem:chernoff,lem:pinsker} give the bound $\exp(-2k((1-\theta)-(1-q_1))^2)=\exp(-2k(q_1-\theta)^2)$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cor:trials}]
+$\exp(-2k(\theta-q_0)^2)\le\delta$ if and only if $k\ge\ln(1/\delta)/(2(\theta-q_0)^2)$, and likewise for $q_1$. If $\theta=(q_0+q_1)/2$, then $\theta-q_0=q_1-\theta=(q_1-q_0)/2$ and both conditions reduce to $k\ge2\ln(1/\delta)/(q_1-q_0)^2$.
+\end{proof}
+
+\subsection{Proofs for dispatch binding}
+
+\begin{proof}[Proof of \cref{thm:binding}]
+(i) By \cref{asm:mediation}, a delivered action was enqueued by \cref{alg:binder}, which enqueues only after all of its window-level checks succeed. These checks establish that the live window $w$ with token $\tok$ exists, that $\mathrm{owner}(w)=u$, and, for coordinate actions, that $w$ is the topmost touchable window at the coordinates. By \cref{asm:atomic}, the checks and the enqueueing happen under the lock that input dispatch uses to resolve targets, so no window is added, removed, reordered, or re-owned between them; and the enqueued event is delivered to $w$'s input channel or dropped. By \cref{asm:tcb}, the token $\tok$ recorded at observation identifies the same window $w$ at enqueueing, since tokens identify at most one live window and are not reassigned while the observation can be acted on. Hence the receiving window is the observed window and satisfies the stated properties at the moment of enqueueing.
+
+(ii) For node actions, the enqueued action carries $(\nid,\dig)$. By \cref{asm:framework}, $w$'s process executes the action only on a node with identity $\nid$ whose current digest equals $\dig$, and otherwise rejects it.
+\end{proof}
+
+\begin{proof}[Proof of \cref{cor:rebinding}]
+Let $w$ be the window observed when the action was chosen and $w'$ the window that the attacker brings to the foreground. They are distinct windows (they belong to different apps), so by \cref{asm:tcb} they have distinct tokens. By \cref{thm:binding}(i), a delivered action is delivered to the window with the observed token, that is, to $w$. For a coordinate action, if $w'$ covers the coordinates with a touchable region, then $w$ is not the topmost touchable window there and the action is rejected; if $w'$ does not, the action is delivered to $w$. In no case is it delivered to $w'$.
+\end{proof}
+
+\subsection{Proofs for composition, separation, and cost}
+
+\begin{proof}[Proof of \cref{thm:e2e}]
+(i) Every delivered action passed through \cref{alg:binder} (\cref{asm:mediation}); apply \cref{thm:binding}. (ii) For a protected action delivered without endorsement, \cref{thm:sufficiency} together with \cref{lem:overapprox} gives trusted sufficiency with respect to the true untrusted set when $f$ is deterministic, and \cref{thm:stochastic}(i) gives the bound when $f$ is stochastic. \Cref{asm:task} ensures that the task component of the projection is the user's task, so that ``trusted'' content includes the authentic task and nothing supplied by an app.
+\end{proof}
+
+\begin{proof}[Proof of \cref{prop:separation}]
+Both parts are by construction, with a deterministic agent whose actual actions are $a_t=f(\xi_t)$.
+
+(a) Let the task be $T=$ ``reply to Alice that I am running late'' and let $o_1$ contain the messaging app's compose field with that text already typed, the app's \emph{Send} node, and one ad region $\rho_{\mathrm{ad}}$ with $\lab(\rho_{\mathrm{ad}})=\lSDK$ and arbitrary content. Let $f$ return \textsf{tap}(\emph{Send}) whenever the task begins with ``reply'' and a non-empty compose field and a \emph{Send} node are present, regardless of any other content. The action $a_1=\textsf{tap}(\emph{Send})$ is protected with $\clr(a_1)=\lAPP$ and $\U_1(a_1)=\{\rho_{\mathrm{ad}}\}$. Masking $\rho_{\mathrm{ad}}$ leaves the compose field and the \emph{Send} node unchanged, so $f(\Proj_{\U_1}(\xi_1))=a_1$ and the gate passes. A policy that blocks protected actions once untrusted content has entered the context blocks $a_1$, because $\rho_{\mathrm{ad}}$ is part of the context.
+
+(b) Consider a deterministic environment in which the screen after each action is a fixed function of the actions taken. At step 1 the screen contains a notification region $\rho_n$ with $\lab(\rho_n)=\lNTF$ and the messaging app with a non-empty compose field; the two transcripts $\xi$ and $\xi'$ differ only in $\cont(\rho_n)$, which is ``open settings'' in $\xi$ and a benign string in $\xi'$. Define $f$ by the following rules, applied in order: (1) if the current observation contains a region whose content is ``open settings'', return \textsf{launch}(Settings); (2) if the previous action was \textsf{launch}(Settings), return \textsf{tap} on the permissions entry of an app $X$; (3) if a system permission dialog with an \emph{Allow} node is displayed, return \textsf{tap}(\emph{Allow}); (4) if a non-empty compose field and a \emph{Send} node are displayed, return \textsf{tap}(\emph{Send}); (5) otherwise return \textsf{back}.
+
+In $\xi$, $a_1=\textsf{launch}(\text{Settings})$ and $a_2$ is the tap on the permissions entry; both are unprotected, pass the gate trivially, and are delivered by the binder because no window changes under them. Let the environment then display the permission dialog at step 3; the notification $\rho_n$ is still in the history. The action $a_3=\textsf{tap}(\emph{Allow})$ is protected (\textsf{grant}, $\clr=\lSYS$); the dialog belongs to a system window and is labeled $\lSYS$, so it is kept in the projection, while $\rho_n$ and all app-labeled regions are masked. Under the projection, rule (1) no longer fires (the content of $\rho_n$ is masked), rule (2) does not fire (the previous action was the tap on the permissions entry), and rule (3) fires, so $f(\Proj_{\U_3}(\xi_3))=a_3$ and the gate passes.
+
+In $\xi'$, rule (1) does not fire at step 1 and rule (4) does, so $a'_1=\textsf{tap}(\emph{Send})$; it is protected with clearance $\lAPP$, and masking $\rho_n$ leaves rule (4) applicable, so it passes. Let the environment then show an empty compose field, so that rule (5) yields \textsf{back} at step 2 and, after returning to a screen with a pre-filled draft, rule (4) yields $a'_3=\textsf{tap}(\emph{Send})$ at step 3, which passes as before. At step 3, the two transcripts dispatch $\textsf{tap}(\emph{Allow})$ and $\textsf{tap}(\emph{Send})$ without endorsement. These actions have different targets and are not equivalent under $\eqv_c$ or $\eqv_s$. Since the transcripts differ only in the content of $\rho_n$ at step 1, the protected outputs are not a function of the trusted inputs alone, so trajectory-level non-interference with respect to untrusted content fails.
+\end{proof}
+
+\begin{proof}[Proof of \cref{prop:cost}]
+A step costs $\mu$ model calls for the agent's own decision. If the step proposes a protected action, \cref{alg:gate} evaluates the decision function $k$ times on $x=\Proj_{\U_t(a)}(\xi_t)$, at $\mu'$ calls each; otherwise it makes no call. Taking the expectation over steps, of which a fraction $\pi$ are protected, gives $\mu+\pi k\mu'$ calls per step. Each re-execution call consumes at most $|x|$ input tokens, so a protected action costs at most $k\mu'|x|$ additional input tokens. If the $k$ evaluations share the identical input $x$, a prefix cache needs to process those $|x|$ tokens once per distinct call position, which bounds the uncached input by $\mu'|x|$, and by $|x|$ for single-call agents.
+\end{proof}
+
+\begin{proof}[Proof of \cref{prop:complexity}]
+For each node, the owner, type, and token are found by hashing the window identifier ($O(1)$); WebView origin and notification sender are attributes of the enclosing window or row ($O(1)$). Condition (P1) intersects the node's rectangle with the display and a constant number of cutout rectangles ($O(1)$). Condition (P2) intersects the node's rectangle with the visible region of each of the at most $m_t$ layers above it, each a union of at most $b$ rectangles ($O(m_tb)$), and evaluates the combined opacity in the same pass. Condition (P4) reads the layer's alpha ($O(1)$). Condition (P3) samples pixels, whose total over all nodes is $P_t$. Each of the $N_t$ tiles is intersected with the visible region of each layer to collect contributing labels and joined in $O(1)$ per layer, which is $O(m_tb)$ per tile. Summing gives $O((n_t+N_t)m_tb+P_t)$. In \cref{alg:binder}, finding the window by token is $O(1)$ expected with hashing, checking the owner is $O(1)$, and finding the topmost touchable window at a point scans at most $|\mathcal{W}|$ windows in z-order with an $O(b)$ point-in-region test each, which is $O(|\mathcal{W}|b)$. The node check in the target process is an expected $O(1)$ hash lookup by identity plus an $O(1)$ digest over a bounded number of bounded-length attributes.
+\end{proof}

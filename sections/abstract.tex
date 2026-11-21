@@ -1,0 +1,18 @@
+% =====================================================================
+% sections/abstract.tex
+% =====================================================================
+\begin{abstract}
+Mobile GUI agents read the screen through the Android accessibility tree and screenshots, and act by injecting taps and text. Everything they read is treated alike: an instruction in a banner ad, a notification from an unknown sender, or a node that is present in the accessibility tree but invisible to the user carries the same weight as the user's own request. Recent measurement studies report that such indirect prompt injection misleads deployed agents in a large fraction of trials, and several of them call for provenance tracking that no system yet provides. We present \PG{}, an Android framework mechanism that makes provenance a property enforced by the operating system rather than a hint shown to the model. \PG{} has four parts. A \LS{} inside \texttt{system\_server} attaches an origin label and a perceivability bit to every accessibility node and screenshot tile, computed from state the OS already owns: the owning package UID, the window type, the WebView document origin, the notification sender, the SDK Runtime process that drew an ad surface, and compositor-side occlusion, off-screen, and contrast tests. A \PA{} exposes the labeled tree and tiles to agents. A \CG{} intercepts protected actions (send, pay, install, grant permission, delete, share) and performs a masked re-execution of the agent's decision step, with untrusted-origin and non-perceivable regions masked, through a sandboxed callback into the agent's own model; no LLM judge sits in the trusted path. A \DB{} ties every action to the window token and node that were observed and rejects it at dispatch if the target has changed. We formalize the guarantee as \emph{trusted sufficiency}: under stated assumptions, every protected action dispatched without user endorsement is reproduced by the agent's model from the trusted, perceivable projection of the OS-held transcript, and is delivered to the observed window. The property is deliberately weaker than non-interference, and we characterize exactly what it does not cover. For stochastic agents we give exact binomial and Hoeffding-type bounds on misattribution as a function of the number of re-execution trials. We also specify an evaluation on AOSP with Pixel devices, four open-source agents (Mobile-Agent-v3, DroidRun, AutoGLM, UI-TARS), and published attack suites (AgentHazard, MobileWorldSafety, GhostEI-Bench, the nine Not-an-A11y vectors, UI desynchronization, and action rebinding), with ablations that separate the contribution of labels, gate, and binding. All empirical results in this manuscript are placeholders pending the experiments.
+\end{abstract}
+
+\begin{highlights}
+\item Android can label every UI region an agent perceives by origin and perceivability from OS-owned state.
+\item A causal gate re-executes the agent's decision with untrusted regions masked; no LLM judge is trusted.
+\item Dispatch-time binding to the observed window token and node closes the observe-to-act rebinding gap.
+\item Trusted sufficiency is proven under explicit assumptions and shown to be weaker than non-interference.
+\item An evaluation protocol covers four agents, six attack suites, benign utility, latency, and ablations.
+\end{highlights}
+
+\begin{keyword}
+Mobile GUI agents \sep Android \sep indirect prompt injection \sep provenance \sep origin labels \sep perceivability \sep causal attribution \sep masked re-execution \sep dispatch-time binding \sep accessibility
+\end{keyword}

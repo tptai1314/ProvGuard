@@ -1,0 +1,66 @@
+paper_section,page_or_algorithm_or_equation,paper_object,implementation_file,class_or_function_name,test_file,implementation_status,notes
+4.1,page 13 Definition 1,Region and geometry,src/provguard/schemas.py,Region; Geometry; BoundingBox,tests/test_schemas.py,implemented,Content and geometry are separate
+4.1,page 14 Eq. 1,Provenance record,src/provguard/schemas.py,ProvenanceRecord,tests/test_labeling.py,implemented,Exact six fields with optional bottom values
+4.1,page 14 Definition 3 P1-P4,Perceivability,src/provguard/perceivability.py,is_perceivable,tests/test_perceivability.py,implemented_with_synthetic_demo,Real compositor evidence requires AOSP
+4.1,page 14 P2,Combined opacity,src/provguard/perceivability.py,combined_opacity,tests/test_perceivability.py,implemented,Exact formula
+4.1,page 14 P3,Contrast ratio,src/provguard/perceivability.py,contrast_ratio,tests/test_perceivability.py,implemented,Exact formula
+4.2,page 14 Definition 4,Integrity lattice,src/provguard/lattice.py,IntegrityLabel; leq; join; meet,tests/test_lattice.py,implemented,Three channel labels incomparable
+4.2,page 14 Definition 5,Default labeling policy,src/provguard/labeling.py,DefaultLabelingPolicy,tests/test_labeling.py,implemented_with_synthetic_demo,Android facts are adapter inputs
+4.2,page 15 Eq. 2,Screenshot tile join,src/provguard/labeling.py,tile_label,tests/test_labeling.py,implemented,Join of contributing labels
+4.3,page 15 Definition 6,Action triple and target resolution,src/provguard/schemas.py; src/provguard/actions.py,Action; resolve_target,tests/test_core_algorithms.py,implemented,Coordinate hit testing preserves z order
+4.3,page 15 Definition 7,Control and strict equivalence,src/provguard/actions.py,actions_equivalent; normalize_argument,tests/test_core_algorithms.py,implemented,Strict adds whitespace/case normalization
+4.3,page 16 Definition 8,OS-held transcript,src/provguard/schemas.py,Transcript,tests/test_core_algorithms.py,implemented,Excludes agent memory
+4.3,page 16 Definition 9,Decision function,src/provguard/gate.py,DecisionCallback,tests/test_core_algorithms.py,implemented_with_synthetic_demo,External agent callback adapters are stubs
+4.4,page 16 Definition 10,Protected sinks and clearance,src/provguard/sinks.py,SinkClassifier; DEFAULT_CLEARANCES,tests/test_core_algorithms.py,implemented_with_synthetic_demo,App sink rules remain incomplete by design
+4.4,page 16 Eq. 3,Untrusted set,src/provguard/masking.py,untrusted_region_ids,tests/test_core_algorithms.py,implemented,All transcript observations included
+4.4,page 16 Eq. 4,Masking and trusted projection,src/provguard/masking.py,mask_observation; trusted_projection,tests/test_core_algorithms.py,implemented,Geometry and metadata preserved
+4.5,page 16 Definition 13,Group causal dependence,src/provguard/gate.py,CausalGate.evaluate,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Operationalized by equivalence after intervention
+4.5,page 16 Definition 14,Trusted support probability,src/provguard/gate.py,CausalGate.evaluate,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Empirical support fraction over callback trials
+5.1,pages 18-20,Android Label Service collectors,aosp/README.md,AOSP integration boundary,,adapter_stub_waiting_for_external_dependency,Requires pinned AOSP source
+5.2,page 20,Perception Adapter,src/provguard/adapters/agents.py,AgentCallbackAdapter,,adapter_stub_waiting_for_external_dependency,Agent SDK integrations unavailable
+5.3,pages 20-21,Causal Gate,src/provguard/gate.py,CausalGate,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Reference semantics only
+5.3,page 21,Attention early escalation,src/provguard/gate.py,CausalGate.attribution_cutoff,,implemented,Score extraction intentionally not invented
+5.3,page 21,SystemUI endorsement,src/provguard/pipeline.py,ProvGuardPipeline.step,,implemented_with_synthetic_demo,Callback models decision; Android UI external
+5.4,page 21,Dispatch binding,src/provguard/binder.py,DispatchBinder.dispatch,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Actual theorem needs WindowManager lock
+5.5,page 22 Table 4,Default sink policy,src/provguard/sinks.py,SinkClassifier; DEFAULT_CLEARANCES,tests/test_core_algorithms.py,implemented_with_synthetic_demo,System sinks use metadata; app roles configurable
+6,page 23 Algorithm 1,Observe and label,aosp/README.md; src/provguard/labeling.py,DefaultLabelingPolicy,,adapter_stub_waiting_for_external_dependency,Reference label function exists; OS collection does not
+6,page 23 Algorithm 2,Causal Gate,src/provguard/gate.py,CausalGate.evaluate,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Fail-closed callback errors
+6,page 24 Algorithm 3,Dispatch Binder,src/provguard/binder.py,DispatchBinder.dispatch,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Atomicity simulated only
+6,page 24 Algorithm 4,One ProvGuard step,src/provguard/pipeline.py,ProvGuardPipeline.step,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Observe supplied as transcript input
+6.1,page 22; Proposition 3,Label/binder complexity,audits/math_to_code_audit.md,Proposition 3 audit,,intentionally_out_of_scope,Not meaningful without AOSP structures
+7.3,page 26 Eq. 5,Trusted sufficiency,src/provguard/gate.py,CausalGate.evaluate,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Conditional theorem not claimed for Android
+7.4,page 26 Eq. 6,Exact binomial pass probability,src/provguard/statistics.py,binomial_pass_probability,tests/test_statistics.py,implemented,Reproduces Table 5 reference row
+7.4,page 26 Theorem 2(i),KL and Hoeffding false-pass bounds,src/provguard/statistics.py,false_pass_bounds,tests/test_statistics.py,implemented,Exact formulas
+7.4,page 27 Theorem 2(ii),False-escalation bound,src/provguard/statistics.py,false_escalation_bound,tests/test_statistics.py,implemented,Exact formula
+7.4,page 27 Corollary 2,Sufficient trial count,src/provguard/statistics.py,hoeffding_trials,tests/test_statistics.py,implemented,Ceiling is conservative
+7.4,page 27 Table 5,Exact versus Hoeffding trial counts,scripts/gate_bounds.py; src/provguard/statistics.py,exact_minimum_trials; hoeffding_trials,tests/test_statistics.py,implemented,Analytical not experimental
+7.4,page 27 Figure 7,Gate error curves,scripts/gate_bounds.py,binomial_pass_probability,,implemented,Data functions implemented; publication styling not copied
+7.5,page 28 Theorem 3 and Corollary 3,Dispatch binding/rebinding rejection,src/provguard/binder.py,DispatchBinder.dispatch,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Real proof assumptions require AOSP
+7.6,page 28 Theorem 4,End-to-end composition,src/provguard/pipeline.py,ProvGuardPipeline.step,tests/test_core_algorithms.py,implemented_with_synthetic_demo,Conditional on external assumptions
+7.6,pages 28-29 Proposition 1,Separation from taint and non-interference,docs/implementation_notes.md,G1/G2 reference discussion,,implemented_with_synthetic_demo,Synthetic G1 remains successful; B3 differs from gate
+7.6,page 28 Proposition 2,Model-call overhead,docs/implementation_notes.md,overhead interpretation,,implemented,No latency values fabricated
+7.7,page 29 G1-G7,Residual channels,audits/implementation_gaps.md,G1-G7,,implemented,All recorded as limitations/TODOs
+8.1,pages 29-30 RQ1-RQ7,Research questions,audits/paper_implementation_spec.md,Evaluation specification,,not_implemented_requires_manual_data,Requires real system and benchmarks
+8.2,page 30,AOSP Pixel testbed,configs/experiment_template.yaml,aosp configuration,,not_implemented_requires_manual_data,Paper leaves model/tag placeholders
+8.2,page 31,Four agents,src/provguard/adapters/agents.py,MobileAgentV3Adapter; DroidRunAdapter; OpenAutoGLMAdapter; UITARSAdapter,,adapter_stub_waiting_for_external_dependency,No repositories/models downloaded
+8.3,page 31 Table 6,Attack and benign workloads,src/provguard/adapters/datasets.py,ExternalBenchmarkAdapter subclasses,,adapter_stub_waiting_for_external_dependency,Manual provisioning required
+8.4,page 31 B0,No defense,src/provguard/baselines/implementations.py,NoDefenseBaseline,,implemented,Simple fully specified baseline
+8.4,page 32 B1,Spotlighting delimiters,src/provguard/baselines/implementations.py,SpotlightingDelimiter,,implemented,Advisory transform
+8.4,page 32 B2,Defensive system prompt,src/provguard/baselines/implementations.py,DefensivePromptBaseline,,implemented,Exact text unavailable; description-based reimplementation is explicitly distinct
+8.4,page 32 B3,Agent-side taint,src/provguard/baselines/implementations.py,AgentSideTaintBaseline,,implemented_with_synthetic_demo,Client-visible approximation only
+8.4,page 32 B4,OS-Sentinel,src/provguard/baselines/external.py,OSSentinelAdapter,,adapter_stub_waiting_for_external_dependency,External API not invented
+8.5,page 32 Eq. 7,ASR by channel,src/provguard/metrics.py,attack_success_rate; attack_success_rates,tests/test_metrics.py,implemented,Zero denominator raises
+8.5,page 32 Eq. 8,FBR,src/provguard/metrics.py,false_block_rate,tests/test_metrics.py,implemented,Zero denominator raises
+8.5,page 32 Eq. 9,TSR,src/provguard/metrics.py,task_success_rate,tests/test_metrics.py,implemented,Zero denominator raises
+8.5,page 32,Wilson intervals and McNemar,src/provguard/statistics.py,wilson_interval; mcnemar_exact_pvalue,tests/test_statistics.py,implemented,Exact two-sided McNemar
+8.5,page 32,Latency p50/p95,src/provguard/metrics.py,latency_summary,tests/test_metrics.py,implemented,No real measurements claimed
+8.5,page 32,Label/perceivability precision recall,src/provguard/metrics.py,precision_recall,tests/test_metrics.py,implemented,Needs real ground truth
+8.5,page 32,Binder false rejects and sink coverage,src/provguard/metrics.py,binder_false_reject_rate; sink_coverage,tests/test_metrics.py,implemented,Needs real logs
+8.6,page 33 Table 7,System defaults/configuration,configs/default.yaml,configuration fields,,implemented,Matches paper design defaults
+8.7,page 33,Ablations PG-L PG-G PG-B PG-perc,src/provguard/experiments/runner.py,ablate,tests/test_synthetic_data.py,implemented_with_synthetic_demo,Synthetic mechanism comparison only
+8.7,page 33,Attention-only ablation,src/provguard/gate.py,attribution_cutoff,,adapter_stub_waiting_for_external_dependency,Low-score pass variant intentionally not granted a guarantee and not run without extractor
+8.8,pages 33-34 Tables 8-9,Paper result layouts,audits/result_integrity_audit.md,result policy,,not_implemented_requires_manual_data,Paper cells are intentionally empty
+8.8,page 34 Figure 9,Conceptual hypotheses,audits/result_integrity_audit.md,result policy,,intentionally_out_of_scope,Not presented as data
+8.9,page 34,Reproducibility checklist,docs/reproducibility.md,real-run provenance checklist,tests/test_reproducibility.py,implemented,External identifiers remain TODOs
+Appendix B,page 51 Table B.10,Not-an-A11y mapping,docs/data_format.md,NotAnA11yAdapter,,adapter_stub_waiting_for_external_dependency,Requires artifact
+Appendix B,page 52,Perceivability study q distributions AppFunctions energy,TODO_IMPLEMENTATION.md,experiment TODOs,,not_implemented_requires_manual_data,Paper protocol placeholders

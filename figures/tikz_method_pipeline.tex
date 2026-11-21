@@ -1,0 +1,45 @@
+% =====================================================================
+% figures/tikz_method_pipeline.tex -- per-step pipeline (snake layout)
+% Row 1 (left->right): 1 compose, 2 label, 3 present, 4 decide
+% Row 2 (right->left): 5 classify, 6 mask & re-execute, 7 decide, 8 bind
+% Bypass for unprotected actions runs in the corridor between rows.
+% Escalation runs below row 2.
+% =====================================================================
+\begin{tikzpicture}[x=1cm,y=1cm,
+  st/.style={minimum width=3.0cm, text width=2.8cm, minimum height=1.35cm, font=\scriptsize}]
+% ---------------- row 1 ----------------
+\node[infra, st]   (s1) at (0,0)    {\icLayers~\textbf{Compose}\\ OS composes windows,\\ layers, notifications};
+\node[defense, st] (s2) at (3.8,0)  {\icShield~\textbf{Label}\\ $\rec(\rho)$, $\lab(\rho)$, $\perc(\rho)$\\ per node and tile};
+\node[honest, st]  (s3) at (7.6,0)  {\icTree~\textbf{Present}\\ labeled $o_t$ to agent;\\ log in $\xi_t$};
+\node[honest, st]  (s4) at (11.4,0) {\icAgent~\textbf{Decide}\\ agent proposes\\ $a_t\sim f(\cdot)$};
+% ---------------- row 2 ----------------
+\node[defense, st] (s5) at (11.4,-2.7) {\icScale~\textbf{Classify}\\ $\prot(a_t,o_t)$?\\ clearance $\clr(a_t)$};
+\node[defense, st] (s6) at (7.6,-2.7)  {\icRedo~\textbf{Mask \& re-execute}\\ $\Proj_{\U_t(a_t)}(\xi_t)$\\ $k$ trials of $f$};
+\node[defense, st] (s7) at (3.8,-2.7)  {\icScale~\textbf{Compare}\\ $\hat p=\frac{1}{k}\sum_i \ind[a'_i\eqv a_t]$\\ \PASS{} iff $\hat p\ge\theta$};
+\node[defense, st] (s8) at (0,-2.7)    {\icLink~\textbf{Bind \& dispatch}\\ check $(\tok,\nid,\dig,\uid)$\\ under WM lock};
+\node[honest, minimum width=3.0cm, text width=2.8cm, font=\scriptsize] (usr) at (3.8,-4.9) {\icUser~\textbf{Endorse?}\\ SystemUI prompt to user};
+\node[adv, minimum width=1.6cm, text width=1.4cm, font=\scriptsize] (drop) at (7.6,-4.9) {\icNo~drop};
+% ---------------- step numbers ----------------
+\foreach \n in {1,...,8}{
+  \node[stepnum] at (s\n.north west) {\n};
+}
+% ---------------- flows ----------------
+\draw[flowdata] (s1) -- (s2);
+\draw[flowdata] (s2) -- (s3);
+\draw[flowdata] (s3) -- (s4);
+\draw[flowdata] (s4) -- node[arrlabel, right=2pt]{$a_t$} (s5);
+\draw[flowdef] (s5) -- (s6);
+\draw[flowdef] (s6) -- node[arrlabel, above=1pt]{$a'_{1:k}$} (s7);
+\draw[flowdef] (s7) -- node[arrlabel, above=1pt]{\PASS} (s8);
+% bypass for unprotected actions (corridor between the rows)
+\draw[flowctrl] ([xshift=-0.6cm]s5.north) -- ++(0,0.62) -| node[arrlabel, pos=0.25, above=1pt]{unprotected: bypass gate, not binder} ([xshift=0.6cm]s8.north);
+% escalation path below row 2
+\draw[flowctrl] (s7.south) -- node[arrlabel, right=2pt]{\ESC} (usr.north);
+\draw[flowctrl] (usr.west) -| node[arrlabel, pos=0.3, below=1pt]{approve} (s8.south);
+\draw[flowctrl] (usr.east) -- node[arrlabel, below=1pt]{deny} (drop.west);
+% re-observe on binding failure
+\draw[flowctrl] (s8.west) -- ++(-0.45,0) |- node[arrlabel, pos=0.25, left=1pt, rotate=90, anchor=south]{mismatch: re-observe} (s1.west);
+% ---------------- annotations ----------------
+\node[smalltxt, text=pgGray, anchor=north] at ([yshift=-2pt]s1.south) {every step};
+\node[smalltxt, text=pgGreen, anchor=north] at ([yshift=-2pt]s6.south) {protected actions only};
+\end{tikzpicture}

@@ -1,0 +1,128 @@
+% =====================================================================
+% figures/tikz_styles.tex -- shared visual grammar for all ProvGuard figures
+% Colour roles (kept consistent across every figure):
+%   pgBlue   : honest / normal system components (user task, agent, apps)
+%   pgRed    : adversarial / attacker-controlled content and flows
+%   pgGreen  : ProvGuard defence components (labels, gate, binder)
+%   pgPurple : theory / mathematical objects
+%   pgGray   : infrastructure / background (OS internals, devices)
+% Every role is ALSO distinguished by shape or line pattern so that the
+% figures remain readable in grayscale:
+%   honest      -> solid border, rounded corners
+%   adversarial -> dashed border, north-east hatching
+%   defence     -> double border
+%   theory      -> chamfered rectangle
+%   infra       -> thin dotted border, light fill
+% =====================================================================
+\definecolor{pgBlue}{HTML}{1F5FA8}
+\definecolor{pgRed}{HTML}{C0392B}
+\definecolor{pgOrange}{HTML}{D35400}
+\definecolor{pgGreen}{HTML}{1E7B4F}
+\definecolor{pgPurple}{HTML}{6A3D9A}
+\definecolor{pgGray}{HTML}{5F6368}
+\definecolor{pgLight}{HTML}{F4F6F8}
+
+% ---------------------------------------------------------------------
+% Icons: FontAwesome 5 when available, pure-TikZ fallback otherwise.
+% ---------------------------------------------------------------------
+\IfFileExists{fontawesome5.sty}{%
+  \usepackage{fontawesome5}%
+  \newcommand{\icPhone}{\faMobile*}%
+  \newcommand{\icServer}{\faServer}%
+  \newcommand{\icShield}{\faShield*}%
+  \newcommand{\icLock}{\faLock}%
+  \newcommand{\icAgent}{\faRobot}%
+  \newcommand{\icBell}{\faBell}%
+  \newcommand{\icWeb}{\faGlobe}%
+  \newcommand{\icAd}{\faAd}%
+  \newcommand{\icEye}{\faEye}%
+  \newcommand{\icEyeSlash}{\faEyeSlash}%
+  \newcommand{\icUser}{\faUser}%
+  \newcommand{\icAttacker}{\faUserSecret}%
+  \newcommand{\icBug}{\faBug}%
+  \newcommand{\icGears}{\faCogs}%
+  \newcommand{\icData}{\faDatabase}%
+  \newcommand{\icChart}{\faChartBar}%
+  \newcommand{\icDoc}{\faClipboardList}%
+  \newcommand{\icWindow}{\faWindowRestore}%
+  \newcommand{\icTap}{\faHandPointer}%
+  \newcommand{\icLayers}{\faLayerGroup}%
+  \newcommand{\icScale}{\faBalanceScale}%
+  \newcommand{\icSwap}{\faRandom}%
+  \newcommand{\icRedo}{\faRedo}%
+  \newcommand{\icOk}{\faCheckCircle}%
+  \newcommand{\icNo}{\faTimesCircle}%
+  \newcommand{\icFlask}{\faFlask}%
+  \newcommand{\icGraph}{\faProjectDiagram}%
+  \newcommand{\icChip}{\faMicrochip}%
+  \newcommand{\icMail}{\faEnvelope}%
+  \newcommand{\icPay}{\faCreditCard}%
+  \newcommand{\icKey}{\faKey}%
+  \newcommand{\icLink}{\faLink}%
+  \newcommand{\icClock}{\faStopwatch}%
+  \newcommand{\icTree}{\faSitemap}%
+  \newcommand{\icUserShield}{\faUserShield}%
+  \newcommand{\icMegaphone}{\faBullhorn}%
+  \newcommand{\icClone}{\faClone}%
+  \newcommand{\icSearch}{\faSearch}%
+}{%
+  % Fallback: small pure-TikZ glyphs (circle + letter) so the figures still compile.
+  \newcommand{\pgFallbackIcon}[1]{\tikz[baseline=-0.6ex]\node[circle,draw,inner sep=0.6pt,font=\tiny\bfseries]{#1};}%
+  \newcommand{\icPhone}{\pgFallbackIcon{P}}\newcommand{\icServer}{\pgFallbackIcon{S}}%
+  \newcommand{\icShield}{\pgFallbackIcon{D}}\newcommand{\icLock}{\pgFallbackIcon{L}}%
+  \newcommand{\icAgent}{\pgFallbackIcon{A}}\newcommand{\icBell}{\pgFallbackIcon{N}}%
+  \newcommand{\icWeb}{\pgFallbackIcon{W}}\newcommand{\icAd}{\pgFallbackIcon{Ad}}%
+  \newcommand{\icEye}{\pgFallbackIcon{V}}\newcommand{\icEyeSlash}{\pgFallbackIcon{H}}%
+  \newcommand{\icUser}{\pgFallbackIcon{U}}\newcommand{\icAttacker}{\pgFallbackIcon{X}}%
+  \newcommand{\icBug}{\pgFallbackIcon{B}}\newcommand{\icGears}{\pgFallbackIcon{G}}%
+  \newcommand{\icData}{\pgFallbackIcon{DB}}\newcommand{\icChart}{\pgFallbackIcon{C}}%
+  \newcommand{\icDoc}{\pgFallbackIcon{F}}\newcommand{\icWindow}{\pgFallbackIcon{Wn}}%
+  \newcommand{\icTap}{\pgFallbackIcon{T}}\newcommand{\icLayers}{\pgFallbackIcon{Ly}}%
+  \newcommand{\icScale}{\pgFallbackIcon{Po}}\newcommand{\icSwap}{\pgFallbackIcon{R}}%
+  \newcommand{\icRedo}{\pgFallbackIcon{Re}}\newcommand{\icOk}{\pgFallbackIcon{+}}%
+  \newcommand{\icNo}{\pgFallbackIcon{-}}\newcommand{\icFlask}{\pgFallbackIcon{E}}%
+  \newcommand{\icGraph}{\pgFallbackIcon{Gr}}\newcommand{\icChip}{\pgFallbackIcon{M}}%
+  \newcommand{\icMail}{\pgFallbackIcon{@}}\newcommand{\icPay}{\pgFallbackIcon{\$}}%
+  \newcommand{\icKey}{\pgFallbackIcon{K}}\newcommand{\icLink}{\pgFallbackIcon{Bd}}%
+  \newcommand{\icClock}{\pgFallbackIcon{t}}\newcommand{\icTree}{\pgFallbackIcon{Tr}}%
+  \newcommand{\icUserShield}{\pgFallbackIcon{US}}\newcommand{\icMegaphone}{\pgFallbackIcon{Ad}}%
+  \newcommand{\icClone}{\pgFallbackIcon{Cl}}\newcommand{\icSearch}{\pgFallbackIcon{Q}}%
+}
+
+% ---------------------------------------------------------------------
+% Node styles
+% ---------------------------------------------------------------------
+\tikzset{
+  pgbase/.style={rounded corners=3pt, align=flush center, font=\footnotesize,
+                 inner sep=3pt, minimum height=8mm},
+  honest/.style={pgbase, draw=pgBlue, very thick, fill=pgBlue!8, text=black},
+  adv/.style={pgbase, draw=pgRed, very thick, dashed, fill=pgRed!6,
+              postaction={pattern=north east lines, pattern color=pgRed!18}},
+  defense/.style={pgbase, draw=pgGreen, double, double distance=1.1pt, thick,
+                  fill=pgGreen!9},
+  theory/.style={chamfered rectangle, chamfered rectangle xsep=2pt,
+                 draw=pgPurple, thick, fill=pgPurple!7, align=flush center,
+                 font=\footnotesize, inner sep=3pt, minimum height=8mm},
+  infra/.style={pgbase, draw=pgGray, densely dotted, thick, fill=pgLight},
+  region/.style={rounded corners=6pt, draw=#1, thick, fill=#1!4,
+                 inner sep=6pt},
+  regionlabel/.style={font=\scriptsize\bfseries, text=#1, fill=white,
+                      inner sep=1.5pt},
+  iconnode/.style={font=\large, inner sep=0pt},
+  smalltxt/.style={font=\scriptsize, align=center},
+  arrlabel/.style={font=\scriptsize, fill=white, inner sep=1pt, align=center},
+  stepnum/.style={circle, draw=pgGreen, fill=white, very thick,
+                  font=\scriptsize\bfseries, text=pgGreen, inner sep=1pt,
+                  minimum size=4.6mm},
+  % ---- flows (colour + pattern) ----
+  flowdata/.style={-{Stealth[length=2.6mm]}, very thick, draw=pgBlue,
+                   shorten >=2pt, shorten <=2pt},
+  flowctrl/.style={-{Stealth[length=2.6mm]}, thick, dashed, draw=pgGray,
+                   shorten >=2pt, shorten <=2pt},
+  flowadv/.style={-{Stealth[length=2.6mm]}, very thick, densely dotted,
+                  draw=pgRed, shorten >=2pt, shorten <=2pt},
+  flowdef/.style={-{Stealth[length=2.6mm]}, very thick, dash dot,
+                  draw=pgGreen, shorten >=2pt, shorten <=2pt},
+  flowthy/.style={-{Latex[length=2.2mm]}, thick, draw=pgPurple,
+                  shorten >=2pt, shorten <=2pt},
+}

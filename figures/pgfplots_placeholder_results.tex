@@ -1,0 +1,44 @@
+% =====================================================================
+% figures/pgfplots_placeholder_results.tex
+% CONCEPTUAL EXPECTED TRENDS ONLY. No experiment has been run.
+% Bar heights and curve shapes encode the hypotheses H1-H4 of Section 8.8
+% qualitatively; axes deliberately carry no numeric tick labels.
+% Replace with actual experimental results before submission.
+% =====================================================================
+\begin{tikzpicture}
+\begin{groupplot}[
+  group style={group size=2 by 1, horizontal sep=1.4cm},
+  width=0.48\textwidth, height=5.0cm,
+  yticklabels={}, ytick=\empty,
+  tick label style={font=\scriptsize}, label style={font=\footnotesize},
+  title style={font=\footnotesize},
+]
+% ---------------- (a) conceptual ASR by configuration ----------------
+\nextgroupplot[
+  ybar, bar width=7pt, ymin=0, ymax=1.5, xtick style={draw=none},
+  symbolic x coords={B0,B1,PG-L,PG},
+  xtick=data, enlarge x limits=0.18,
+  ylabel={attack success (no scale)},
+  title={(a) conceptual: ASR by configuration},
+  legend style={font=\scriptsize, at={(0.5,-0.22)}, anchor=north, legend columns=2, draw=gray!50},
+]
+\addplot[fill=pgRed!55, draw=pgRed, postaction={pattern=north east lines}] coordinates {(B0,1.0) (B1,0.9) (PG-L,0.85) (PG,0.12)};
+\addlegendentry{OS-labelable channels}
+\addplot[fill=pgOrange!35, draw=pgOrange] coordinates {(B0,1.0) (B1,0.92) (PG-L,0.9) (PG,0.7)};
+\addlegendentry{in-app third-party (G1)}
+\node[font=\scriptsize\bfseries, text=pgRed, rotate=0, fill=white, fill opacity=0.85, text opacity=1, draw=pgRed, densely dashed] at (rel axis cs:0.5,0.88) {PLACEHOLDER: hypothesis, no data};
+% ---------------- (b) conceptual trade-off in theta ----------------
+\nextgroupplot[
+  xmin=0, xmax=1, ymin=0, ymax=1.4, xtick={0,0.5,1}, xticklabels={low, , high},
+  xlabel={pass threshold $\theta$}, ylabel={rate (no scale)},
+  title={(b) conceptual: false pass vs.\ false block},
+  legend style={font=\scriptsize, at={(0.5,-0.32)}, anchor=north, legend columns=2, draw=gray!50},
+  samples=60, domain=0:1, thick,
+]
+\addplot[pgRed, dashed] {0.9*exp(-6*x)+0.02};
+\addlegendentry{false pass}
+\addplot[pgGreen] {0.9/(1+exp(-12*(x-0.75)))+0.02};
+\addlegendentry{false block}
+\node[font=\scriptsize\bfseries, text=pgRed, fill=white, fill opacity=0.85, text opacity=1, draw=pgRed, densely dashed] at (rel axis cs:0.5,0.88) {PLACEHOLDER: hypothesis, no data};
+\end{groupplot}
+\end{tikzpicture}

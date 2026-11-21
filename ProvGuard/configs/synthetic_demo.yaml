@@ -1,0 +1,13 @@
+seed: 2026
+mode: synthetic
+output_dir: outputs/synthetic_demo
+repetitions: 5
+gate:
+  trials: 5
+  threshold: 0.5
+  equivalence: control
+calibration:
+  q0: 0.2
+  q1: 0.8
+  delta: 0.01
+

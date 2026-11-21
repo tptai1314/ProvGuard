@@ -1,0 +1,28 @@
+% =====================================================================
+% sections/discussion.tex
+% =====================================================================
+\section{Discussion}\label{sec:discussion}
+
+\paragraph{Why the operating system}
+Three properties make the OS the right place for provenance. First, the facts are only there: window ownership, embedded-surface producers, notification senders, and composed visibility are known to \texttt{system\_server} and SurfaceFlinger and are not exposed in a form an agent can trust~\cite{android_accessibilitywindowinfo,android_accessibilitynodeinfo}. Second, enforcement outside the model removes the coincidence of attack surface and enforcement point that FlowSeal identifies for in-context defenses~\cite{shim2026flowseal}: \PG{} never asks the model whether an action is safe, it only asks the model what it would do, and compares. Third, an OS mechanism is agent-agnostic. The gate and the binder protect a legacy agent that ignores labels entirely, which matters on a platform where agents come from many vendors.
+
+\paragraph{A generalization of mechanisms Android already has}
+Android 12 decides, per touch, whether an untrusted overlay obscures the target by more than a combined opacity of 0.8, and blocks the touch if it does~\cite{android12_untrusted_touch}. Android 15 redacts one-time passwords in notifications for untrusted listeners~\cite{android15_otp_redaction}, and views can be marked so that only declared accessibility tools may read them~\cite{android_blog_a11y_sensitive}. Each mechanism makes a trust decision from OS-owned facts at an OS boundary. \PG{} applies the same pattern to a new principal, the agent, and to a new question: not whether the user could see the target, but whether the action would still be taken without the content the OS cannot vouch for.
+
+\paragraph{Why not abandon the GUI}
+AppFunctions lets apps expose functions to agents as tools on Android 16 and later; as of May 2026 its integration with Gemini was in a private preview~\cite{android_appfunctions}. Where an app exposes the function the user needs, tool-calling defenses such as CaMeL~\cite{debenedetti2025camel}, Fides~\cite{costa2025fides}, and ACE~\cite{li2026ace} apply directly, and \PG{} is not needed for that step. Three facts keep the GUI relevant: AppFunctions requires each app to opt in; the long tail of apps will expose few or none; and the measured attacks (\cref{sec:rw-attacks}) are attacks on GUI agents in use today. We plan to quantify this with coverage data: for each AndroidWorld and AndroidLab task, whether every protected step could be served by an AppFunction in the apps involved. \placeholder{coverage measurement.}
+
+\paragraph{Relation to MELON}
+MELON and \PG{} both re-execute a step under a masking intervention, but they test different hypotheses. MELON masks the \emph{user task} and flags an attack when the agent still makes the same tool call, because an action that does not depend on the task must come from injected content~\cite{zhu2025melon}. \PG{} masks the \emph{untrusted content} and passes an action only if the agent still makes it, because then trusted content suffices. On a GUI, where the next tap is legitimately driven by screen content, MELON's test could also flag benign navigation that is caused by trusted screen content; \PG{}'s test isolates the content the OS cannot vouch for. The two tests are compatible and could be combined.
+
+\paragraph{Endorsement and label explosion}
+Most screens mix origins, and some protected actions legitimately depend on untrusted text: a user may ask to send a friend the price shown on a web page. Under strict equivalence the masked run cannot reproduce the price and the action escalates; under control equivalence, the default, the gate checks only that the agent would still press \emph{Send} on the same target, and the argument is not compared. The \textsf{type-untrusted} sink then catches the reverse direction, where trusted data is typed into an untrusted field. Whether this division keeps endorsement prompts rare enough is the central utility question of RQ6, and the measured endorsement rate will decide whether scoped endorsements (\cref{sec:design-gate}) are sufficient.
+
+\paragraph{On-device and remote models}
+\Cref{asm:fidelity} is easiest to discharge for on-device models: the OS can check the digest of the model file that the callback loads, and Android already runs on-device foundation models in a system service, AICore~\cite{google2026gemininano}. For remote models, fidelity is a contractual assumption. A dishonest endpoint that answers re-execution calls differently is outside our threat model, but it is detectable in principle by replaying past steps and comparing, which we leave to future work.
+
+\paragraph{Privacy of the transcript}
+The OS-held transcript contains the observations the agent already saw. \PG{} does not send them anywhere new: the masked context goes to the same model the agent uses, with less content than the agent's own call. The transcript must still be retained only for the duration of a task and protected like other sensitive OS state.
+
+\paragraph{Deployment}
+The components can be enabled incrementally. Labels alone change no behavior and can ship first; the binder changes behavior only when the screen changed under the agent; the gate is the only component that can block legitimate actions and can be enabled per sink class. This ordering also matches the order of the ablations in \cref{sec:ablations}.

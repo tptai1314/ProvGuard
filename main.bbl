@@ -1,0 +1,693 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{ye2025mobileagentv3}
+J.~Ye, X.~Zhang, H.~Xu, H.~Liu, J.~Wang, Z.~Zhu, Z.~Zheng, F.~Gao, J.~Cao,
+  Z.~Lu, J.~Liao, Q.~Zheng, F.~Huang, J.~Zhou, M.~Yan,
+  \href{https://arxiv.org/abs/2508.15144}{{Mobile-Agent-v3: Fundamental Agents
+  for GUI Automation}}, arXiv preprint arXiv:2508.15144 (2025).
+\newblock \href {http://arxiv.org/abs/2508.15144} {\path{arXiv:2508.15144}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2508.15144}
+
+\bibitem{droidrun2025software}
+{Droidrun GmbH}, {DroidRun (now Mobilerun): Automate your mobile devices with
+  natural language commands: an LLM-agnostic mobile agent},
+  \url{https://github.com/droidrun/mobilerun}, open-source Android/iOS agent
+  framework (MIT). The repository \url{https://github.com/droidrun/droidrun}
+  and PyPI package \texttt{droidrun} were renamed to \texttt{mobilerun} in
+  2026. Accessed 2026-10-03 (2025).
+
+\bibitem{liu2024autoglm}
+X.~Liu, B.~Qin, D.~Liang, G.~Dong, H.~Lai, H.~Zhang, H.~Zhao, I.~L. Iong,
+  J.~Sun, J.~Wang, J.~Gao, J.~Shan, K.~Liu, S.~Zhang, S.~Yao, S.~Cheng, W.~Yao,
+  W.~Zhao, X.~Liu, X.~Liu, X.~Chen, X.~Yang, Y.~Yang, Y.~Xu, Y.~Yang, Y.~Wang,
+  Y.~Xu, Z.~Qi, Y.~Dong, J.~Tang,
+  \href{https://arxiv.org/abs/2411.00820}{{AutoGLM: Autonomous Foundation
+  Agents for GUIs}}, arXiv preprint arXiv:2411.00820 (2024).
+\newblock \href {http://arxiv.org/abs/2411.00820} {\path{arXiv:2411.00820}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2411.00820}
+
+\bibitem{qin2025uitars}
+Y.~Qin, Y.~Ye, J.~Fang, H.~Wang, S.~Liang, S.~Tian, J.~Zhang, J.~Li, Y.~Li,
+  S.~Huang, W.~Zhong, K.~Li, J.~Yang, Y.~Miao, W.~Lin, L.~Liu, X.~Jiang, Q.~Ma,
+  J.~Li, X.~Xiao, K.~Cai, C.~Li, Y.~Zheng, C.~Jin, C.~Li, X.~Zhou, M.~Wang,
+  H.~Chen, Z.~Li, H.~Yang, H.~Liu, F.~Lin, T.~Peng, X.~Liu, G.~Shi,
+  \href{https://arxiv.org/abs/2501.12326}{{UI-TARS: Pioneering Automated GUI
+  Interaction with Native Agents}}, arXiv preprint arXiv:2501.12326 (2025).
+\newblock \href {http://arxiv.org/abs/2501.12326} {\path{arXiv:2501.12326}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2501.12326}
+
+\bibitem{android_accessibilitynodeinfo}
+{Android Open Source Project},
+  \href{https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo}{{AccessibilityNodeInfo
+  (API reference)}}, Android Developers API reference, accessed 2026-10-03.
+\newline\urlprefix\url{https://developer.android.com/reference/android/view/accessibility/AccessibilityNodeInfo}
+
+\bibitem{jang2014a11y}
+Y.~Jang, C.~Song, S.~P. Chung, T.~Wang, W.~Lee, {A11y Attacks: Exploiting
+  Accessibility in Operating Systems}, in: Proceedings of the 2014 ACM SIGSAC
+  Conference on Computer and Communications Security (CCS '14), ACM,
+  Scottsdale, AZ, USA, 2014, pp. 103--115.
+\newblock \href {https://doi.org/10.1145/2660267.2660295}
+  {\path{doi:10.1145/2660267.2660295}}.
+
+\bibitem{fratantonio2017cloak}
+Y.~Fratantonio, C.~Qian, S.~P. Chung, W.~Lee, {Cloak and Dagger: From Two
+  Permissions to Complete Control of the UI Feedback Loop}, in: 2017 IEEE
+  Symposium on Security and Privacy (SP), IEEE, San Jose, CA, USA, 2017, pp.
+  1041--1057.
+\newblock \href {https://doi.org/10.1109/SP.2017.39}
+  {\path{doi:10.1109/SP.2017.39}}.
+
+\bibitem{deivasigamani2026nota11y}
+R.~Deivasigamani, F.~Alvi, D.~Andrea, K.~Punjabi, S.~Picek, {Not an A11y: How
+  Android Accessibility Exposes Mobile AI Agents to Indirect Prompt Injection},
+  arXiv preprint arXiv:2608.08939Code:
+  \url{https://github.com/rahuldeiv/Not-An-A11y} (2026).
+\newblock \href {http://arxiv.org/abs/2608.08939} {\path{arXiv:2608.08939}}.
+
+\bibitem{chen2026mobileworldsafety}
+S.~Chen, L.~Li, T.~Du, J.~Shao, {MobileWorldSafety: Benchmarking GUI Agent
+  Safety Against Environmental Injection Attacks in Android Apps}, arXiv
+  preprint arXiv:2608.17659 (2026).
+\newblock \href {http://arxiv.org/abs/2608.17659} {\path{arXiv:2608.17659}}.
+
+\bibitem{liu2026agenthazard}
+G.~Liu, J.~Ye, J.~Liu, W.~Liu, P.~Gao, J.~Luan, Y.~Li, Y.~Liu, {Mobile GUI
+  Agents under Real-world Threats: Are We There Yet?}, in: Proceedings of the
+  24th Annual International Conference on Mobile Systems, Applications and
+  Services (MobiSys '26), ACM, Cambridge, United Kingdom, 2026, pp. 960--978,
+  arXiv:2507.04227. Benchmark: AgentHazard; attack tool: AWAttackerApplier,
+  \url{https://agenthazard.github.io}.
+\newblock \href {https://doi.org/10.1145/3745756.3809249}
+  {\path{doi:10.1145/3745756.3809249}}.
+
+\bibitem{li2026uidesync}
+H.~Li, Z.~Geng, W.~Yuan, F.~Zhao, Z.~Yao, X.~Luo, {When Agents See Differently:
+  Exposing UI Desynchronization Threats in Mobile Agents}, arXiv preprint
+  arXiv:2609.16732 (2026).
+\newblock \href {http://arxiv.org/abs/2609.16732} {\path{arXiv:2609.16732}}.
+
+\bibitem{du2025measuringmobileagents}
+C.~Du, Q.~Huang, T.~Tang, Z.~Wang, Y.~Xiao, {Measuring the Security of Mobile
+  LLM Agents under Adversarial Prompts from Untrusted Third-Party Channels},
+  arXiv preprint arXiv:2510.27140 (2025).
+\newblock \href {http://arxiv.org/abs/2510.27140} {\path{arXiv:2510.27140}}.
+
+\bibitem{qian2026zeropermission}
+Y.~Qian, K.~Qian, X.~He, L.~Chen, J.~Zhang, T.~Zhang, H.~Wei, L.~Wang, H.~Wu,
+  B.~Mao, {Zero-Permission Manipulation: Can We Trust Large Multimodal Model
+  Powered GUI Agents?}, arXiv preprint arXiv:2601.12349 (2026).
+\newblock \href {http://arxiv.org/abs/2601.12349} {\path{arXiv:2601.12349}}.
+
+\bibitem{chen2025ghosteibench}
+C.~Chen, X.~Song, Y.~Chai, Y.~Yao, H.~Zhao, L.~Li, J.~Li, Y.~Teng, G.~Liu,
+  Y.~Wang, {GhostEI-Bench: Do Mobile Agents Resilience to Environmental
+  Injection in Dynamic On-Device Environments?}, arXiv preprint
+  arXiv:2510.20333 (2025).
+\newblock \href {http://arxiv.org/abs/2510.20333} {\path{arXiv:2510.20333}}.
+
+\bibitem{chen2025struq}
+S.~Chen, J.~Piet, C.~Sitawarin, D.~Wagner,
+  \href{https://www.usenix.org/conference/usenixsecurity25/presentation/chen-sizhe}{{StruQ:
+  Defending Against Prompt Injection with Structured Queries}}, in: 34th USENIX
+  Security Symposium (USENIX Security 25), USENIX Association, Seattle, WA,
+  2025, pp. 2383--2400.
+\newblock \href {http://arxiv.org/abs/2402.06363} {\path{arXiv:2402.06363}}.
+\newline\urlprefix\url{https://www.usenix.org/conference/usenixsecurity25/presentation/chen-sizhe}
+
+\bibitem{chen2025secalign}
+S.~Chen, A.~Zharmagambetov, S.~Mahloujifar, K.~Chaudhuri, D.~Wagner, C.~Guo,
+  {SecAlign: Defending Against Prompt Injection with Preference Optimization},
+  in: Proceedings of the 2025 ACM SIGSAC Conference on Computer and
+  Communications Security (CCS '25), ACM, Taipei, Taiwan, 2025, pp. 2833--2847.
+\newblock \href {http://arxiv.org/abs/2410.05451} {\path{arXiv:2410.05451}},
+  \href {https://doi.org/10.1145/3719027.3744836}
+  {\path{doi:10.1145/3719027.3744836}}.
+
+\bibitem{wallace2024instruction}
+E.~Wallace, K.~Xiao, R.~Leike, L.~Weng, J.~Heidecke, A.~Beutel, {The
+  Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions},
+  arXiv preprint arXiv:2404.13208 (2024).
+\newblock \href {http://arxiv.org/abs/2404.13208} {\path{arXiv:2404.13208}}.
+
+\bibitem{debenedetti2025camel}
+E.~Debenedetti, I.~Shumailov, T.~Fan, J.~Hayes, N.~Carlini, D.~Fabian, C.~Kern,
+  C.~Shi, A.~Terzis, F.~Tram{\`e}r, {Defeating Prompt Injections by Design},
+  in: IEEE Conference on Secure and Trustworthy Machine Learning (SaTML), IEEE,
+  2026, arXiv:2503.18813.
+\newblock \href {http://arxiv.org/abs/2503.18813} {\path{arXiv:2503.18813}}.
+
+\bibitem{costa2025fides}
+M.~Costa, B.~K{\"o}pf, A.~Kolluri, A.~Paverd, M.~Russinovich, A.~Salem,
+  S.~Tople, L.~Wutschitz, S.~Zanella-B{\'e}guelin, {Securing AI Agents with
+  Information-Flow Control}, arXiv preprint arXiv:2505.23643System name: Fides.
+  Code: \url{https://github.com/microsoft/fides} (2025).
+\newblock \href {http://arxiv.org/abs/2505.23643} {\path{arXiv:2505.23643}}.
+
+\bibitem{li2026ace}
+E.~Li, T.~Mallick, E.~Rose, W.~Robertson, A.~Oprea, C.~Nita-Rotaru, {ACE: A
+  Security Architecture for LLM-Integrated App Systems}, in: Network and
+  Distributed System Security (NDSS) Symposium, Internet Society, 2026.
+\newblock \href {http://arxiv.org/abs/2504.20984} {\path{arXiv:2504.20984}},
+  \href {https://doi.org/10.14722/ndss.2026.230352}
+  {\path{doi:10.14722/ndss.2026.230352}}.
+
+\bibitem{zou2026aura}
+Z.~Zou, S.~Guo, Q.~Zhan, L.~Zhao, S.~Li, Q.~Li, K.~Xu, M.~Xu, Z.~Liu, {Blind
+  Gods and Broken Screens: Architecting a Secure, Intent-Centric Mobile Agent
+  Operating System}, arXiv preprint arXiv:2602.10915System name: Aura (Agent
+  Universal Runtime Architecture) (2026).
+\newblock \href {http://arxiv.org/abs/2602.10915} {\path{arXiv:2602.10915}}.
+
+\bibitem{zhao2026aohp}
+S.~Zhao, J.~Liu, G.~Liu, J.~Yan, J.~Ye, Y.~Yang, H.~Wen, S.~Tian, Y.~Yuan,
+  Y.~Chen, Y.~Liu, J.~Ren, Y.-Q. Zhang, C.~Huang, Y.~Guo, Y.~Li, {AOHP: An
+  Open-Source OS-Level Agent Harness for Personalized, Efficient and Secure
+  Interaction}, arXiv preprint arXiv:2606.23449Code:
+  \url{https://github.com/aohp-os/aohp} (2026).
+\newblock \href {http://arxiv.org/abs/2606.23449} {\path{arXiv:2606.23449}}.
+
+\bibitem{android_accessibilitywindowinfo}
+{Android Open Source Project},
+  \href{https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo}{{AccessibilityWindowInfo
+  (API reference)}}, Android Developers API reference, accessed 2026-10-03.
+\newline\urlprefix\url{https://developer.android.com/reference/android/view/accessibility/AccessibilityWindowInfo}
+
+\bibitem{android_surfaceflinger}
+{Android Open Source Project},
+  \href{https://source.android.com/docs/core/graphics/surfaceflinger-windowmanager}{{SurfaceFlinger
+  and WindowManager}}, Android Open Source Project documentation, accessed
+  2026-10-03.
+\newline\urlprefix\url{https://source.android.com/docs/core/graphics/surfaceflinger-windowmanager}
+
+\bibitem{android_sdkruntime}
+{Google},
+  \href{https://privacysandbox.google.com/private-advertising/sdk-runtime/architecture}{{SDK
+  Runtime overview (Privacy Sandbox on Android)}}, Privacy Sandbox developer
+  documentation, accessed 2026-10-03. The former URL
+  \url{https://developer.android.com/design-for-safety/privacy-sandbox/sdk-runtime}
+  redirects here.
+\newline\urlprefix\url{https://privacysandbox.google.com/private-advertising/sdk-runtime/architecture}
+
+\bibitem{zhu2025melon}
+K.~Zhu, X.~Yang, J.~Wang, W.~Guo, W.~Y. Wang,
+  \href{https://proceedings.mlr.press/v267/zhu25z.html}{{MELON: Provable
+  Defense Against Indirect Prompt Injection Attacks in AI Agents}}, in:
+  Proceedings of the 42nd International Conference on Machine Learning (ICML),
+  Vol. 267 of Proceedings of Machine Learning Research, PMLR, 2025, pp.
+  80310--80329.
+\newblock \href {http://arxiv.org/abs/2502.05174} {\path{arXiv:2502.05174}}.
+\newline\urlprefix\url{https://proceedings.mlr.press/v267/zhu25z.html}
+
+\bibitem{rawles2025androidworld}
+C.~Rawles, S.~Clinckemaillie, Y.~Chang, J.~Waltz, G.~Lau, M.~Fair, A.~Li,
+  W.~Bishop, W.~Li, F.~Campbell-Ajala, D.~Toyama, R.~Berry, D.~Tyamagundlu,
+  T.~Lillicrap, O.~Riva,
+  \href{https://proceedings.iclr.cc/paper_files/paper/2025/hash/01a83bc2f2732a58e6aa731e659e7101-Abstract-Conference.html}{{AndroidWorld:
+  A Dynamic Benchmarking Environment for Autonomous Agents}}, in: The
+  Thirteenth International Conference on Learning Representations (ICLR 2025),
+  2025.
+\newline\urlprefix\url{https://proceedings.iclr.cc/paper_files/paper/2025/hash/01a83bc2f2732a58e6aa731e659e7101-Abstract-Conference.html}
+
+\bibitem{xu2025androidlab}
+Y.~Xu, X.~Liu, X.~Sun, S.~Cheng, H.~Yu, H.~Lai, S.~Zhang, D.~Zhang, J.~Tang,
+  Y.~Dong, {AndroidLab: Training and Systematic Benchmarking of Android
+  Autonomous Agents}, in: Proceedings of the 63rd Annual Meeting of the
+  Association for Computational Linguistics (Volume 1: Long Papers),
+  Association for Computational Linguistics, Vienna, Austria, 2025, pp.
+  2144--2166.
+\newblock \href {https://doi.org/10.18653/v1/2025.acl-long.107}
+  {\path{doi:10.18653/v1/2025.acl-long.107}}.
+
+\bibitem{wen2024autodroid}
+H.~Wen, Y.~Li, G.~Liu, S.~Zhao, T.~Yu, T.~J.-J. Li, S.~Jiang, Y.~Liu, Y.~Zhang,
+  Y.~Liu, {AutoDroid: LLM-powered Task Automation in Android}, in: Proceedings
+  of the 30th Annual International Conference on Mobile Computing and
+  Networking (ACM MobiCom '24), ACM, Washington D.C., USA, 2024, pp. 543--557.
+\newblock \href {https://doi.org/10.1145/3636534.3649379}
+  {\path{doi:10.1145/3636534.3649379}}.
+
+\bibitem{wen2025autodroidv2}
+H.~Wen, S.~Tian, B.~Pavlov, W.~Du, Y.~Li, G.~Chang, S.~Zhao, J.~Liu, Y.~Liu,
+  Y.-Q. Zhang, Y.~Li, {AutoDroid-V2: Boosting SLM-based GUI Agents via Code
+  Generation}, in: Proceedings of the 23rd Annual International Conference on
+  Mobile Systems, Applications and Services (MobiSys '25), ACM, Anaheim, CA,
+  USA, 2025, pp. 223--235.
+\newblock \href {https://doi.org/10.1145/3711875.3729134}
+  {\path{doi:10.1145/3711875.3729134}}.
+
+\bibitem{zhang2025appagent}
+C.~Zhang, Z.~Yang, J.~Liu, Y.~Li, Y.~Han, X.~Chen, Z.~Huang, B.~Fu, G.~Yu,
+  {AppAgent: Multimodal Agents as Smartphone Users}, in: Proceedings of the
+  2025 CHI Conference on Human Factors in Computing Systems (CHI '25), ACM,
+  Yokohama, Japan, 2025, pp. 1--20.
+\newblock \href {https://doi.org/10.1145/3706598.3713600}
+  {\path{doi:10.1145/3706598.3713600}}.
+
+\bibitem{wang2024mobileagent}
+J.~Wang, H.~Xu, J.~Ye, M.~Yan, W.~Shen, J.~Zhang, F.~Huang, J.~Sang,
+  \href{https://arxiv.org/abs/2401.16158}{{Mobile-Agent: Autonomous Multi-Modal
+  Mobile Device Agent with Visual Perception}}, arXiv preprint arXiv:2401.16158
+  (2024).
+\newblock \href {http://arxiv.org/abs/2401.16158} {\path{arXiv:2401.16158}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2401.16158}
+
+\bibitem{wang2024mobileagentv2}
+J.~Wang, H.~Xu, H.~Jia, X.~Zhang, M.~Yan, W.~Shen, J.~Zhang, F.~Huang, J.~Sang,
+  \href{https://proceedings.neurips.cc/paper_files/paper/2024/hash/0520537ba799d375b8ff5523295c337a-Abstract-Conference.html}{{Mobile-Agent-v2:
+  Mobile Device Operation Assistant with Effective Navigation via Multi-Agent
+  Collaboration}}, in: Advances in Neural Information Processing Systems 37
+  (NeurIPS 2024), 2024.
+\newline\urlprefix\url{https://proceedings.neurips.cc/paper_files/paper/2024/hash/0520537ba799d375b8ff5523295c337a-Abstract-Conference.html}
+
+\bibitem{hong2024cogagent}
+W.~Hong, W.~Wang, Q.~Lv, J.~Xu, W.~Yu, J.~Ji, Y.~Wang, Z.~Wang, Y.~Dong,
+  M.~Ding, J.~Tang, {CogAgent: A Visual Language Model for GUI Agents}, in:
+  Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+  Recognition (CVPR), 2024, pp. 14281--14290.
+
+\bibitem{cheng2024seeclick}
+K.~Cheng, Q.~Sun, Y.~Chu, F.~Xu, L.~YanTao, J.~Zhang, Z.~Wu, {SeeClick:
+  Harnessing GUI Grounding for Advanced Visual GUI Agents}, in: Proceedings of
+  the 62nd Annual Meeting of the Association for Computational Linguistics
+  (Volume 1: Long Papers), Association for Computational Linguistics, Bangkok,
+  Thailand, 2024, pp. 9313--9332.
+\newblock \href {https://doi.org/10.18653/v1/2024.acl-long.505}
+  {\path{doi:10.18653/v1/2024.acl-long.505}}.
+
+\bibitem{wu2025osatlas}
+Z.~Wu, Z.~Wu, F.~Xu, Y.~Wang, Q.~Sun, C.~Jia, K.~Cheng, Z.~Ding, L.~Chen, P.~P.
+  Liang, Y.~Qiao, \href{https://iclr.cc/virtual/2025/poster/28423}{{OS-ATLAS: A
+  Foundation Action Model for Generalist GUI Agents}}, in: The Thirteenth
+  International Conference on Learning Representations (ICLR 2025), 2025.
+\newline\urlprefix\url{https://iclr.cc/virtual/2025/poster/28423}
+
+\bibitem{openautoglm2025software}
+{Z.ai (zai-org)}, {Open-AutoGLM: An Open Phone Agent Model \& Framework},
+  \url{https://github.com/zai-org/Open-AutoGLM}, apache-2.0. Releases
+  AutoGLM-Phone-9B and AutoGLM-Phone-9B-Multilingual; screenshot-based control
+  over ADB. Accessed 2026-10-03 (2025).
+
+\bibitem{tian2026agentprog}
+S.~Tian, H.~Wen, Y.~Chen, J.~Liu, S.~Zhao, G.~Liu, J.~Ren, Y.~Liu, Y.~Li,
+  {AgentProg: Empowering Long-Horizon GUI Agents with Program-guided Context
+  Management}, in: Proceedings of the 24th Annual International Conference on
+  Mobile Systems, Applications and Services (MobiSys '26), ACM, Cambridge,
+  United Kingdom, 2026, pp. 883--910.
+\newblock \href {https://doi.org/10.1145/3745756.3809245}
+  {\path{doi:10.1145/3745756.3809245}}.
+
+\bibitem{zhang2025llmbrainedguiagents}
+C.~Zhang, S.~He, J.~Qian, B.~Li, L.~Li, S.~Qin, Y.~Kang, M.~Ma, G.~Liu, Q.~Lin,
+  S.~Rajmohan, D.~Zhang, Q.~Zhang,
+  \href{https://openreview.net/forum?id=xChvYjvXTp}{{Large Language
+  Model-Brained GUI Agents: A Survey}}, Transactions on Machine Learning
+  ResearchArXiv:2411.18279 (2025).
+\newline\urlprefix\url{https://openreview.net/forum?id=xChvYjvXTp}
+
+\bibitem{shi2025trustworthyguiagents}
+Y.~Shi, W.~Yu, W.~Yao, W.~Chen, N.~Liu,
+  \href{https://arxiv.org/abs/2503.23434}{{Towards Trustworthy GUI Agents: A
+  Survey}}, arXiv preprint arXiv:2503.23434 (2025).
+\newblock \href {http://arxiv.org/abs/2503.23434} {\path{arXiv:2503.23434}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2503.23434}
+
+\bibitem{rawles2023aitw}
+C.~Rawles, A.~Li, D.~Rodriguez, O.~Riva, T.~Lillicrap,
+  \href{https://proceedings.neurips.cc/paper_files/paper/2023/hash/bbbb6308b402fe909c39dd29950c32e0-Abstract-Datasets_and_Benchmarks.html}{{Android
+  in the Wild: A Large-Scale Dataset for Android Device Control}}, in: Advances
+  in Neural Information Processing Systems 36 (NeurIPS 2023), Datasets and
+  Benchmarks Track, 2023.
+\newline\urlprefix\url{https://proceedings.neurips.cc/paper_files/paper/2023/hash/bbbb6308b402fe909c39dd29950c32e0-Abstract-Datasets_and_Benchmarks.html}
+
+\bibitem{chen2025spabench}
+J.~Chen, D.~Yuen, B.~Xie, Y.~Yang, G.~Chen, Z.~Wu, Y.~Li, X.~Zhou, W.~Liu,
+  S.~Wang, K.~Zhou, R.~Shao, L.~Nie, Y.~Wang, J.~Hao, J.~Wang, K.~Shao,
+  \href{https://iclr.cc/virtual/2025/poster/29820}{{SPA-Bench: A Comprehensive
+  Benchmark for SmartPhone Agent Evaluation}}, in: The Thirteenth International
+  Conference on Learning Representations (ICLR 2025), 2025.
+\newline\urlprefix\url{https://iclr.cc/virtual/2025/poster/29820}
+
+\bibitem{greshake2023notwhat}
+K.~Greshake, S.~Abdelnabi, S.~Mishra, C.~Endres, T.~Holz, M.~Fritz, {Not What
+  You've Signed Up For: Compromising Real-World LLM-Integrated Applications
+  with Indirect Prompt Injection}, in: Proceedings of the 16th ACM Workshop on
+  Artificial Intelligence and Security (AISec '23), ACM, 2023, pp. 79--90.
+\newblock \href {https://doi.org/10.1145/3605764.3623985}
+  {\path{doi:10.1145/3605764.3623985}}.
+
+\bibitem{zhan2024injecagent}
+Q.~Zhan, Z.~Liang, Z.~Ying, D.~Kang, {InjecAgent: Benchmarking Indirect Prompt
+  Injections in Tool-Integrated Large Language Model Agents}, in: Findings of
+  the Association for Computational Linguistics: ACL 2024, Association for
+  Computational Linguistics, Bangkok, Thailand, 2024, pp. 10471--10506.
+\newblock \href {https://doi.org/10.18653/v1/2024.findings-acl.624}
+  {\path{doi:10.18653/v1/2024.findings-acl.624}}.
+
+\bibitem{debenedetti2024agentdojo}
+E.~Debenedetti, J.~Zhang, M.~Balunovi{\'c}, L.~Beurer-Kellner, M.~Fischer,
+  F.~Tram{\`e}r, {AgentDojo: A Dynamic Environment to Evaluate Prompt Injection
+  Attacks and Defenses for LLM Agents}, in: Advances in Neural Information
+  Processing Systems 37 (NeurIPS 2024), Datasets and Benchmarks Track, 2024,
+  arXiv:2406.13352.
+\newblock \href {https://doi.org/10.52202/079017-2636}
+  {\path{doi:10.52202/079017-2636}}.
+
+\bibitem{liu2024formalizing}
+Y.~Liu, Y.~Jia, R.~Geng, J.~Jia, N.~Z. Gong,
+  \href{https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei}{{Formalizing
+  and Benchmarking Prompt Injection Attacks and Defenses}}, in: 33rd USENIX
+  Security Symposium (USENIX Security 24), USENIX Association, Philadelphia,
+  PA, 2024, pp. 1831--1847.
+\newblock \href {http://arxiv.org/abs/2310.12815} {\path{arXiv:2310.12815}}.
+\newline\urlprefix\url{https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei}
+
+\bibitem{liao2025eia}
+Z.~Liao, L.~Mo, C.~Xu, M.~Kang, J.~Zhang, C.~Xiao, Y.~Tian, B.~Li, H.~Sun,
+  {EIA: Environmental Injection Attack on Generalist Web Agents for Privacy
+  Leakage}, in: The Thirteenth International Conference on Learning
+  Representations (ICLR 2025), 2025, arXiv:2409.11295.
+
+\bibitem{zhang2025popups}
+Y.~Zhang, T.~Yu, D.~Yang, {Attacking Vision-Language Computer Agents via
+  Pop-ups}, in: Proceedings of the 63rd Annual Meeting of the Association for
+  Computational Linguistics (Volume 1: Long Papers), Association for
+  Computational Linguistics, Vienna, Austria, 2025, pp. 8387--8401.
+\newblock \href {https://doi.org/10.18653/v1/2025.acl-long.411}
+  {\path{doi:10.18653/v1/2025.acl-long.411}}.
+
+\bibitem{ma2025caution}
+X.~Ma, Y.~Wang, Y.~Yao, T.~Yuan, A.~Zhang, Z.~Zhang, H.~Zhao, {Caution for the
+  Environment: Multimodal LLM Agents are Susceptible to Environmental
+  Distractions}, in: Proceedings of the 63rd Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers), Association for
+  Computational Linguistics, Vienna, Austria, 2025, pp. 22324--22339.
+\newblock \href {https://doi.org/10.18653/v1/2025.acl-long.1087}
+  {\path{doi:10.18653/v1/2025.acl-long.1087}}.
+
+\bibitem{evtimov2025wasp}
+I.~Evtimov, A.~Zharmagambetov, A.~Grattafiori, C.~Guo, K.~Chaudhuri, {WASP:
+  Benchmarking Web Agent Security Against Prompt Injection Attacks}, in:
+  Advances in Neural Information Processing Systems 38 (NeurIPS 2025), Datasets
+  and Benchmarks Track, 2025, arXiv:2504.18575. Code:
+  \url{https://github.com/facebookresearch/wasp}.
+\newblock \href {https://doi.org/10.52202/085713-0666}
+  {\path{doi:10.52202/085713-0666}}.
+
+\bibitem{wu2025dissecting}
+C.~H. Wu, R.~R. Shah, J.~Y. Koh, R.~Salakhutdinov, D.~Fried, A.~Raghunathan,
+  \href{https://openreview.net/forum?id=YauQYh2k1g}{{Dissecting Adversarial
+  Robustness of Multimodal LM Agents}}, in: The Thirteenth International
+  Conference on Learning Representations (ICLR 2025), 2025.
+\newline\urlprefix\url{https://openreview.net/forum?id=YauQYh2k1g}
+
+\bibitem{chen2025fineprint}
+C.~Chen, S.~Ma, Y.~Ye, Z.~Zhang, I.~Khalilov, Z.~Xiao, B.~Guo, S.~A.
+  Gebreegziabher, Y.~Yao, T.~Li, T.~J.-J. Li,
+  \href{https://arxiv.org/abs/2504.11281}{{The Obvious Invisible Threat:
+  LLM-Powered GUI Agents' Vulnerability to Fine-Print Injections}}, arXiv
+  preprint arXiv:2504.11281Also presented as a poster at SOUPS 2025 (2025).
+\newblock \href {http://arxiv.org/abs/2504.11281} {\path{arXiv:2504.11281}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2504.11281}
+
+\bibitem{xu2026pusv}
+W.~Xu, {Temporal UI State Inconsistency in Desktop GUI Agents: Formalizing and
+  Defending Against TOCTOU Attacks on Computer-Use Agents}, arXiv preprint
+  arXiv:2604.18860Proposes PUSV (Pre-execution UI State Verification). Code:
+  \url{https://github.com/OwenXu6/gui_agent} (2026).
+\newblock \href {http://arxiv.org/abs/2604.18860} {\path{arXiv:2604.18860}}.
+
+\bibitem{liu2026visualconfuseddeputy}
+X.~Liu, B.~He, X.~Liu, A.~Luo, H.~Zhang, H.~Chen, {Visual Confused Deputy:
+  Exploiting and Defending Perception Failures in Computer-Using Agents}, arXiv
+  preprint arXiv:2603.14707Code:
+  \url{https://github.com/vllm-project/semantic-router} (2026).
+\newblock \href {http://arxiv.org/abs/2603.14707} {\path{arXiv:2603.14707}}.
+
+\bibitem{hines2024spotlighting}
+K.~Hines, G.~Lopez, M.~Hall, F.~Zarfati, Y.~Zunger, E.~Kiciman, {Defending
+  Against Indirect Prompt Injection Attacks With Spotlighting}, arXiv preprint
+  arXiv:2403.14720 (2024).
+\newblock \href {http://arxiv.org/abs/2403.14720} {\path{arXiv:2403.14720}}.
+
+\bibitem{sun2026ossentinel}
+Q.~Sun, M.~Li, Z.~Liu, Z.~Xie, F.~Xu, Z.~Yin, K.~Cheng, Z.~Li, Z.~Ding, Q.~Liu,
+  Z.~Wu, Z.~Zhang, B.~Kao, L.~Kong, {OS-Sentinel: Towards Safety-Enhanced
+  Mobile GUI Agents via Hybrid Validation in Realistic Workflows}, in:
+  Proceedings of the 64th Annual Meeting of the Association for Computational
+  Linguistics (Volume 1: Long Papers), Association for Computational
+  Linguistics, San Diego, California, United States, 2026, pp. 9529--9553,
+  arXiv:2510.24411.
+\newblock \href {https://doi.org/10.18653/v1/2026.acl-long.431}
+  {\path{doi:10.18653/v1/2026.acl-long.431}}.
+
+\bibitem{cai2026neurotaint}
+Y.~Cai, W.~Tang, C.~Wen, S.~Qin, {Ghost in the Agent: Redefining Information
+  Flow Tracking for LLM Agents}, arXiv preprint arXiv:2604.23374System name:
+  NeuroTaint (2026).
+\newblock \href {http://arxiv.org/abs/2604.23374} {\path{arXiv:2604.23374}}.
+
+\bibitem{wu2025isolategpt}
+Y.~Wu, F.~Roesner, T.~Kohno, N.~Zhang, U.~Iqbal, {IsolateGPT: An Execution
+  Isolation Architecture for LLM-Based Agentic Systems}, in: Network and
+  Distributed System Security (NDSS) Symposium, Internet Society, 2025.
+\newblock \href {http://arxiv.org/abs/2403.04960} {\path{arXiv:2403.04960}},
+  \href {https://doi.org/10.14722/ndss.2025.241131}
+  {\path{doi:10.14722/ndss.2025.241131}}.
+
+\bibitem{siddiqui2025permissive}
+S.~A. Siddiqui, R.~Gaonkar, B.~K{\"o}pf, D.~Krueger, A.~Paverd, A.~Salem,
+  S.~Tople, L.~Wutschitz, M.~Xia, S.~Zanella-B{\'e}guelin,
+  \href{https://openreview.net/forum?id=ufYRO8y3mr}{{Permissive
+  Information-Flow Analysis for Large Language Models}}, Transactions on
+  Machine Learning Research (2025).
+\newblock \href {http://arxiv.org/abs/2410.03055} {\path{arXiv:2410.03055}}.
+\newline\urlprefix\url{https://openreview.net/forum?id=ufYRO8y3mr}
+
+\bibitem{shi2025progent}
+T.~Shi, J.~He, Z.~Wang, H.~Li, L.~Wu, W.~Guo, D.~Song, {Progent: Securing AI
+  Agents with Privilege Control}, arXiv preprint arXiv:2504.11703V3 (May 2026);
+  v1 title: ``Progent: Programmable Privilege Control for LLM Agents'' (2025).
+\newblock \href {http://arxiv.org/abs/2504.11703} {\path{arXiv:2504.11703}}.
+
+\bibitem{kravchenko2026appa}
+A.~Kravchenko, V.~Liventsev, I.~Konstantinov, I.~Iskhakov, M.~Kukuy, {Agentic
+  Permissions Policy Algebra for Taint Confinement in LLM Agents}, arXiv
+  preprint arXiv:2607.24625System name: APPA (2026).
+\newblock \href {http://arxiv.org/abs/2607.24625} {\path{arXiv:2607.24625}}.
+
+\bibitem{shim2026flowseal}
+M.~Shim, R.~R. Karim, R.~Jakkula, K.~Zhou, X.~Liu, X.~E. Wang, Z.~Li, {Confuse
+  the Model, Control the Flow: Understanding and Mitigating Privacy Leakage
+  from LLM Agents with Information Flow Control}, arXiv preprint
+  arXiv:2609.14003System name: FlowSeal (2026).
+\newblock \href {http://arxiv.org/abs/2609.14003} {\path{arXiv:2609.14003}}.
+
+\bibitem{denning1976lattice}
+D.~E. Denning, {A Lattice Model of Secure Information Flow}, Communications of
+  the ACM 19~(5) (1976) 236--243.
+\newblock \href {https://doi.org/10.1145/360051.360056}
+  {\path{doi:10.1145/360051.360056}}.
+
+\bibitem{biba1977integrity}
+K.~J. Biba, \href{https://apps.dtic.mil/sti/pdfs/ADA039324.pdf}{{Integrity
+  Considerations for Secure Computer Systems}}, Technical Report MTR-3153
+  (ESD-TR-76-372), The MITRE Corporation, Bedford, MA, USA, dTIC ADA039324
+  (Apr. 1977).
+\newline\urlprefix\url{https://apps.dtic.mil/sti/pdfs/ADA039324.pdf}
+
+\bibitem{goguen1982noninterference}
+J.~A. Goguen, J.~Meseguer, {Security Policies and Security Models}, in: 1982
+  IEEE Symposium on Security and Privacy, IEEE, Oakland, CA, USA, 1982, pp.
+  11--20.
+\newblock \href {https://doi.org/10.1109/SP.1982.10014}
+  {\path{doi:10.1109/SP.1982.10014}}.
+
+\bibitem{sabelfeld2003language}
+A.~Sabelfeld, A.~C. Myers, {Language-Based Information-Flow Security}, IEEE
+  Journal on Selected Areas in Communications 21~(1) (2003) 5--19.
+\newblock \href {https://doi.org/10.1109/JSAC.2002.806121}
+  {\path{doi:10.1109/JSAC.2002.806121}}.
+
+\bibitem{myers1997decentralized}
+A.~C. Myers, B.~Liskov, {A Decentralized Model for Information Flow Control},
+  in: Proceedings of the Sixteenth ACM Symposium on Operating Systems
+  Principles (SOSP '97), ACM, Saint-Malo, France, 1997, pp. 129--142.
+\newblock \href {https://doi.org/10.1145/268998.266669}
+  {\path{doi:10.1145/268998.266669}}.
+
+\bibitem{krohn2007flume}
+M.~Krohn, A.~Yip, M.~Brodsky, N.~Cliffer, M.~F. Kaashoek, E.~Kohler, R.~Morris,
+  {Information Flow Control for Standard OS Abstractions}, in: Proceedings of
+  the Twenty-First ACM SIGOPS Symposium on Operating Systems Principles (SOSP
+  '07), ACM, Stevenson, WA, USA, 2007, pp. 321--334.
+\newblock \href {https://doi.org/10.1145/1294261.1294293}
+  {\path{doi:10.1145/1294261.1294293}}.
+
+\bibitem{enck2010taintdroid}
+W.~Enck, P.~Gilbert, B.-G. Chun, L.~P. Cox, J.~Jung, P.~McDaniel, A.~N. Sheth,
+  \href{https://static.usenix.org/events/osdi10/tech/full_papers/Enck.pdf}{{TaintDroid:
+  An Information-Flow Tracking System for Realtime Privacy Monitoring on
+  Smartphones}}, in: Proceedings of the 9th USENIX Symposium on Operating
+  Systems Design and Implementation (OSDI '10), USENIX Association, Vancouver,
+  BC, Canada, 2010, pp. 393--407.
+\newline\urlprefix\url{https://static.usenix.org/events/osdi10/tech/full_papers/Enck.pdf}
+
+\bibitem{pasquier2017camflow}
+T.~Pasquier, X.~Han, M.~Goldstein, T.~Moyer, D.~Eyers, M.~Seltzer, J.~Bacon,
+  {Practical Whole-System Provenance Capture}, in: Proceedings of the 2017
+  Symposium on Cloud Computing (SoCC '17), ACM, Santa Clara, CA, USA, 2017, pp.
+  405--418.
+\newblock \href {https://doi.org/10.1145/3127479.3129249}
+  {\path{doi:10.1145/3127479.3129249}}.
+
+\bibitem{bianchi2015whattheapp}
+A.~Bianchi, J.~Corbetta, L.~Invernizzi, Y.~Fratantonio, C.~Kruegel, G.~Vigna,
+  {What the App is That? Deception and Countermeasures in the Android User
+  Interface}, in: 2015 IEEE Symposium on Security and Privacy (SP), IEEE, San
+  Jose, CA, USA, 2015, pp. 931--948.
+\newblock \href {https://doi.org/10.1109/SP.2015.62}
+  {\path{doi:10.1109/SP.2015.62}}.
+
+\bibitem{fernandes2016uideception}
+E.~Fernandes, Q.~A. Chen, J.~Paupore, G.~Essl, J.~A. Halderman, Z.~M. Mao,
+  A.~Prakash, {Android UI Deception Revisited: Attacks and Defenses}, in:
+  J.~Grossklags, B.~Preneel (Eds.), Financial Cryptography and Data Security:
+  20th International Conference, FC 2016, Christ Church, Barbados, February
+  22--26, 2016, Revised Selected Papers, Vol. 9603 of Lecture Notes in Computer
+  Science, Springer, Berlin, Heidelberg, 2017, pp. 41--59.
+\newblock \href {https://doi.org/10.1007/978-3-662-54970-4_3}
+  {\path{doi:10.1007/978-3-662-54970-4_3}}.
+
+\bibitem{yan2019overlay}
+Y.~Yan, Z.~Li, Q.~A. Chen, C.~Wilson, T.~Xu, E.~Zhai, Y.~Li, Y.~Liu,
+  {Understanding and Detecting Overlay-based Android Malware at Market Scales},
+  in: Proceedings of the 17th Annual International Conference on Mobile
+  Systems, Applications, and Services (MobiSys '19), ACM, Seoul, Republic of
+  Korea, 2019, pp. 168--179.
+\newblock \href {https://doi.org/10.1145/3307334.3326094}
+  {\path{doi:10.1145/3307334.3326094}}.
+
+\bibitem{kalysch2018a11y}
+A.~Kalysch, D.~Bove, T.~M{\"u}ller, {How Android's UI Security is Undermined by
+  Accessibility}, in: Proceedings of the 2nd Reversing and Offensive-oriented
+  Trends Symposium (ROOTS '18), ACM, Vienna, Austria, 2018, pp. 2:1--2:10.
+\newblock \href {https://doi.org/10.1145/3289595.3289597}
+  {\path{doi:10.1145/3289595.3289597}}.
+
+\bibitem{naseri2019accessileaks}
+M.~Naseri, N.~P. Borges~Jr., A.~Zeller, R.~Rouvoy, {AccessiLeaks: Investigating
+  Privacy Leaks Exposed by the Android Accessibility Service}, Proceedings on
+  Privacy Enhancing Technologies 2019~(2) (2019) 291--305.
+\newblock \href {https://doi.org/10.2478/popets-2019-0031}
+  {\path{doi:10.2478/popets-2019-0031}}.
+
+\bibitem{huang2012clickjacking}
+L.-S. Huang, A.~Moshchuk, H.~J. Wang, S.~Schechter, C.~Jackson,
+  \href{https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/huang}{{Clickjacking:
+  Attacks and Defenses}}, in: 21st USENIX Security Symposium (USENIX Security
+  12), USENIX Association, Bellevue, WA, USA, 2012, pp. 413--428.
+\newline\urlprefix\url{https://www.usenix.org/conference/usenixsecurity12/technical-sessions/presentation/huang}
+
+\bibitem{felt2011redelegation}
+A.~P. Felt, H.~J. Wang, A.~Moshchuk, S.~Hanna, E.~Chin,
+  \href{https://www.usenix.org/conference/usenixsecurity11/permission-re-delegation-attacks-and-defenses}{{Permission
+  Re-Delegation: Attacks and Defenses}}, in: 20th USENIX Security Symposium
+  (USENIX Security 11), USENIX Association, San Francisco, CA, USA, 2011.
+\newline\urlprefix\url{https://www.usenix.org/conference/usenixsecurity11/permission-re-delegation-attacks-and-defenses}
+
+\bibitem{hardy1988confused}
+N.~Hardy, {The Confused Deputy: (or why capabilities might have been
+  invented)}, ACM SIGOPS Operating Systems Review 22~(4) (1988) 36--38.
+\newblock \href {https://doi.org/10.1145/54289.871709}
+  {\path{doi:10.1145/54289.871709}}.
+
+\bibitem{bishop1996toctou}
+M.~Bishop, M.~Dilger,
+  \href{https://nob.cs.ucdavis.edu/bishop/papers/1996-compsys/racecond.pdf}{{Checking
+  for Race Conditions in File Accesses}}, Computing Systems 9~(2) (1996)
+  131--152.
+\newline\urlprefix\url{https://nob.cs.ucdavis.edu/bishop/papers/1996-compsys/racecond.pdf}
+
+\bibitem{android12_untrusted_touch}
+{Google},
+  \href{https://developer.android.com/about/versions/12/behavior-changes-all}{{Behavior
+  changes: all apps (Android 12): Untrusted touch events are blocked}}, Android
+  Developers documentation, accessed 2026-10-03.
+\newline\urlprefix\url{https://developer.android.com/about/versions/12/behavior-changes-all}
+
+\bibitem{android15_otp_redaction}
+{Google},
+  \href{https://developer.android.com/about/versions/15/behavior-changes-all}{{Behavior
+  changes: all apps (Android 15): OTP Redaction; Screenshare Protection}},
+  Android Developers documentation, accessed 2026-10-03.
+\newline\urlprefix\url{https://developer.android.com/about/versions/15/behavior-changes-all}
+
+\bibitem{android_blog_a11y_sensitive}
+B.~Manuel, R.~Clifford,
+  \href{https://developer.android.com/blog/posts/enhancing-android-security-stop-malware-from-snooping-on-your-app-data}{{Enhancing
+  Android Security: Stop Malware from Snooping on Your App Data}}, Android
+  Developers Blog, accessed 2026-10-03 (Dec. 2025).
+\newline\urlprefix\url{https://developer.android.com/blog/posts/enhancing-android-security-stop-malware-from-snooping-on-your-app-data}
+
+\bibitem{android_accessibilityserviceinfo}
+{Android Open Source Project},
+  \href{https://developer.android.com/reference/android/accessibilityservice/AccessibilityServiceInfo}{{AccessibilityServiceInfo
+  (API reference)}}, Android Developers API reference, accessed 2026-10-03.
+\newline\urlprefix\url{https://developer.android.com/reference/android/accessibilityservice/AccessibilityServiceInfo}
+
+\bibitem{android_appfunctions}
+{Google LLC}, \href{https://developer.android.com/ai/appfunctions}{{Overview of
+  AppFunctions}}, Android Developers documentation, accessed 2026-10-03.
+\newline\urlprefix\url{https://developer.android.com/ai/appfunctions}
+
+\bibitem{pearl2009causality}
+J.~Pearl, {Causality: Models, Reasoning, and Inference}, 2nd Edition, Cambridge
+  University Press, Cambridge, UK, 2009.
+\newblock \href {https://doi.org/10.1017/CBO9780511803161}
+  {\path{doi:10.1017/CBO9780511803161}}.
+
+\bibitem{sundararajan2017axiomatic}
+M.~Sundararajan, A.~Taly, Q.~Yan,
+  \href{https://proceedings.mlr.press/v70/sundararajan17a.html}{{Axiomatic
+  Attribution for Deep Networks}}, in: Proceedings of the 34th International
+  Conference on Machine Learning (ICML 2017), Vol.~70 of Proceedings of Machine
+  Learning Research, PMLR, Sydney, Australia, 2017, pp. 3319--3328.
+\newline\urlprefix\url{https://proceedings.mlr.press/v70/sundararajan17a.html}
+
+\bibitem{abnar2020attentionflow}
+S.~Abnar, W.~Zuidema, {Quantifying Attention Flow in Transformers}, in:
+  Proceedings of the 58th Annual Meeting of the Association for Computational
+  Linguistics (ACL 2020), Association for Computational Linguistics, Online,
+  2020, pp. 4190--4197.
+\newblock \href {https://doi.org/10.18653/v1/2020.acl-main.385}
+  {\path{doi:10.18653/v1/2020.acl-main.385}}.
+
+\bibitem{jain2019attention}
+S.~Jain, B.~C. Wallace, {Attention is not Explanation}, in: Proceedings of the
+  2019 Conference of the North American Chapter of the Association for
+  Computational Linguistics: Human Language Technologies, Volume 1 (Long and
+  Short Papers) (NAACL-HLT 2019), Association for Computational Linguistics,
+  Minneapolis, MN, USA, 2019, pp. 3543--3556.
+\newblock \href {https://doi.org/10.18653/v1/N19-1357}
+  {\path{doi:10.18653/v1/N19-1357}}.
+
+\bibitem{wcag21}
+A.~Kirkpatrick, J.~O~Connor, A.~Campbell, M.~Cooper,
+  \href{https://www.w3.org/TR/WCAG21/}{{Web Content Accessibility Guidelines
+  (WCAG) 2.1}}, W3C Recommendation, version of 6 May 2025. Accessed 2026-10-03
+  (2025).
+\newline\urlprefix\url{https://www.w3.org/TR/WCAG21/}
+
+\bibitem{google2026gemininano}
+{Google LLC}, {Gemini Nano | AI | Android Developers},
+  \url{https://developer.android.com/ai/gemini-nano}, android developer
+  documentation for the on-device Gemini Nano model and the AICore system
+  service. Accessed 2026-10-03 (2026).
+
+\end{thebibliography}
