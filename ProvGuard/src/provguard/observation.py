@@ -8,8 +8,10 @@ proofs.
 
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, dataclass, field
 from hashlib import sha256
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -17,7 +19,7 @@ from numpy.typing import NDArray
 
 from .contrast import region_luminance, text_background_luminance
 from .labeling import DefaultLabelingPolicy
-from .lattice import IntegrityLabel
+from .lattice import IntegrityLabel, parse_integrity_label
 from .notifications import ActiveNotification, match_sender
 from .perceivability import (
     PerceivabilityEvidence,
@@ -266,7 +268,7 @@ def build_observation(
         digest = sha256(
             f"{node.package}|{node.class_name}|{content}|"
             f"{node.bounds.left:.0f},{node.bounds.top:.0f},"
-            f"{node.bounds.right:.0f},{node.bounds.bottom:.0f}".encode("utf-8")
+            f"{node.bounds.right:.0f},{node.bounds.bottom:.0f}".encode()
         ).hexdigest()[:16]
         node_id = f"{node.path}:{node.resource_id.rsplit('/', 1)[-1] or node.class_name.rsplit('.', 1)[-1]}"
 
@@ -385,3 +387,103 @@ def observation_to_dict(
     if extras:
         payload.update(extras)
     return payload
+
+
+def region_from_dict(data: dict[str, Any]) -> Region:
+    """Deserialize a region dictionary from ``labels.json`` back to a :class:`Region`."""
+
+    bounds_raw = data.get("bounds", [0.0, 0.0, 0.0, 0.0])
+    bounds = BoundingBox(
+        left=float(bounds_raw[0]),
+        top=float(bounds_raw[1]),
+        right=float(bounds_raw[2]),
+        bottom=float(bounds_raw[3]),
+    )
+    prov_raw = data.get("provenance", {})
+    provenance = ProvenanceRecord(
+        uid=int(prov_raw.get("uid", 0)),
+        window_type=WindowType(prov_raw.get("window_type", WindowType.APPLICATION.value)),
+        web_origin=prov_raw.get("web_origin"),
+        notification_sender=prov_raw.get("notification_sender"),
+        notification_sensitive=bool(prov_raw.get("notification_sensitive", False)),
+        perceivable=bool(prov_raw.get("perceivable", True)),
+    )
+    binding_raw = data.get("binding")
+    binding = (
+        None
+        if binding_raw is None
+        else Binding(
+            window_token=str(binding_raw["window_token"]),
+            node_id=binding_raw.get("node_id"),
+            digest=binding_raw.get("digest"),
+            owner_uid=int(binding_raw.get("owner_uid", provenance.uid)),
+        )
+    )
+    return Region(
+        region_id=str(data["region_id"]),
+        kind=RegionKind(data.get("kind", RegionKind.NODE.value)),
+        content=str(data.get("content", "")),
+        geometry=Geometry(
+            bounds=bounds,
+            z_order=int(data.get("z_order", 0)),
+            class_name=str(data.get("class_name", "")),
+            clickable=bool(data.get("clickable", False)),
+            editable=bool(data.get("editable", False)),
+            touchable=bool(data.get("touchable", data.get("clickable", False))),
+        ),
+        provenance=provenance,
+        label=parse_integrity_label(data.get("label", IntegrityLabel.APP.value)),
+        binding=binding,
+        metadata=dict(data.get("metadata", {})),
+    )
+
+
+def observation_from_dict(payload: dict[str, Any]) -> Observation:
+    """Deserialize a ``labels.json`` (or wrapped case) payload into an :class:`Observation`."""
+
+    if "regions" not in payload and isinstance(payload.get("observation"), dict):
+        payload = payload["observation"]
+    display = payload.get("display", {})
+    width = int(display.get("width", payload.get("display_width", 1080)))
+    height = int(display.get("height", payload.get("display_height", 2400)))
+    regions = tuple(region_from_dict(item) for item in payload.get("regions", []))
+    return Observation(
+        observation_id=str(payload.get("observation_id", "obs_0")),
+        step=int(payload.get("step", 0)),
+        regions=regions,
+        display_width=width,
+        display_height=height,
+    )
+
+
+def serialize_observation(observation: Observation) -> dict[str, Any]:
+    """Serialize any :class:`Observation` (including masked ones) to the JSON schema."""
+
+    return observation_to_dict(
+        BuildResult(
+            observation=observation,
+            diagnostics={
+                "regions": len(observation.regions),
+                "perceivable": sum(1 for r in observation.regions if r.provenance.perceivable),
+                "label_counts": {
+                    label.value: sum(1 for r in observation.regions if r.label == label)
+                    for label in IntegrityLabel
+                },
+            },
+        )
+    )
+
+
+def load_observation(path: str | Path) -> Observation:
+    """Load an :class:`Observation` from a ``labels.json`` file or an observation folder."""
+
+    target = Path(path)
+    if target.is_dir():
+        labels_file = target / "labels.json"
+        if not labels_file.exists():
+            raise FileNotFoundError(
+                f"No labels.json found in {target}. Run scripts/labels.py --obs {target} first."
+            )
+        target = labels_file
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    return observation_from_dict(payload)

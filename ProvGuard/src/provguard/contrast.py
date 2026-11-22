@@ -57,10 +57,10 @@ def luminosity_for_image(path: str | Path) -> NDArray[np.float64]:
 
 def _clip_box(luminance: NDArray[np.float64], box: BoundingBox) -> tuple[int, int, int, int]:
     height, width = luminance.shape[:2]
-    left = max(0, min(width, int(round(box.left))))
-    top = max(0, min(height, int(round(box.top))))
-    right = max(0, min(width, int(round(box.right))))
-    bottom = max(0, min(height, int(round(box.bottom))))
+    left = max(0, min(width, round(box.left)))
+    top = max(0, min(height, round(box.top)))
+    right = max(0, min(width, round(box.right)))
+    bottom = max(0, min(height, round(box.bottom)))
     if right <= left or bottom <= top:
         return 0, 0, 0, 0
     return left, top, right, bottom

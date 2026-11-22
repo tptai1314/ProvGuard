@@ -93,10 +93,8 @@ def _parse_block(index: int, token: str, name: str, block: str) -> WindowInfo | 
     if package_match is None or uid_match is None or frame_match is None:
         return None
     left, top, right, bottom = (float(part) for part in frame_match.groups())
-    if right < left:
-        right = left
-    if bottom < top:
-        bottom = top
+    right = max(right, left)
+    bottom = max(bottom, top)
     uid = int(uid_match.group(1))
     type_name = type_match.group(1) if type_match else "UNKNOWN"
     token_match = _MTOKEN_RE.search(block)

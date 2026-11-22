@@ -16,7 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from provguard.device import Adb, AdbError
@@ -58,7 +58,7 @@ def main(argv: list[str] | None = None) -> int:
 
     adb = Adb(serial=args.serial, adb_path=args.adb, timeout=args.timeout)
     observation_id = args.id or (
-        f"obs_{datetime.now(timezone.utc):%Y%m%d_%H%M%S}_{args.tag}"
+        f"obs_{datetime.now(UTC):%Y%m%d_%H%M%S}_{args.tag}"
     )
     root = Path(args.out) / observation_id
     raw = root / "raw"
@@ -95,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
 
     meta = {
         "observation_id": observation_id,
-        "captured_at_utc": datetime.now(timezone.utc).isoformat(),
+        "captured_at_utc": datetime.now(UTC).isoformat(),
         "adb_serial": adb.serial or "default",
         "display": None if display is None else {"width": display[0], "height": display[1]},
         "device": _device_metadata(adb),

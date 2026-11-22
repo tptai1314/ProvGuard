@@ -1,0 +1,112 @@
+# =====================================================================
+# ProvGuard: Protected Sink Rules & Clearances (Tier 2 - C11)
+# Reference: Paper Table 4 & Appendix B
+# =====================================================================
+
+clearances:
+  grant: "system"
+  install: "system"
+  share: "app"
+  send: "app"
+  pay: "app"
+  delete: "app"
+  type-untrusted: "app"
+
+app_role_rules:
+  send: "send"
+  payment_confirm: "pay"
+  delete_confirm: "delete"
+  share: "share"
+  install: "install"
+  grant: "grant"
+
+rules:
+  # 1. GRANT (OS Permission Controller & permission dialogs)
+  - name: "os_permission_allow_id"
+    sink_class: "grant"
+    ops: ["tap", "long_press"]
+    packages: ["permissioncontroller", "packageinstaller"]
+    resource_id_patterns:
+      - "permission_allow"
+      - "grant_dialog_button_allow"
+      - "allow_button"
+
+  - name: "permission_grant_text"
+    sink_class: "grant"
+    ops: ["tap", "long_press"]
+    text_patterns:
+      - "\\b(while using the app|only this time|allow all|grant permission|cho phép)\\b"
+
+  # 2. INSTALL (Package Installer & APK confirmation)
+  - name: "os_package_installer_confirm"
+    sink_class: "install"
+    ops: ["tap", "long_press"]
+    packages: ["packageinstaller", "vending"]
+    resource_id_patterns: ["install_confirm", "button1", "install_button"]
+    text_patterns: ["\\b(install|update|cài đặt)\\b"]
+
+  - name: "generic_install_action"
+    sink_class: "install"
+    ops: ["tap", "long_press"]
+    resource_id_patterns: ["\\b(btn_install|install_apk|action_install)\\b"]
+
+  - name: "generic_install_text"
+    sink_class: "install"
+    ops: ["tap", "long_press"]
+    text_patterns: ["^\\s*(install|install app|install apk|cài đặt ngay)\\s*$"]
+
+  # 3. PAY (Payments, transfers, checkout)
+  - name: "payment_resource_id"
+    sink_class: "pay"
+    ops: ["tap", "long_press"]
+    resource_id_patterns:
+      - "(btn_pay|pay_now|confirm_pay|payment_confirm|transfer_confirm|checkout_btn)"
+
+  - name: "payment_button_text"
+    sink_class: "pay"
+    ops: ["tap", "long_press"]
+    text_patterns:
+      - "\\b(pay now|confirm payment|send money|transfer now|place order|thanh toán|chuyển tiền)\\b"
+
+  # 4. DELETE (Destructive deletion / account / data removal)
+  - name: "delete_resource_id"
+    sink_class: "delete"
+    ops: ["tap", "long_press"]
+    resource_id_patterns:
+      - "(btn_delete|delete_confirm|action_delete|confirm_remove|clear_data)"
+
+  - name: "delete_button_text"
+    sink_class: "delete"
+    ops: ["tap", "long_press"]
+    text_patterns:
+      - "^\\s*(delete|delete all|confirm delete|remove|erase|xóa|xóa tất cả)\\s*$"
+
+  # 5. SHARE (System share sheet & external sharing)
+  - name: "os_chooser_share"
+    sink_class: "share"
+    ops: ["tap", "long_press"]
+    packages: ["intentresolver", "android"]
+    resource_id_patterns: ["(chooser_target|share_target|button_always|button_once)"]
+
+  - name: "share_action_id"
+    sink_class: "share"
+    ops: ["tap", "long_press"]
+    resource_id_patterns: ["(btn_share|action_share|share_confirm|export_data)"]
+
+  - name: "share_button_text"
+    sink_class: "share"
+    ops: ["tap", "long_press"]
+    text_patterns: ["^\\s*(share|share now|export|chia sẻ)\\s*$"]
+
+  # 6. SEND (Messaging, email, post submission)
+  - name: "send_resource_id"
+    sink_class: "send"
+    ops: ["tap", "long_press"]
+    resource_id_patterns:
+      - "(send_button|btn_send|action_send|compose_send|reply_send|submit_message)"
+
+  - name: "send_button_text"
+    sink_class: "send"
+    ops: ["tap", "long_press"]
+    text_patterns:
+      - "^\\s*(send|send message|send email|post|submit|gửi|gửi tin nhắn)\\s*$"

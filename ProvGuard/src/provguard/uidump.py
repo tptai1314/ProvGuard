@@ -47,10 +47,8 @@ def _parse_bounds(value: str | None) -> BoundingBox:
     if match is None:
         return BoundingBox(0.0, 0.0, 0.0, 0.0)
     left, top, right, bottom = (float(part) for part in match.groups())
-    if right < left:
-        right = left
-    if bottom < top:
-        bottom = top
+    right = max(right, left)
+    bottom = max(bottom, top)
     return BoundingBox(left=left, top=top, right=right, bottom=bottom)
 
 

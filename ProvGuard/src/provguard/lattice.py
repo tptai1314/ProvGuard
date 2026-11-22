@@ -17,6 +17,35 @@ class IntegrityLabel(str, Enum):
     UNTRUSTED = "unt"
 
 
+_LABEL_ALIASES: dict[str, IntegrityLabel] = {
+    "usr": IntegrityLabel.USER,
+    "user": IntegrityLabel.USER,
+    "sys": IntegrityLabel.SYSTEM,
+    "system": IntegrityLabel.SYSTEM,
+    "app": IntegrityLabel.APP,
+    "application": IntegrityLabel.APP,
+    "web": IntegrityLabel.WEB,
+    "webview": IntegrityLabel.WEB,
+    "sdk": IntegrityLabel.SDK,
+    "ntf": IntegrityLabel.NOTIFICATION,
+    "notification": IntegrityLabel.NOTIFICATION,
+    "unt": IntegrityLabel.UNTRUSTED,
+    "untrusted": IntegrityLabel.UNTRUSTED,
+    "overlay": IntegrityLabel.UNTRUSTED,
+}
+
+
+def parse_integrity_label(value: str | IntegrityLabel) -> IntegrityLabel:
+    """Parse either a canonical 3-letter code or a full label name."""
+
+    if isinstance(value, IntegrityLabel):
+        return value
+    key = str(value).strip().lower()
+    if key in _LABEL_ALIASES:
+        return _LABEL_ALIASES[key]
+    return IntegrityLabel(value)
+
+
 _CHANNELS = {IntegrityLabel.WEB, IntegrityLabel.SDK, IntegrityLabel.NOTIFICATION}
 
 
