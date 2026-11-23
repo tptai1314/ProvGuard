@@ -1,0 +1,4 @@
+// Top-level Gradle build file for ProvGuard Android AttackKit (Tier 5 - C17-C19)
+plugins {
+    id 'com.android.application' version '8.5.2' apply false
+}

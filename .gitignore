@@ -68,6 +68,12 @@ outputs/*
 !outputs/.gitkeep
 tmp/
 ProvGuard/obs/
+dump/
+cases/
+results/
+runs/
+.gradle/
+local.properties
 
 # ==========================================
 # 6. Ghi chú nội bộ & Kẽ hở chưa hoàn thiện (TRÁNH HỘI ĐỒNG SOI)
