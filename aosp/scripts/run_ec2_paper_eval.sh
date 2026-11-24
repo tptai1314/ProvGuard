@@ -16,6 +16,8 @@ PROVIDER="${PROVIDER:-openai}"
 VLLM_BASE_URL="${VLLM_BASE_URL:-http://localhost:8000/v1}"
 VLLM_API_KEY="${VLLM_API_KEY:-EMPTY}"
 VLLM_MODEL="${VLLM_MODEL:-ByteDance-Seed/UI-TARS-7B-DPO}"
+AGENTS="${AGENTS:-droidrun ui-tars open-autoglm mobile-agent-v3}"
+RUN_RQ4="${RUN_RQ4:-1}"
 REPS="${REPS:-5}"
 OUT_ROOT="${OUT_ROOT:-results_paper_ec2}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
@@ -44,9 +46,9 @@ if command -v adb >/dev/null 2>&1 && adb get-state >/dev/null 2>&1; then
   adb shell cmd provguard status || true
 fi
 
-for AGENT in droidrun ui-tars open-autoglm mobile-agent-v3; do
+for AGENT in $AGENTS; do
   echo ""
-  echo ">>> [1/2] Running 10-config Table 8 matrix for agent=$AGENT..."
+  echo ">>> [1/2] Running 10-config Table 8 matrix for agent=$AGENT (model=$VLLM_MODEL)..."
   "$PYTHON_BIN" ProvGuard/scripts/run_trials.py \
     --provider "$PROVIDER" \
     --model "$VLLM_MODEL" \
@@ -70,18 +72,21 @@ for AGENT in droidrun ui-tars open-autoglm mobile-agent-v3; do
     --freeze
 done
 
-echo ""
-echo ">>> Running RQ4 (k, theta) sensitivity sweep (k=1,3,5,9 x theta=0.3,0.5,0.7)..."
-"$PYTHON_BIN" ProvGuard/scripts/run_rq4_sweep.py \
-  --provider "$PROVIDER" \
-  --model "$VLLM_MODEL" \
-  --agent "ui-tars" \
-  --base-url "$VLLM_BASE_URL" \
-  --api-key "$VLLM_API_KEY" \
-  --k-values "1,3,5,9" \
-  --theta-values "0.3,0.5,0.7" \
-  --temperature 0.3 \
-  --out "$OUT_ROOT/rq4_sweep"
+if [ "$RUN_RQ4" = "1" ]; then
+  echo ""
+  echo ">>> Running RQ4 (k, theta) sensitivity sweep (k=1,3,5,9 x theta=0.3,0.5,0.7)..."
+  FIRST_AGENT="${AGENTS%% *}"
+  "$PYTHON_BIN" ProvGuard/scripts/run_rq4_sweep.py \
+    --provider "$PROVIDER" \
+    --model "$VLLM_MODEL" \
+    --agent "$FIRST_AGENT" \
+    --base-url "$VLLM_BASE_URL" \
+    --api-key "$VLLM_API_KEY" \
+    --k-values "1,3,5,9" \
+    --theta-values "0.3,0.5,0.7" \
+    --temperature 0.3 \
+    --out "$OUT_ROOT/rq4_sweep_${FIRST_AGENT}"
+fi
 
 echo ""
 echo "ALL EC2 evaluations finished cleanly. Results written to: $OUT_ROOT"
