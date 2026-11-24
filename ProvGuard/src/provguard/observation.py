@@ -192,6 +192,8 @@ def build_observation(
     )
 
     regions: list[Region] = []
+    represented_window_tokens: set[str] = set()
+    represented_window_indices: set[int] = set()
     label_counts: dict[str, int] = {label.value: 0 for label in IntegrityLabel}
     skipped_empty = 0
     fallback_count = 0
@@ -308,6 +310,63 @@ def build_observation(
             },
         )
         regions.append(region)
+        if not used_fallback:
+            represented_window_tokens.add(window.token)
+            represented_window_indices.add(window.index)
+
+    # Synthesize untrusted TILE regions for visible overlay/shade windows omitted by uiautomator dump
+    for window in windows:
+        if not (window.visible and window.on_screen) or window.alpha <= 0.0:
+            continue
+        if window.window_type not in {WindowType.OVERLAY, WindowType.SHADE}:
+            continue
+        if window.index in represented_window_indices or window.token in represented_window_tokens:
+            continue
+        if target_package and window.package == target_package:
+            continue
+        if window.package in _SYSTEM_PACKAGES and window.window_type == WindowType.OVERLAY:
+            continue
+        clipped = _intersection(window.frame, display_box)
+        if clipped is None or clipped.area <= 0:
+            continue
+        synth_prov = ProvenanceRecord(
+            uid=window.uid,
+            window_type=window.window_type,
+            web_origin=None,
+            notification_sender=window.package if window.window_type == WindowType.SHADE else None,
+            notification_sensitive=False,
+            perceivable=True,
+        )
+        synth_label = policy.label(synth_prov)
+        label_counts[synth_label.value] += 1
+        synth_region = Region(
+            region_id=f"win_{window.index}",
+            kind=RegionKind.TILE,
+            content=f"[{window.window_type.value.upper()} WINDOW: {window.package}]",
+            geometry=Geometry(
+                bounds=clipped,
+                z_order=window.index,
+                class_name=f"window:{window.type_name}",
+                clickable=False,
+                editable=False,
+                touchable=True,
+            ),
+            provenance=synth_prov,
+            label=synth_label,
+            binding=Binding(
+                window_token=window.token,
+                node_id=None,
+                digest="",
+                owner_uid=window.uid,
+            ),
+            metadata={
+                "window_name": window.name,
+                "window_token": window.token,
+                "package": window.package,
+                "synthesized_from_window_dump": True,
+            },
+        )
+        regions.append(synth_region)
 
     observation = Observation(
         observation_id=observation_id,

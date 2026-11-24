@@ -10,8 +10,9 @@ import pytest
 from provguard.contrast import relative_luminance
 from provguard.lattice import IntegrityLabel
 from provguard.observation import BuildSettings, build_observation, observation_to_dict
+from provguard.schemas import BoundingBox, RegionKind, WindowType
 from provguard.uidump import parse_ui_xml
-from provguard.windowdump import display_size_from_dump, parse_window_dump
+from provguard.windowdump import WindowInfo, display_size_from_dump, parse_window_dump
 
 FIXTURE = Path(__file__).parent / "fixtures" / "obs_settings"
 
@@ -85,3 +86,41 @@ def test_serialization_roundtrip_shape() -> None:
         "metadata",
     }
     assert first["provenance"]["window_type"] == "application"
+
+
+def test_synthesizes_untrusted_tile_for_omitted_overlay_window() -> None:
+    windows_text = (FIXTURE / "windows.txt").read_text(encoding="utf-8-sig")
+    windows = parse_window_dump(windows_text)
+    overlay_win = WindowInfo(
+        index=1,
+        token="tok_evil_overlay",
+        name="com.provguard.attackkit.overlay",
+        package="com.provguard.attackkit.overlay",
+        uid=10399,
+        type_name="APPLICATION_OVERLAY",
+        window_type=WindowType.OVERLAY,
+        frame=BoundingBox(0.0, 260.0, 1080.0, 380.0),
+        alpha=1.0,
+        visible=True,
+        on_screen=True,
+        obscured=False,
+        has_surface=True,
+    )
+    windows_with_overlay = [overlay_win, *windows]
+    nodes = parse_ui_xml(FIXTURE / "ui.xml")
+    image = np.full((2424, 1080, 3), 255, dtype=np.uint8)
+    result = build_observation(
+        observation_id="fixture_overlay",
+        step=0,
+        nodes=nodes,
+        windows=windows_with_overlay,
+        display=display_size_from_dump(windows_text) or (1080, 2424),
+        settings=BuildSettings(),
+        luminance=relative_luminance(image),
+    )
+    synth = [r for r in result.observation.regions if r.kind == RegionKind.TILE]
+    assert len(synth) == 1
+    assert synth[0].label == IntegrityLabel.UNTRUSTED
+    assert synth[0].geometry.bounds == BoundingBox(0.0, 260.0, 1080.0, 380.0)
+    assert result.diagnostics["label_counts"]["unt"] == 1
+
