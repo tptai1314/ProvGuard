@@ -71,7 +71,9 @@ ProvGuard/obs/
 dump/
 cases/
 results/
+results_*/
 runs/
+datasets_external/
 .gradle/
 local.properties
 

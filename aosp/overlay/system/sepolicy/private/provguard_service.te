@@ -1,0 +1,19 @@
+# Copyright (C) 2026 ProvGuard Authors
+# SELinux policy for ProvGuard system service inside system_server.
+
+type provguard_service, system_api_service, system_server_service, service_manager_type;
+
+# system_server hosts ProvGuardManagerService and queries SurfaceFlinger / InputDispatcher
+allow system_server provguard_service:service_manager { add find };
+
+# Trusted SystemUI may invoke recordUserEndorsement()
+allow platform_app provguard_service:service_manager find;
+allow priv_app provguard_service:service_manager find;
+
+# Untrusted agent apps and shell test harness may query public IProvGuardManager methods
+allow untrusted_app_all provguard_service:service_manager find;
+allow shell provguard_service:service_manager find;
+
+# Isolated-process callback (android:isolatedProcess="true") may reply over Binder to system_server
+allow isolated_app system_server:binder call;
+allow system_server isolated_app:binder call;

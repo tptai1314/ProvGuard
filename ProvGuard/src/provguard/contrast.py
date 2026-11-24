@@ -17,8 +17,8 @@ from .perceivability import contrast_ratio
 from .schemas import BoundingBox
 
 DEFAULT_TILE = 32
-DEFAULT_LOW_PERCENTILE = 10.0
-DEFAULT_HIGH_PERCENTILE = 90.0
+DEFAULT_LOW_PERCENTILE = 1.0
+DEFAULT_HIGH_PERCENTILE = 99.0
 
 
 def load_rgb(path: str | Path) -> NDArray[np.uint8]:

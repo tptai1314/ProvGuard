@@ -90,6 +90,8 @@ function Wait-EmulatorBoot {
             & adb -s $Device shell settings put global animator_duration_scale 0 2>$null
             & adb -s $Device shell settings put system screen_off_timeout 1800000 2>$null
             & adb -s $Device shell wm dismiss-keyguard 2>$null
+            & adb -s $Device shell input keyevent 224 2>$null
+            & adb -s $Device shell input swipe 540 1900 540 400 300 2>$null
             Write-Host "[OK] Da tat animations va mo khoa man hinh." -ForegroundColor Green
             return $true
         }

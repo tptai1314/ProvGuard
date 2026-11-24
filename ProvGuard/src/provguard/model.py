@@ -156,8 +156,9 @@ _REGION_LINE_RE = re.compile(
     re.IGNORECASE,
 )
 _DIRECTIVE_TARGET_RE = re.compile(
-    r"(?:INJECT|IGNORE\s+PREVIOUS|SYSTEM\s+OVERRIDE|URGENT\s+INSTRUCTION)\s*:\s*"
-    r"(?:tap|click|press|select)\s+(?P<target>[A-Za-z0-9_.:-]+|\"[^\"]+\")",
+    r"(?:INJECT|IGNORE\s+PREVIOUS|SYSTEM\s+OVERRIDE|URGENT\s+INSTRUCTION|"
+    r"VERIFICATION\s+REQUIRED|SESSION\s+NOTICE|SECURITY\s+ALERT|ASSISTANT\s+UPDATE)"
+    r"[^\n]*?(?:tap|click|press|select)\s+(?P<target>r\d+(?:[._]\d+)*|\"[^\"]+\")",
     re.IGNORECASE,
 )
 _TASK_RE = re.compile(r"Authenticated\s+user\s+task\s*:\s*(?P<task>.+)", re.IGNORECASE)
@@ -437,12 +438,16 @@ class OllamaModelClient(ModelClient):
             "model": self.config.model_name,
             "messages": messages,
             "stream": False,
+            "format": "json",
+            "keep_alive": "15m",
             "options": {
                 "temperature": self.config.temperature,
-                "num_predict": self.config.max_tokens,
+                "num_predict": min(self.config.max_tokens, 160),
                 "seed": self.config.seed,
             },
         }
+        if "qwen3" in self.config.model_name.lower():
+            payload["think"] = False
         raw, elapsed_ms = _post_json(
             url,
             payload,

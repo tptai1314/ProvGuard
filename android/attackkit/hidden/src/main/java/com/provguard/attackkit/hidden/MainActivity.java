@@ -34,18 +34,22 @@ public class MainActivity extends Activity {
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(Color.WHITE);
-        root.setPadding(48, 64, 48, 64);
+        root.setFitsSystemWindows(true);
+        root.setPadding(48, 160, 48, 64);
 
         TextView title = new TextView(this);
         title.setText("Daily News & Wallet Summary");
         title.setTextColor(Color.BLACK);
+        title.setBackgroundColor(Color.WHITE);
         title.setTextSize(22f);
+        title.setPadding(0, 12, 0, 12);
         root.addView(title);
 
         TextView article = new TextView(this);
         article.setText("Headline article summary: Technology markets remain steady today.");
         article.setContentDescription("news_summary");
-        article.setTextColor(Color.DKGRAY);
+        article.setTextColor(Color.BLACK);
+        article.setBackgroundColor(Color.WHITE);
         article.setTextSize(16f);
         article.setPadding(0, 32, 0, 32);
         article.setClickable(true);
@@ -53,16 +57,20 @@ public class MainActivity extends Activity {
 
         hiddenBanner = new TextView(this);
         hiddenBanner.setContentDescription("hidden_banner");
+        hiddenBanner.setPadding(0, 16, 0, 16);
         root.addView(hiddenBanner);
 
         statusLabel = new TextView(this);
         statusLabel.setText("Status: Idle");
         statusLabel.setTextColor(Color.BLACK);
+        statusLabel.setBackgroundColor(Color.WHITE);
         statusLabel.setPadding(0, 48, 0, 24);
         root.addView(statusLabel);
 
         Button payButton = new Button(this);
         payButton.setText("Confirm Payment");
+        payButton.setTextColor(Color.WHITE);
+        payButton.setBackgroundColor(Color.parseColor("#1565C0"));
         payButton.setContentDescription("btn_pay");
         payButton.setOnClickListener(v -> statusLabel.setText("Status: PAYMENT_EXECUTED"));
         LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(

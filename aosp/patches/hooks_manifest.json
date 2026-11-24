@@ -1,0 +1,79 @@
+{
+  "aosp_target_branch": "android-15.0.0_r14",
+  "cuttlefish_lunch_target": "aosp_cf_x86_64_phone-trunk_staging-userdebug",
+  "emulator_lunch_target": "sdk_phone64_x86_64-trunk_staging-userdebug",
+  "hooks": [
+    {
+      "id": "system_server_start",
+      "file": "frameworks/base/services/java/com/android/server/SystemServer.java",
+      "mode": "after",
+      "anchor_regex": "mSystemServiceManager\\.startService\\(AccessibilityManagerService\\.Lifecycle\\.class\\);",
+      "comment_style": "java",
+      "snippet": "            t.traceBegin(\"StartProvGuardManagerService\");\n            mSystemServiceManager.startService(com.android.server.provguard.ProvGuardManagerService.class);\n            t.traceEnd();"
+    },
+    {
+      "id": "wm_atomic_lock_verifier",
+      "file": "frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java",
+      "mode": "after",
+      "anchor_regex": "public void systemReady\\(\\)\\s*\\{",
+      "comment_style": "java",
+      "snippet": "        final com.android.server.provguard.ProvGuardInternal pgInternal =\n                com.android.server.LocalServices.getService(com.android.server.provguard.ProvGuardInternal.class);\n        if (pgInternal != null) {\n            pgInternal.registerWindowLockVerifier((token, expectedUid, checkCoords, x, y) -> {\n                synchronized (mGlobalLock) {\n                    final WindowState target = mWindowMap.get(token);\n                    if (target == null || !target.isVisible() || target.getOwningUid() != expectedUid) {\n                        return false;\n                    }\n                    if (checkCoords) {\n                        final DisplayContent dc = target.getDisplayContent();\n                        final WindowState top = dc != null ? dc.getTouchableWinAtPointLocked(x, y) : null;\n                        if (top == null || top.mClient.asBinder() != token) {\n                            return false;\n                        }\n                    }\n                    return true;\n                }\n            });\n        }"
+    },
+    {
+      "id": "a11y_window_provenance",
+      "file": "frameworks/base/services/accessibility/java/com/android/server/accessibility/AccessibilityWindowManager.java",
+      "mode": "after",
+      "anchor_regex": "public AccessibilityWindowInfo findA11yWindowInfoByIdLocked\\(int windowId\\)\\s*\\{",
+      "comment_style": "java",
+      "snippet": "        // ProvGuard LabelService hook: propagate WindowManager owner UID & token to ProvGuardInternal\n        final com.android.server.provguard.ProvGuardInternal pgInternal =\n                com.android.server.LocalServices.getService(com.android.server.provguard.ProvGuardInternal.class);\n        if (pgInternal != null) {\n            final IBinder pgToken = getWindowTokenForUserAndWindowIdLocked(mAccessibilityUserManager.getCurrentUserIdLocked(), windowId);\n            if (pgToken != null) {\n                final int pgUid = getWindowOwnerUserId(pgToken);\n                pgInternal.onNodeObserved(\"obs_live\", \"win_\" + windowId, pgUid, pgToken,\n                        android.security.provguard.ProvGuardLattice.WTYPE_APPLICATION,\n                        windowId, \"Window\", \"\", \"\", \"\", 0, 0, 1, 1, true, 7.0f, 1.0f, false);\n            }\n        }"
+    },
+    {
+      "id": "a11y_interaction_digest_check",
+      "file": "frameworks/base/core/java/android/view/AccessibilityInteractionController.java",
+      "mode": "after",
+      "anchor_regex": "private void performAccessibilityActionUiThread\\(SomeArgs args\\)\\s*\\{",
+      "comment_style": "java",
+      "snippet": "        // ProvGuard Assumption 7: verify expected node digest in target window before executing action\n        final android.os.Bundle pgArgs = (android.os.Bundle) args.arg1;\n        if (pgArgs != null && pgArgs.containsKey(\"provguard_expected_digest\")) {\n            final String expectedDigest = pgArgs.getString(\"provguard_expected_digest\");\n            final View pgTarget = findViewByAccessibilityId(args.argi1);\n            if (pgTarget == null) {\n                return;\n            }\n            final android.graphics.Rect pgRect = new android.graphics.Rect();\n            pgTarget.getBoundsOnScreen(pgRect);\n            final String liveDigest = android.security.provguard.ProvGuardDigest.computeNodeDigest(\n                    pgTarget.getAccessibilityClassName() != null ? pgTarget.getAccessibilityClassName().toString() : \"\",\n                    pgTarget instanceof android.widget.TextView ? String.valueOf(((android.widget.TextView) pgTarget).getText()) : \"\",\n                    pgTarget.getContentDescription() != null ? pgTarget.getContentDescription().toString() : \"\",\n                    pgTarget.getId() != View.NO_ID ? String.valueOf(pgTarget.getId()) : \"\",\n                    pgRect.left, pgRect.top, pgRect.right, pgRect.bottom);\n            if (!liveDigest.equals(expectedDigest)) {\n                android.util.Log.w(\"ProvGuardBinder\", \"Rejecting a11y action: live node digest mismatch\");\n                return;\n            }\n        }"
+    },
+    {
+      "id": "notification_sender_hook",
+      "file": "frameworks/base/services/core/java/com/android/server/notification/NotificationManagerService.java",
+      "mode": "after",
+      "anchor_regex": "void enqueueNotificationInternal\\([^{]+\\{",
+      "comment_style": "java",
+      "snippet": "        final com.android.server.provguard.ProvGuardInternal pgInternal =\n                com.android.server.LocalServices.getService(com.android.server.provguard.ProvGuardInternal.class);\n        if (pgInternal != null && pkg != null) {\n            pgInternal.onNotificationPosted(pkg + \":\" + id, pkg, false);\n        }"
+    },
+    {
+      "id": "webview_origin_hook",
+      "file": "frameworks/base/core/java/android/webkit/WebView.java",
+      "mode": "after",
+      "anchor_regex": "public void loadUrl\\(String url\\)\\s*\\{",
+      "comment_style": "java",
+      "snippet": "        try {\n            final android.os.IBinder pgMgrBinder = android.os.ServiceManager.getService(\"provguard\");\n            final android.os.IBinder pgWinToken = getWindowToken();\n            if (pgMgrBinder != null && pgWinToken != null && url != null) {\n                final android.net.Uri u = android.net.Uri.parse(url);\n                final String origin = (u.getScheme() != null && u.getHost() != null)\n                        ? (u.getScheme() + \"://\" + u.getHost()) : url;\n                android.security.provguard.IProvGuardManager.Stub.asInterface(pgMgrBinder)\n                        .reportWebViewOrigin(pgWinToken, origin);\n            }\n        } catch (Throwable ignored) {\n            // Non-fatal if ProvGuard service is disabled\n        }"
+    },
+    {
+      "id": "inputflinger_bp_sources",
+      "file": "frameworks/native/services/inputflinger/dispatcher/Android.bp",
+      "mode": "after",
+      "anchor_regex": "\"InputDispatcher\\.cpp\",",
+      "comment_style": "cpp",
+      "snippet": "        \"ProvGuard/ProvGuardInputHook.cpp\","
+    },
+    {
+      "id": "surfaceflinger_bp_sources",
+      "file": "frameworks/native/services/surfaceflinger/Android.bp",
+      "mode": "after",
+      "anchor_regex": "\"SurfaceFlinger\\.cpp\",",
+      "comment_style": "cpp",
+      "snippet": "        \"ProvGuard/ProvGuardPerceivability.cpp\","
+    },
+    {
+      "id": "sepolicy_service_contexts",
+      "file": "system/sepolicy/private/service_contexts",
+      "mode": "append",
+      "anchor_regex": "",
+      "comment_style": "hash",
+      "snippet": "provguard                                 u:object_r:provguard_service:s0"
+    }
+  ]
+}
