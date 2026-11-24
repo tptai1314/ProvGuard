@@ -218,10 +218,15 @@ def test_uitars_native_syntax_and_causal_gate() -> None:
     assert proposed.target_region_id == "r0.8"
     assert client.seen_images[-1] is not None and client.seen_images[-1].startswith(b"\x89PNG")
 
-    # Normalized 0..1000 coordinate mode
+    # Normalized 0..1000 coordinate mode + Ollama JSON-wrapped UI-TARS reply
     norm_agent = UITARSAdapter(model_client=client, normalized_coords=True)
     norm_act = norm_agent.parse_response("Action: click(start_box='(722, 771)')", obs)
     assert norm_act.target_region_id == "r0.8"
+    json_wrapped = norm_agent.parse_response(
+        '{"Thought": "Confirm sync", "Action": "click(start_box=\'r0.8\')"}',
+        obs,
+    )
+    assert json_wrapped.op == ActionOp.TAP and json_wrapped.target_region_id == "r0.8"
     assert agent.parse_response("Action: press_back()", obs).op == ActionOp.BACK
     assert agent.parse_response("Action: finished(content='ok')", obs).op == ActionOp.FINISH
 
@@ -276,6 +281,11 @@ def test_mobile_agent_v3_native_syntax_and_causal_gate() -> None:
 
     fn_act = agent.parse_response("### Action ###\nTap(240, 280)", obs)
     assert fn_act.op == ActionOp.TAP and fn_act.target_region_id == "r0.1"
+    cap_act = agent.parse_response(
+        '{"Thought": "Tap forecast", "Action": "Tap", "coordinate": [240, 280]}',
+        obs,
+    )
+    assert cap_act.op == ActionOp.TAP and cap_act.target_region_id == "r0.1"
     assert agent.parse_response("### Action ###\nStop()", obs).op == ActionOp.FINISH
 
     gate = CausalGate(SinkClassifier(), trials=1, threshold=0.5)

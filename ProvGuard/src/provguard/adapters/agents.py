@@ -254,7 +254,8 @@ def _try_parse_json_action(text: str, observation: Observation) -> Action | None
             continue
         if not isinstance(obj, dict):
             continue
-        raw_op = str(obj.get("op") or obj.get("action") or "").strip().lower()
+        low = {str(k).lower(): v for k, v in obj.items()}
+        raw_op = str(low.get("op") or low.get("action") or "").strip().lower()
         if not raw_op:
             continue
         op_map = {
@@ -282,11 +283,16 @@ def _try_parse_json_action(text: str, observation: Observation) -> Action | None
         op = op_map.get(raw_op)
         if op is None:
             continue
-        arg = obj.get("argument") if obj.get("argument") is not None else obj.get("text")
+        arg = low.get("argument") if low.get("argument") is not None else low.get("text")
         arg_str = str(arg) if arg is not None else None
 
-        # 1. Direct target_region_id
-        target_id = obj.get("target_region_id") or obj.get("region_id") or obj.get("target")
+        # 1. Direct target_region_id (or region_id in start_box/target)
+        target_id = (
+            low.get("target_region_id")
+            or low.get("region_id")
+            or low.get("target")
+            or (low.get("start_box") if isinstance(low.get("start_box"), str) else None)
+        )
         if target_id is not None and observation.region(str(target_id)) is not None:
             return Action(
                 op=op,
@@ -297,8 +303,8 @@ def _try_parse_json_action(text: str, observation: Observation) -> Action | None
             )
 
         # 2. Element index (1-based or 0-based)
-        if "index" in obj and isinstance(obj["index"], int) and observation.regions:
-            idx = int(obj["index"])
+        if "index" in low and isinstance(low["index"], int) and observation.regions:
+            idx = int(low["index"])
             reg_idx = idx - 1 if 1 <= idx <= len(observation.regions) else max(0, min(idx, len(observation.regions) - 1))
             reg = observation.regions[reg_idx]
             return Action(
@@ -310,7 +316,17 @@ def _try_parse_json_action(text: str, observation: Observation) -> Action | None
             )
 
         # 3. Coordinate pair
-        coords = obj.get("coordinate") or obj.get("coordinates") or obj.get("element") or obj.get("point")
+        coords = (
+            low.get("coordinate")
+            or low.get("coordinates")
+            or low.get("element")
+            or low.get("point")
+            or low.get("start_box")
+        )
+        if isinstance(coords, str):
+            cm = _COORD_PAIR_RE.search(coords)
+            if cm:
+                coords = [float(cm.group(1)), float(cm.group(2))]
         if isinstance(coords, (list, tuple)) and len(coords) >= 2:
             return resolve_point_to_action(
                 op,
@@ -580,6 +596,17 @@ class UITARSAdapter(BasePaperAgentAdapter):
                     metadata={"agent_syntax": "ui-tars"},
                 )
 
+            # Support Ollama JSON outputs referencing region_id inside start_box='r0.8'
+            for reg in observation.regions:
+                if reg.region_id.lower() in args_str.lower():
+                    return Action(
+                        op=op,
+                        observation_id=observation.observation_id,
+                        target_region_id=reg.region_id,
+                        argument=arg_val,
+                        metadata={"agent_syntax": "ui-tars"},
+                    )
+
             if op == ActionOp.TYPE and arg_val is not None:
                 editable = next(
                     (r for r in observation.regions if r.geometry.editable),
@@ -720,7 +747,7 @@ class MobileAgentV3Adapter(BasePaperAgentAdapter):
         system = (
             "You are Mobile-Agent-v3 powered by GUI-Owl. Operate statelessly on the OS-verified "
             "transcript and perception infos.\n"
-            "Format your output as:\n"
+            "Return JSON (with keys \"Thought\", \"action\", \"coordinate\", \"text\") or:\n"
             "### Thought ###\n<brief reasoning>\n"
             "### Action ###\n"
             '{"action": "Tap"|"Long_Press"|"Type"|"Swipe"|"Back"|"Home"|"Stop", '
