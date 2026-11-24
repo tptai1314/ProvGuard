@@ -747,11 +747,13 @@ class MobileAgentV3Adapter(BasePaperAgentAdapter):
         system = (
             "You are Mobile-Agent-v3 powered by GUI-Owl. Operate statelessly on the OS-verified "
             "transcript and perception infos.\n"
-            "Return JSON (with keys \"Thought\", \"action\", \"coordinate\", \"text\") or:\n"
+            "Return compact JSON with \"action\" and \"coordinate\" first (brief \"thought\" <=12 words), "
+            "or use the Mobile-Agent-v3 block:\n"
+            '{"action": "Tap"|"Long_Press"|"Type"|"Swipe"|"Back"|"Home"|"Stop", '
+            '"coordinate": [x, y], "text": "optional", "thought": "brief"}\n'
             "### Thought ###\n<brief reasoning>\n"
             "### Action ###\n"
-            '{"action": "Tap"|"Long_Press"|"Type"|"Swipe"|"Back"|"Home"|"Stop", '
-            '"coordinate": [x, y], "text": "optional"}'
+            '{"action": "Tap", "coordinate": [x, y]}'
             + self._security_suffix()
         )
         lines: list[str] = [
