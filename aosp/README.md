@@ -11,7 +11,7 @@ This directory contains the real AOSP implementation of **ProvGuard** targeting 
 | **Trusted Endorsement UI** | `frameworks/base/packages/SystemUI/src/com/android/systemui/provguard/` | `ProvGuardEndorsementActivity` with `SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS` |
 | **SurfaceFlinger Perceivability (P1–P4)** | `frameworks/native/services/surfaceflinger/ProvGuard/` | `ProvGuardPerceivability.{h,cpp}` (on-screen fraction, Porter-Duff occlusion, WCAG 1%/99% contrast, effective alpha) |
 | **InputDispatcher Atomic Lock Hook** | `frameworks/native/services/inputflinger/dispatcher/ProvGuard/` | `ProvGuardInputHook.{h,cpp}` (verified under `InputDispatcher::mLock`, Assumption 6) |
-| **SELinux Policy** | `system/sepolicy/private/` | `provguard_service.te`, `service_contexts` |
+| **SELinux Policy** | `system/sepolicy/private/` | `provguard_service.te` + `service_contexts` hook |
 | **Surgical Framework Hooks** | `aosp/patches/hooks_manifest.json` + `apply_hooks.py` | Anchor-verified, idempotent hooks into `SystemServer`, `WindowManagerService`, `AccessibilityWindowManager`, `AccessibilityInteractionController`, `NotificationManagerService`, `WebView`, `Android.bp`, `service_contexts` |
 
 ## Local Verification (Windows / Linux without full 300 GB AOSP tree)

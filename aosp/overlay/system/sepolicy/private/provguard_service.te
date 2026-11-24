@@ -1,7 +1,7 @@
 # Copyright (C) 2026 ProvGuard Authors
 # SELinux policy for ProvGuard system service inside system_server.
 
-type provguard_service, system_api_service, system_server_service, service_manager_type;
+type provguard_service, system_server_service, service_manager_type;
 
 # system_server hosts ProvGuardManagerService and queries SurfaceFlinger / InputDispatcher
 allow system_server provguard_service:service_manager { add find };

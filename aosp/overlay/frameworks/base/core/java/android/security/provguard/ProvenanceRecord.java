@@ -11,6 +11,8 @@ import android.os.Parcelable;
 /**
  * OS-owned provenance record attached to every served accessibility node and screenshot tile
  * (Paper Eq. 1 & Section 5.1).
+ *
+ * @hide
  */
 public final class ProvenanceRecord implements Parcelable {
 

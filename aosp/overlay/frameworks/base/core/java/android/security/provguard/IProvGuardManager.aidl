@@ -12,6 +12,8 @@ import android.security.provguard.TargetBinding;
 /**
  * System service Binder interface for ProvGuard (runs inside system_server).
  * Exposes OS-owned provenance records, Causal Gate evaluation, and Dispatch Binder checks.
+ *
+ * @hide
  */
 interface IProvGuardManager {
     /** Register or update the isolated-process re-execution callback for the calling agent. */

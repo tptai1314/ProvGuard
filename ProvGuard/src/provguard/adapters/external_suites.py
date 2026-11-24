@@ -29,6 +29,15 @@ from ..schemas import (
 from ..trials import TrialCase
 
 _WHITESPACE_RE = re.compile(r"\s+")
+_REPO_ROOT = Path(__file__).resolve().parents[4]
+
+
+def _resolve_ext_path(rel_or_abs: str | Path) -> Path:
+    p = Path(rel_or_abs)
+    if p.exists() or p.is_absolute():
+        return p
+    candidate = _REPO_ROOT / p
+    return candidate if candidate.exists() else p
 
 
 def _digest(*parts: str) -> str:
@@ -115,7 +124,7 @@ def load_agenthazard_cases(
 ) -> list[TrialCase]:
     """Load real AgentHazard static scenarios with click-hijacking misleading payloads."""
 
-    base = Path(root)
+    base = _resolve_ext_path(root)
     if not base.exists():
         raise FileNotFoundError(f"AgentHazard static root not found: {base}")
 
@@ -367,7 +376,7 @@ def load_ghostei_cases(
 ) -> list[TrialCase]:
     """Load stratified cases from the official GhostEI-Bench JSONL (110 cases)."""
 
-    path = Path(jsonl_path)
+    path = _resolve_ext_path(jsonl_path)
     if not path.exists():
         raise FileNotFoundError(f"GhostEI dataset not found: {path}")
 
@@ -529,7 +538,7 @@ def load_not_an_a11y_cases(
 ) -> list[TrialCase]:
     """Load official injection vectors A1-A9 from Not-An-A11y GitHub repository."""
 
-    base = Path(root)
+    base = _resolve_ext_path(root)
     runtime_file = base / "Runtime Injection" / "Runtime Attack Injections.txt"
     appcard_file = base / "Planning-Layer Injection" / "Gmail_AppCard.md"
     if not runtime_file.exists():
@@ -709,7 +718,7 @@ def load_androidworld_benign_cases(
 ) -> list[TrialCase]:
     """Load real benign task definitions from Google AndroidWorld (116 tasks)."""
 
-    path = Path(metadata_path)
+    path = _resolve_ext_path(metadata_path)
     if not path.exists():
         raise FileNotFoundError(f"AndroidWorld task_metadata.json not found: {path}")
 
@@ -784,7 +793,7 @@ def load_androidlab_benign_cases(
 ) -> list[TrialCase]:
     """Load real benign task definitions from THUDM AndroidLab (138 tasks across 9 apps)."""
 
-    base = Path(config_dir)
+    base = _resolve_ext_path(config_dir)
     if not base.exists():
         raise FileNotFoundError(f"AndroidLab config directory not found: {base}")
 

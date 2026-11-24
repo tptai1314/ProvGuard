@@ -11,6 +11,8 @@ package android.security.provguard;
  *   SYS < APP < {WEB, SDK, NTF} < TOP
  *
  * WEB, SDK, and NTF are mutually incomparable; their join is TOP.
+ *
+ * @hide
  */
 public final class ProvGuardLattice {
 

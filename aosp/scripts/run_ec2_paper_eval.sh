@@ -20,6 +20,16 @@ REPS="${REPS:-5}"
 OUT_ROOT="${OUT_ROOT:-results_paper_ec2}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$REPO_ROOT"
+
+# Auto-provision ProvGuard package & external datasets if missing on fresh EC2 instance
+if ! "$PYTHON_BIN" -c "import provguard" >/dev/null 2>&1 || [ ! -d "$REPO_ROOT/datasets_external/AgentHazard/data/data/static" ]; then
+  echo "[Setup] Provisioning ProvGuard Python environment & external benchmarks..."
+  PYTHON_BIN="$PYTHON_BIN" bash "$SCRIPT_DIR/provision_datasets_ec2.sh"
+fi
+
 echo "================================================================"
 echo "ProvGuard Full Paper Evaluation"
 echo "  Provider : $PROVIDER"

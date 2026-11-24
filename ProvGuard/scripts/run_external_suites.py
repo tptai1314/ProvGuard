@@ -171,7 +171,8 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     # 6. AndroidLab (Benign utility TSR & FBR across 9 apps)
-    alab_dir = Path("datasets_external/Android-Lab/evaluation/config")
+    repo_root = Path(__file__).resolve().parents[2]
+    alab_dir = repo_root / "datasets_external/Android-Lab/evaluation/config"
     run_subdirs = ["GhostEI_Bench", "Not_An_A11y", "Adaptive", "AndroidWorld"]
     jsonl_sources = [
         ah_dir / "default_g1" / "trials.jsonl",

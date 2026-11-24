@@ -13,6 +13,8 @@ import java.security.NoSuchAlgorithmException;
  * (Paper Section 5.4 & Assumption 7).
  *
  * Canonical tuple: (className, text, contentDescription, viewIdResourceName, left, top, right, bottom).
+ *
+ * @hide
  */
 public final class ProvGuardDigest {
 

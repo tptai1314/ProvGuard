@@ -10,6 +10,8 @@ package android.security.provguard;
  *
  * The callback receives only the OS-constructed trusted projection (masked JSON transcript)
  * and returns a single JSON-encoded proposed action. It has no access to agent memory.
+ *
+ * @hide
  */
 interface IProvGuardCallback {
     /**

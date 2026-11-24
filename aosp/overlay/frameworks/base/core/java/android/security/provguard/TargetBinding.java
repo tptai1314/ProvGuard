@@ -11,6 +11,8 @@ import android.os.Parcelable;
 /**
  * Cryptographic and identity binding recorded for every interactive node at observation time
  * (Paper Section 5.4: bind = (tok, nid, dig, uid)).
+ *
+ * @hide
  */
 public final class TargetBinding implements Parcelable {
 

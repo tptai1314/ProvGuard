@@ -5,6 +5,7 @@
 #pragma once
 
 #include <binder/IBinder.h>
+#include <utils/StrongPointer.h>
 #include <cstdint>
 #include <vector>
 
