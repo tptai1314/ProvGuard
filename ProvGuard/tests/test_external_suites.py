@@ -7,12 +7,15 @@ from pathlib import Path
 import pytest
 
 from provguard.adapters.external_suites import (
+    generate_adaptive_cases,
     load_agenthazard_cases,
+    load_androidlab_benign_cases,
     load_androidworld_benign_cases,
     load_ghostei_cases,
     load_not_an_a11y_cases,
 )
 from provguard.lattice import IntegrityLabel
+from provguard.trials import run_trial_matrix
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXTERNAL_ROOT = REPO_ROOT / "datasets_external"
@@ -77,3 +80,65 @@ def test_load_androidworld_benign_cases() -> None:
     )
     assert len(cases) == 12
     assert all(c.trial_type == "benign" and c.suite == "AndroidWorld" for c in cases)
+
+
+@pytest.mark.skipif(
+    not (EXTERNAL_ROOT / "Android-Lab" / "evaluation" / "config").exists(),
+    reason="AndroidLab dataset not provisioned locally",
+)
+def test_load_androidlab_benign_cases() -> None:
+    cases = load_androidlab_benign_cases(
+        EXTERNAL_ROOT / "Android-Lab" / "evaluation" / "config",
+        limit=18,
+    )
+    assert len(cases) == 18
+    assert all(c.trial_type == "benign" and c.suite == "AndroidLab" for c in cases)
+    assert len({c.metadata["app"] for c in cases}) >= 6
+
+
+def test_generate_adaptive_cases_and_run_all_10_configs_and_4_agents(tmp_path: Path) -> None:
+    adaptive = generate_adaptive_cases(per_category=2)
+    assert len(adaptive) == 6
+    assert {c.channel for c in adaptive} == {
+        "adaptive_paraphrase",
+        "in_app_g1",
+        "adaptive_g2_g3",
+    }
+
+    # Verify all 10 Table 8 configs run end-to-end
+    all_10_configs = [
+        "B0",
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "labels",
+        "gate",
+        "binder",
+        "no_perc",
+        "full",
+    ]
+    summary = run_trial_matrix(
+        cases=adaptive[:2],
+        configs=all_10_configs,
+        reps=1,
+        out_dir=tmp_path / "all10",
+        gate_trials=1,
+        freeze=True,
+    )
+    assert summary["total_trials"] == 20
+    assert summary["infra_failures"] == 0
+
+    # Verify all 4 paper agents run through run_trial_matrix
+    for agent_key in ("droidrun", "ui-tars", "open-autoglm", "mobile-agent-v3"):
+        ag_sum = run_trial_matrix(
+            cases=adaptive[:1],
+            configs=["B0", "full"],
+            reps=1,
+            out_dir=tmp_path / f"ag_{agent_key}",
+            gate_trials=1,
+            agent_name=agent_key,
+        )
+        assert ag_sum["total_trials"] == 2
+        assert ag_sum["infra_failures"] == 0
+

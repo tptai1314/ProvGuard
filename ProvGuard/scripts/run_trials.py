@@ -31,6 +31,15 @@ def main(argv: list[str] | None = None) -> int:
         choices=("heuristic", "gemini", "openai", "ollama"),
     )
     parser.add_argument("--model", default="heuristic-v1")
+    parser.add_argument(
+        "--agent",
+        default="prompt",
+        choices=("prompt", "droidrun", "ui-tars", "open-autoglm", "mobile-agent-v3"),
+        help="agent adapter to evaluate",
+    )
+    parser.add_argument("--base-url", default=None, help="OpenAI-compatible / vLLM / Ollama base URL")
+    parser.add_argument("--api-key", default=None, help="optional API key override")
+    parser.add_argument("--temperature", type=float, default=0.0, help="decoding temperature")
     parser.add_argument("--trials", "-k", type=int, default=5, help="Causal Gate re-execution k")
     parser.add_argument("--threshold", "--theta", type=float, default=0.5)
     parser.add_argument(
@@ -62,7 +71,9 @@ def main(argv: list[str] | None = None) -> int:
             model_config=ModelConfig(
                 provider=args.provider,
                 model_name=args.model,
-                temperature=0.0,
+                temperature=args.temperature,
+                api_key=args.api_key,
+                base_url=args.base_url,
                 seed=args.seed,
             ),
             classifier=classifier,
@@ -72,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
             max_retries=args.max_retries,
             resume=not args.no_resume,
             freeze=args.freeze,
+            agent_name=args.agent,
         )
     except (FileNotFoundError, ValueError, KeyError, TypeError) as exc:
         print(f"error: {exc}", file=sys.stderr)
