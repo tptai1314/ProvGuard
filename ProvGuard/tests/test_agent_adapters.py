@@ -291,3 +291,33 @@ def test_mobile_agent_v3_native_syntax_and_causal_gate() -> None:
     gate = CausalGate(SinkClassifier(), trials=1, threshold=0.5)
     _, result = gate.evaluate(proposed, tx, agent.decide)
     assert result.decision == GateDecision.ESCALATE
+
+
+def test_openai_model_client_appends_chat_completions_for_vllm_base_url(monkeypatch) -> None:
+    import provguard.model as model_mod
+
+    captured_urls: list[str] = []
+
+    def fake_post(url, payload, **kwargs):
+        captured_urls.append(url)
+        return (
+            {
+                "choices": [{"message": {"content": '{"op":"finish"}'}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15},
+            },
+            3.0,
+        )
+
+    monkeypatch.setattr(model_mod, "_post_json", fake_post)
+    client = model_mod.OpenAIModelClient(
+        ModelConfig(
+            provider="openai",
+            model_name="ByteDance-Seed/UI-TARS-7B-DPO",
+            base_url="http://localhost:8000/v1",
+            api_key="EMPTY",
+        )
+    )
+    resp = client.complete("hello")
+    assert resp.text == '{"op":"finish"}'
+    assert captured_urls == ["http://localhost:8000/v1/chat/completions"]
+

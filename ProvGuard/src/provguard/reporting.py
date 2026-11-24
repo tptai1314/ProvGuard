@@ -160,7 +160,8 @@ def compute_table_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
                 )
             )
         ]
-        cov_val = sink_coverage(sink_target_rows) if sink_target_rows else 1.0
+        has_gt_sink = any(r.get("ground_truth_protected") for r in sink_target_rows)
+        cov_val = sink_coverage(sink_target_rows) if has_gt_sink else 1.0
 
         latencies = [float(r.get("latency_ms", 0.0)) for r in cfg_rows]
         lat_stats = latency_summary(latencies) if latencies else {"p50_ms": 0.0, "p95_ms": 0.0}

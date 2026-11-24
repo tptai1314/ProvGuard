@@ -72,7 +72,7 @@ class ModelConfig:
     max_tokens: int = 512
     retry_count: int = 3
     backoff_sec: float = 0.5
-    timeout_sec: float = 30.0
+    timeout_sec: float = 90.0
     api_key: str | None = None
     base_url: str | None = None
     seed: int = 2026
@@ -366,9 +366,11 @@ class OpenAIModelClient(ModelClient):
         if not api_key:
             raise ModelError("Missing OPENAI_API_KEY environment variable")
 
-        url = (
-            self.config.base_url or "https://api.openai.com/v1/chat/completions"
-        ).rstrip("/")
+        if self.config.base_url:
+            base = self.config.base_url.rstrip("/")
+            url = base if base.endswith("/chat/completions") else f"{base}/chat/completions"
+        else:
+            url = "https://api.openai.com/v1/chat/completions"
         messages: list[dict[str, Any]] = []
         if system:
             messages.append({"role": "system", "content": system})

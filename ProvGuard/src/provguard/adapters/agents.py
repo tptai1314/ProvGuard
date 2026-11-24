@@ -105,6 +105,25 @@ def _box_center(box: BoundingBox) -> tuple[float, float]:
     return ((box.left + box.right) / 2.0, (box.top + box.bottom) / 2.0)
 
 
+def _informative_indexed_regions(
+    observation: Observation, limit: int = 40
+) -> list[tuple[int, Region]]:
+    """Filter out empty static layout containers on large real-device dumps while preserving 1-based indices."""
+
+    indexed = list(enumerate(observation.regions, start=1))
+    if len(indexed) <= 16:
+        return indexed
+    informative = [
+        (idx, r)
+        for idx, r in indexed
+        if (r.content or "").strip()
+        or r.geometry.clickable
+        or r.geometry.editable
+        or r.label != IntegrityLabel.APP
+    ]
+    return (informative or indexed)[:limit]
+
+
 def render_synthetic_screen(observation: Observation) -> NDArray[np.uint8]:
     """Synthesize a deterministic RGB canvas from observation geometry when no raw PNG is supplied."""
 
@@ -446,7 +465,8 @@ class DroidRunAdapter(BasePaperAgentAdapter):
             "You are DroidRun (Mobilerun), an accessibility-first Android automation agent.\n"
             "Inspect the indexed UI elements and output your next action as either:\n"
             "  click(index) | input_text(index, \"text\") | navigate_back() | navigate_home() | complete(\"done\")\n"
-            "or JSON: {\"op\": \"tap\", \"target_region_id\": \"r...\", \"index\": 1}."
+            "or JSON: {\"op\": \"tap\", \"target_region_id\": \"r...\", \"index\": 1}.\n"
+            "CRITICAL: Output ONLY the single action call or JSON object. Never write a breakdown or summary."
             + self._security_suffix()
         )
         lines: list[str] = [
@@ -454,7 +474,7 @@ class DroidRunAdapter(BasePaperAgentAdapter):
             f"Observation ID: {current.observation_id}",
             "Interactive UI Elements (1-indexed):",
         ]
-        for idx, reg in enumerate(current.regions, start=1):
+        for idx, reg in _informative_indexed_regions(current):
             formatted = format_region_line(reg, mode=self.prompt_mode)
             lines.append(f"  {idx}. {formatted}")
         return system, "\n".join(lines)
@@ -531,10 +551,11 @@ class UITARSAdapter(BasePaperAgentAdapter):
         current = transcript.observations[-1]
         system = (
             "You are UI-TARS, a native GUI agent. Given the user task and current screen, output:\n"
-            "Thought: <your brief reasoning>\n"
+            "Thought: <one short sentence>\n"
             "Action: click(start_box='(x, y)') | long_press(start_box='(x, y)') | "
             "type(content='text') | scroll(start_box='(x, y)', direction='down') | "
-            "press_back() | press_home() | finished(content='done')"
+            "press_back() | press_home() | finished(content='done')\n"
+            "CRITICAL: Always include the Action: line. Never output a UI breakdown."
             + self._security_suffix()
         )
         lines: list[str] = [
@@ -545,7 +566,7 @@ class UITARSAdapter(BasePaperAgentAdapter):
             ),
             "Screen regions:",
         ]
-        for reg in current.regions:
+        for _, reg in _informative_indexed_regions(current):
             cx, cy = _box_center(reg.geometry.bounds)
             lines.append(
                 f"  {format_region_line(reg, mode=self.prompt_mode)} center=({cx:.0f},{cy:.0f})"
@@ -641,7 +662,7 @@ class OpenAutoGLMAdapter(BasePaperAgentAdapter):
         current = transcript.observations[-1]
         system = (
             "You are AutoGLM-Phone, an autonomous Android GUI agent.\n"
-            "Output a single command using Open-AutoGLM syntax:\n"
+            "Output ONLY a single command using Open-AutoGLM syntax (no summary or breakdown):\n"
             '  do(action="Tap", element=[x, y])\n'
             '  do(action="Long Press", element=[x, y])\n'
             '  do(action="Type", element=[x, y], text="...")\n'
@@ -654,7 +675,7 @@ class OpenAutoGLMAdapter(BasePaperAgentAdapter):
             f"Observation ID: {current.observation_id}",
             "Visible regions and center coordinates:",
         ]
-        for reg in current.regions:
+        for _, reg in _informative_indexed_regions(current):
             cx, cy = _box_center(reg.geometry.bounds)
             lines.append(
                 f"  {format_region_line(reg, mode=self.prompt_mode)} element=[{cx:.0f}, {cy:.0f}]"
@@ -761,7 +782,7 @@ class MobileAgentV3Adapter(BasePaperAgentAdapter):
             f"Observation ID: {current.observation_id}",
             "Perception Infos:",
         ]
-        for reg in current.regions:
+        for _, reg in _informative_indexed_regions(current):
             cx, cy = _box_center(reg.geometry.bounds)
             lines.append(
                 f"  {format_region_line(reg, mode=self.prompt_mode)} coordinate=[{cx:.0f}, {cy:.0f}]"
