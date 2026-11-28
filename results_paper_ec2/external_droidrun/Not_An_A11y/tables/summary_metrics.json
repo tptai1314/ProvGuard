@@ -1,0 +1,307 @@
+{
+  "asr_by_channel": {
+    "a1_notification": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    },
+    "a3_a4_overlay_web": {
+      "B0": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      },
+      "full": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      },
+      "gate": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      },
+      "labels": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      }
+    },
+    "a9_appcard": {
+      "B0": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      },
+      "full": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      },
+      "gate": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      },
+      "labels": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      }
+    }
+  },
+  "channels": [
+    "a1_notification",
+    "a3_a4_overlay_web",
+    "a9_appcard"
+  ],
+  "configs": [
+    "B0",
+    "labels",
+    "gate",
+    "full"
+  ],
+  "mcnemar_pvalue_vs_full": {
+    "B0": 1.0,
+    "gate": 1.0,
+    "labels": 1.0
+  },
+  "pooled_asr": {
+    "B0": {
+      "ci95_pct": [
+        72.2,
+        100.0
+      ],
+      "count": 10,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 10
+    },
+    "full": {
+      "ci95_pct": [
+        72.2,
+        100.0
+      ],
+      "count": 10,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 10
+    },
+    "gate": {
+      "ci95_pct": [
+        72.2,
+        100.0
+      ],
+      "count": 10,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 10
+    },
+    "labels": {
+      "ci95_pct": [
+        72.2,
+        100.0
+      ],
+      "count": 10,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 10
+    }
+  },
+  "total_trials": 40,
+  "utility_by_config": {
+    "B0": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 653.62,
+      "latency_p95_ms": 698.12,
+      "mean_tokens": 340.1,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "full": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1217.02,
+      "latency_p95_ms": 1250.31,
+      "mean_tokens": 798.2,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "gate": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1213.89,
+      "latency_p95_ms": 1246.21,
+      "mean_tokens": 634.4,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "labels": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 665.5,
+      "latency_p95_ms": 698.7,
+      "mean_tokens": 421.8,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    }
+  }
+}

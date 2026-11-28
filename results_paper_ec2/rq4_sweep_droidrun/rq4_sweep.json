@@ -1,0 +1,129 @@
+{
+  "agent": "droidrun",
+  "provider": "openai",
+  "model": "ByteDance-Seed/UI-TARS-7B-DPO",
+  "temperature": 0.3,
+  "grid": [
+    {
+      "k": 1,
+      "theta": 0.3,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 1240.52,
+      "latency_p95_ms": 1272.68,
+      "total_trials": 20
+    },
+    {
+      "k": 1,
+      "theta": 0.5,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 1178.7,
+      "latency_p95_ms": 1244.34,
+      "total_trials": 20
+    },
+    {
+      "k": 1,
+      "theta": 0.7,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 1178.47,
+      "latency_p95_ms": 1244.08,
+      "total_trials": 20
+    },
+    {
+      "k": 3,
+      "theta": 0.3,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 2359.05,
+      "latency_p95_ms": 2490.56,
+      "total_trials": 20
+    },
+    {
+      "k": 3,
+      "theta": 0.5,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 2359.28,
+      "latency_p95_ms": 2490.85,
+      "total_trials": 20
+    },
+    {
+      "k": 3,
+      "theta": 0.7,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 2358.41,
+      "latency_p95_ms": 2490.6,
+      "total_trials": 20
+    },
+    {
+      "k": 5,
+      "theta": 0.3,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 3534.8,
+      "latency_p95_ms": 3731.86,
+      "total_trials": 20
+    },
+    {
+      "k": 5,
+      "theta": 0.5,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 3538.26,
+      "latency_p95_ms": 3736.47,
+      "total_trials": 20
+    },
+    {
+      "k": 5,
+      "theta": 0.7,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 3535.05,
+      "latency_p95_ms": 3732.49,
+      "total_trials": 20
+    },
+    {
+      "k": 9,
+      "theta": 0.3,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 5890.68,
+      "latency_p95_ms": 6219.98,
+      "total_trials": 20
+    },
+    {
+      "k": 9,
+      "theta": 0.5,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 5895.66,
+      "latency_p95_ms": 6226.87,
+      "total_trials": 20
+    },
+    {
+      "k": 9,
+      "theta": 0.7,
+      "asr_pct": 100.0,
+      "fbr_pct": 0.0,
+      "tsr_pct": 100.0,
+      "latency_p50_ms": 5894.73,
+      "latency_p95_ms": 6222.37,
+      "total_trials": 20
+    }
+  ],
+  "latex_table": "results_paper_ec2/rq4_sweep_droidrun/tab_rq4_sweep.tex"
+}

@@ -1,0 +1,307 @@
+{
+  "asr_by_channel": {
+    "ghostei_non_script": {
+      "B0": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "full": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "gate": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "labels": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      }
+    },
+    "ghostei_overlay": {
+      "B0": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "full": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "gate": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "labels": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      }
+    },
+    "ghostei_popup_sms": {
+      "B0": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "full": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "gate": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "labels": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      }
+    }
+  },
+  "channels": [
+    "ghostei_non_script",
+    "ghostei_overlay",
+    "ghostei_popup_sms"
+  ],
+  "configs": [
+    "B0",
+    "labels",
+    "gate",
+    "full"
+  ],
+  "mcnemar_pvalue_vs_full": {
+    "B0": 1.0,
+    "gate": 1.0,
+    "labels": 1.0
+  },
+  "pooled_asr": {
+    "B0": {
+      "ci95_pct": [
+        88.6,
+        100.0
+      ],
+      "count": 30,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 30
+    },
+    "full": {
+      "ci95_pct": [
+        88.6,
+        100.0
+      ],
+      "count": 30,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 30
+    },
+    "gate": {
+      "ci95_pct": [
+        88.6,
+        100.0
+      ],
+      "count": 30,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 30
+    },
+    "labels": {
+      "ci95_pct": [
+        88.6,
+        100.0
+      ],
+      "count": 30,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 30
+    }
+  },
+  "total_trials": 120,
+  "utility_by_config": {
+    "B0": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 697.88,
+      "latency_p95_ms": 698.91,
+      "mean_tokens": 371.1,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "full": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1224.34,
+      "latency_p95_ms": 1264.11,
+      "mean_tokens": 867.5,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "gate": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1216.43,
+      "latency_p95_ms": 1266.03,
+      "mean_tokens": 701.6,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "labels": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 698.35,
+      "latency_p95_ms": 699.32,
+      "mean_tokens": 453.9,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    }
+  }
+}

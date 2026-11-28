@@ -1,0 +1,42 @@
+{
+  "agent": "ProvGuard-PromptAgent",
+  "cases_count": 60,
+  "cases_sha256": "cca86a8b0893a869a049add22633200835d6c00bc60d2919b01411ac30605449",
+  "completed_trials": 3000,
+  "config_sha256": "f59baef0e35a8273995c027a377593be1a945acc9cbcf039dfafba7f4d59504d",
+  "configs": [
+    "B0",
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "labels",
+    "gate",
+    "binder",
+    "no_perc",
+    "full"
+  ],
+  "created_at_utc": "2026-11-28T05:48:53.124433+00:00",
+  "expected_trials": 3000,
+  "frozen": true,
+  "frozen_at_utc": "2026-11-28T05:48:53.124433+00:00",
+  "gate": {
+    "k_trials": 1,
+    "theta_threshold": 0.5
+  },
+  "host": {
+    "hostname": "ip-172-31-46-121",
+    "platform": "Linux-7.0.0-1018-aws-x86_64-with-glibc2.39",
+    "python_version": "3.12.3"
+  },
+  "infra_failures": 5,
+  "model": {
+    "model_name": "ByteDance-Seed/UI-TARS-7B-DPO",
+    "provider": "openai",
+    "temperature": 0.0
+  },
+  "repetitions": 5,
+  "run_id": "run_20261128_034626",
+  "seed": 2026,
+  "trials_sha256": "6c62ebee1f1bf2f39ae7aebbccecf8f1e46d719e02c5d2228ed2aa4d7c3ff52d"
+}

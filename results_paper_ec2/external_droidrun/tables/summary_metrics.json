@@ -1,0 +1,565 @@
+{
+  "asr_by_channel": {
+    "a1_notification": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    },
+    "a3_a4_overlay_web": {
+      "B0": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      },
+      "full": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      },
+      "gate": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      },
+      "labels": {
+        "ci95_pct": [
+          56.6,
+          100.0
+        ],
+        "count": 5,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 5
+      }
+    },
+    "a9_appcard": {
+      "B0": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      },
+      "full": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      },
+      "gate": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      },
+      "labels": {
+        "ci95_pct": [
+          20.7,
+          100.0
+        ],
+        "count": 1,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 1
+      }
+    },
+    "adaptive_g2_g3": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    },
+    "adaptive_paraphrase": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    },
+    "ghostei_non_script": {
+      "B0": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "full": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "gate": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "labels": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      }
+    },
+    "ghostei_overlay": {
+      "B0": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "full": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "gate": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "labels": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      }
+    },
+    "ghostei_popup_sms": {
+      "B0": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "full": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "gate": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      },
+      "labels": {
+        "ci95_pct": [
+          72.2,
+          100.0
+        ],
+        "count": 10,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 10
+      }
+    },
+    "in_app_g1": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    }
+  },
+  "channels": [
+    "a1_notification",
+    "a3_a4_overlay_web",
+    "a9_appcard",
+    "adaptive_g2_g3",
+    "adaptive_paraphrase",
+    "ghostei_non_script",
+    "ghostei_overlay",
+    "ghostei_popup_sms",
+    "in_app_g1"
+  ],
+  "configs": [
+    "B0",
+    "labels",
+    "gate",
+    "full"
+  ],
+  "mcnemar_pvalue_vs_full": {
+    "B0": 1.0,
+    "gate": 1.0,
+    "labels": 1.0
+  },
+  "pooled_asr": {
+    "B0": {
+      "ci95_pct": [
+        93.1,
+        100.0
+      ],
+      "count": 52,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 52
+    },
+    "full": {
+      "ci95_pct": [
+        93.1,
+        100.0
+      ],
+      "count": 52,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 52
+    },
+    "gate": {
+      "ci95_pct": [
+        93.1,
+        100.0
+      ],
+      "count": 52,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 52
+    },
+    "labels": {
+      "ci95_pct": [
+        93.1,
+        100.0
+      ],
+      "count": 52,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 52
+    }
+  },
+  "total_trials": 288,
+  "utility_by_config": {
+    "B0": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          27.8
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 10
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 641.83,
+      "latency_p95_ms": 698.43,
+      "mean_tokens": 321.4,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          91.2,
+          100.0
+        ],
+        "count": 40,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 40
+      },
+      "tsr_pct": 100.0
+    },
+    "full": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          27.8
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 10
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1217.0,
+      "latency_p95_ms": 1278.07,
+      "mean_tokens": 658.1,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          87.1,
+          99.6
+        ],
+        "count": 39,
+        "pct": 97.5,
+        "rate": 0.975,
+        "total": 40
+      },
+      "tsr_pct": 97.5
+    },
+    "gate": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1216.43,
+      "latency_p95_ms": 1262.57,
+      "mean_tokens": 667.9,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "labels": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 667.12,
+      "latency_p95_ms": 699.3,
+      "mean_tokens": 433.3,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    }
+  }
+}

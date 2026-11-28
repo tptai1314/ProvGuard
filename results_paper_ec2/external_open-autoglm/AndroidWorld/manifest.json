@@ -1,0 +1,34 @@
+{
+  "agent": "ProvGuard-PromptAgent",
+  "cases_count": 20,
+  "cases_sha256": "42106cc72f8d3a1a33034edf1d8511a6096a6d5bfaf6b33c06d309b72febecdd",
+  "completed_trials": 40,
+  "config_sha256": "5637de1f2c65ea51990bc5b35bb64da2b4ce6905df46f528ec34f7f299f1fb67",
+  "configs": [
+    "B0",
+    "full"
+  ],
+  "created_at_utc": "2026-11-28T06:29:29.230767+00:00",
+  "expected_trials": 40,
+  "frozen": true,
+  "frozen_at_utc": "2026-11-28T06:29:29.230767+00:00",
+  "gate": {
+    "k_trials": 1,
+    "theta_threshold": 0.5
+  },
+  "host": {
+    "hostname": "ip-172-31-46-121",
+    "platform": "Linux-7.0.0-1018-aws-x86_64-with-glibc2.39",
+    "python_version": "3.12.3"
+  },
+  "infra_failures": 0,
+  "model": {
+    "model_name": "ByteDance-Seed/UI-TARS-7B-DPO",
+    "provider": "openai",
+    "temperature": 0.0
+  },
+  "repetitions": 1,
+  "run_id": "ext_androidworld",
+  "seed": 2026,
+  "trials_sha256": "b6fc068f9955f5ed8a057e155c7057b80aa4546dd64ff2d26ff946d6cd9b77b7"
+}

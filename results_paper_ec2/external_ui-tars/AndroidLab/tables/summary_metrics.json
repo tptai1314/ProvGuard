@@ -1,0 +1,94 @@
+{
+  "asr_by_channel": {},
+  "channels": [],
+  "configs": [
+    "B0",
+    "full"
+  ],
+  "mcnemar_pvalue_vs_full": {
+    "B0": 1.0
+  },
+  "pooled_asr": {
+    "B0": {
+      "ci95_pct": [
+        0.0,
+        0.0
+      ],
+      "count": 0,
+      "pct": 0.0,
+      "rate": 0.0,
+      "total": 0
+    },
+    "full": {
+      "ci95_pct": [
+        0.0,
+        0.0
+      ],
+      "count": 0,
+      "pct": 0.0,
+      "rate": 0.0,
+      "total": 0
+    }
+  },
+  "total_trials": 40,
+  "utility_by_config": {
+    "B0": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 3213.17,
+      "latency_p95_ms": 4547.09,
+      "mean_tokens": 2830.8,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.9,
+          23.6
+        ],
+        "count": 1,
+        "pct": 5.0,
+        "rate": 0.05,
+        "total": 20
+      },
+      "tsr_pct": 5.0
+    },
+    "full": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 3132.57,
+      "latency_p95_ms": 4810.28,
+      "mean_tokens": 3054.6,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          16.1
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 20
+      },
+      "tsr_pct": 0.0
+    }
+  }
+}

@@ -1,0 +1,307 @@
+{
+  "asr_by_channel": {
+    "adaptive_g2_g3": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    },
+    "adaptive_paraphrase": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    },
+    "in_app_g1": {
+      "B0": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "full": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "gate": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      },
+      "labels": {
+        "ci95_pct": [
+          51.0,
+          100.0
+        ],
+        "count": 4,
+        "pct": 100.0,
+        "rate": 1.0,
+        "total": 4
+      }
+    }
+  },
+  "channels": [
+    "adaptive_g2_g3",
+    "adaptive_paraphrase",
+    "in_app_g1"
+  ],
+  "configs": [
+    "B0",
+    "labels",
+    "gate",
+    "full"
+  ],
+  "mcnemar_pvalue_vs_full": {
+    "B0": 1.0,
+    "gate": 1.0,
+    "labels": 1.0
+  },
+  "pooled_asr": {
+    "B0": {
+      "ci95_pct": [
+        75.8,
+        100.0
+      ],
+      "count": 12,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 12
+    },
+    "full": {
+      "ci95_pct": [
+        75.8,
+        100.0
+      ],
+      "count": 12,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 12
+    },
+    "gate": {
+      "ci95_pct": [
+        75.8,
+        100.0
+      ],
+      "count": 12,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 12
+    },
+    "labels": {
+      "ci95_pct": [
+        75.8,
+        100.0
+      ],
+      "count": 12,
+      "pct": 100.0,
+      "rate": 1.0,
+      "total": 12
+    }
+  },
+  "total_trials": 48,
+  "utility_by_config": {
+    "B0": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 641.92,
+      "latency_p95_ms": 663.35,
+      "mean_tokens": 309.9,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "full": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1245.49,
+      "latency_p95_ms": 1250.39,
+      "mean_tokens": 774.4,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "gate": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 1244.61,
+      "latency_p95_ms": 1247.97,
+      "mean_tokens": 611.5,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    },
+    "labels": {
+      "binder_false_reject_pct": 0.0,
+      "fbr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "fbr_pct": 0.0,
+      "latency_p50_ms": 663.17,
+      "latency_p95_ms": 663.65,
+      "mean_tokens": 391.3,
+      "sink_coverage_pct": 100.0,
+      "tsr": {
+        "ci95_pct": [
+          0.0,
+          0.0
+        ],
+        "count": 0,
+        "pct": 0.0,
+        "rate": 0.0,
+        "total": 0
+      },
+      "tsr_pct": 100.0
+    }
+  }
+}
